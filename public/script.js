@@ -20,6 +20,9 @@ class LipetskMap {
     this.loaderTimeout = null;
     this.pageLoaderTimeout = null;
 
+    this.activeDistrict = null; // Текущий активный район
+    this.hoverTimeout = null;
+    
     this.init();
   }
 
@@ -219,13 +222,21 @@ class LipetskMap {
     }
   }
 
-  // В методе setupMapInteractivity() замените код:
   setupMapInteractivity() {
     const svg = document.querySelector("#mapWrapper svg");
     if (!svg) return;
 
+    const regionEletskiy = svg.querySelector("#region_eletskiy");
+    const eletsGroup = svg.querySelector("#elets");
+    if (regionEletskiy && eletsGroup) {
+      svg.appendChild(regionEletskiy); // Сначала кладем район
+      svg.appendChild(eletsGroup);     // Поверх него кладем город
+    }
+
     const groups = svg.querySelectorAll("g[id][data-region-name]");
     const originalOrder = Array.from(groups);
+    const groupIndices = new Map();
+    originalOrder.forEach((g, idx) => groupIndices.set(g.id, idx));
     const colors = [
       "#e57878", "#d88953", "#f7dc71", "#cfe672",
       "#8ee157", "#81ec81", "#60e094", "#84f2dc",
@@ -253,7 +264,9 @@ class LipetskMap {
         polygon.setAttribute("tabindex", "0");
         polygon.setAttribute("role", "button");
 
-        // Добавляем начальные стили для анимации
+        polygon.style.transformOrigin = "center";
+        polygon.style.transformBox = "fill-box";
+
         if (!this.animationPlayed) {
           polygon.style.transform = "scale(0)";
           polygon.style.opacity = "0";
@@ -274,23 +287,68 @@ class LipetskMap {
         polygon.addEventListener("mouseenter", (e) => {
           e.stopPropagation();
           if (hideTimeout) clearTimeout(hideTimeout);
-          this.showTooltip(e, regionName);
-          svg.appendChild(group);
-          if (group.id === "region_eletskiy") {
-            const eletsGroup = svg.querySelector("#elets");
-            if (eletsGroup) {
-              svg.appendChild(eletsGroup);
+          if (this.hoverTimeout) clearTimeout(this.hoverTimeout);
+          
+          const currentGroup = group;
+          const currentRegionName = regionName;
+          
+          requestAnimationFrame(() => {
+            // Возвращаем предыдущий активный район на его исходную позицию
+            if (this.activeDistrict && this.activeDistrict !== currentGroup.id) {
+              const oldActiveIndex = groupIndices.get(this.activeDistrict);
+              if (oldActiveIndex !== undefined) {
+                const oldActiveGroup = svg.querySelector(`#${this.activeDistrict}`);
+                const targetSibling = svg.children[oldActiveIndex];
+                if (oldActiveGroup && targetSibling && oldActiveGroup !== targetSibling) {
+                  svg.insertBefore(oldActiveGroup, targetSibling);
+                }
+              }
             }
-          }
+            
+            // ВАЖНО: Для Елецкого района - поднимаем ТОЛЬКО город, НЕ поднимаем сам район
+            if (currentGroup.id === "region_eletskiy") {
+              const eletsGroup = svg.querySelector("#elets");
+              if (eletsGroup) {
+                // Поднимаем город Елец на самый верх
+                svg.appendChild(eletsGroup);
+                eletsGroup.classList.add('elets-highlight');
+              }
+              // НЕ поднимаем сам район! Оставляем его внизу.
+            } else {
+              // Для других районов поднимаем их наверх
+              if (currentGroup !== svg.lastElementChild) {
+                svg.appendChild(currentGroup);
+              }
+            }
+            
+            this.activeDistrict = currentGroup.id;
+          });
+          
+          this.showTooltip(e, currentRegionName);
         });
-
+        
         polygon.addEventListener("mouseout", (e) => {
           e.stopPropagation();
-          hideTimeout = setTimeout(() => {
-            this.hideTooltip();
-            originalOrder.forEach((originalGroup) =>
-              svg.appendChild(originalGroup)
-            );
+          if (hideTimeout) clearTimeout(hideTimeout);
+          
+          this.hoverTimeout = setTimeout(() => {
+            requestAnimationFrame(() => {
+              // Восстанавливаем исходный порядок для всех групп
+              originalOrder.forEach((originalGroup) => {
+                svg.appendChild(originalGroup);
+              });
+              
+              // Убираем подсветку с Ельца
+              const eletsGroup = svg.querySelector("#elets");
+              if (eletsGroup) {
+                eletsGroup.classList.remove('elets-highlight');
+                // Убираем возможные инлайн-стили
+                eletsGroup.style.pointerEvents = '';
+              }
+              
+              this.activeDistrict = null;
+              this.hideTooltip();
+            });
           }, 100);
         });
 
@@ -308,11 +366,6 @@ class LipetskMap {
         });
       });
     });
-
-    const eletsGroup = svg.querySelector("#elets");
-    if (eletsGroup) {
-      svg.appendChild(eletsGroup);
-    }
 
     // Запускаем анимацию после небольшой задержки
     if (!this.animationPlayed) {
@@ -1063,7 +1116,13 @@ class LipetskMap {
   }
 
   hideTooltip() {
-    document.getElementById("tooltip").classList.add("hidden");
+    const tooltip = document.getElementById("tooltip");
+    if (tooltip) {
+      tooltip.classList.add("hidden");
+      // Принудительно убираем возможные инлайн-стили
+      tooltip.style.left = '';
+      tooltip.style.top = '';
+    }
   }
 
   updateTooltipPosition(e) {

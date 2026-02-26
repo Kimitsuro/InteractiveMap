@@ -1289,7 +1289,7 @@ class LipetskMap {
 
   async loadFilteredInstitutions(params) {
     try {
-      const response = await fetch(`/api/get_institutions.php?${params}`);
+      const response = await fetch(`get_institutions.php?${params}`);
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       const data = await response.json();
       if (data.error) throw new Error(data.error);

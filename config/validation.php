@@ -165,7 +165,7 @@ function validateCodeList(array $codes, array $allowed, string $fieldLabel): arr
     return array_values(array_unique($normalized));
 }
 
-function validateRangeForType(string $type, ?int $min, ?int $max): array {
+function validateRangeForType(string $type, ?float $min, ?float $max): array {
     if (in_array($type, ['spo', 'vo'], true)) {
         return [null, null];
     }
@@ -175,8 +175,8 @@ function validateRangeForType(string $type, ?int $min, ?int $max): array {
     }
 
     if ($type === 'preschool') {
-        $minLimit = 1;
-        $maxLimit = 7;
+        $minLimit = 1.5;
+        $maxLimit = 8;
         $label = 'возраст';
     } else {
         $minLimit = 1;
@@ -236,9 +236,9 @@ function validateInstitutionPayload(array $input, bool $isUpdate = false): array
         $type = validateInstitutionType($input['type'] ?? null);
         $districtId = validateDistrictId((int) ($input['district_id'] ?? 0));
         $rangeMin = isset($input['range']['min']) && $input['range']['min'] !== '' && $input['range']['min'] !== null
-            ? (int) $input['range']['min'] : null;
+            ? (float) str_replace(',', '.', (string) $input['range']['min']) : null;
         $rangeMax = isset($input['range']['max']) && $input['range']['max'] !== '' && $input['range']['max'] !== null
-            ? (int) $input['range']['max'] : null;
+            ? (float) str_replace(',', '.', (string) $input['range']['max']) : null;
         [$rangeMin, $rangeMax] = validateRangeForType($type, $rangeMin, $rangeMax);
 
         $director = null;

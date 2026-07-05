@@ -3,6 +3,12 @@
 //                   карточки, пагинация
 // ============================================================
 
+function formatRangeValue(value) {
+  if (value === null || value === undefined || value === "") return "";
+  const num = Number(value);
+  return Number.isInteger(num) ? String(num) : String(num);
+}
+
 Object.assign(LipetskMap.prototype, {
 
     async loadDistricts() {
@@ -297,18 +303,18 @@ Object.assign(LipetskMap.prototype, {
       const hasRangeType = ["preschool", "school", "school_internat"].includes(institution.type);
       if (hasRangeType && institution.range_min !== null && institution.range_max !== null) {
         if (institution.type === "preschool") {
-          rangeInfo = `${institution.range_min}-${institution.range_max} лет`;
+          rangeInfo = `${formatRangeValue(institution.range_min)}-${formatRangeValue(institution.range_max)} лет`;
         } else {
-          rangeInfo = `${institution.range_min}-${institution.range_max} классы`;
+          rangeInfo = `${formatRangeValue(institution.range_min)}-${formatRangeValue(institution.range_max)} классы`;
         }
       } else if (hasRangeType && institution.range_min !== null) {
         rangeInfo = institution.type === "preschool"
-          ? `от ${institution.range_min} лет`
-          : `от ${institution.range_min} класса`;
+          ? `от ${formatRangeValue(institution.range_min)} лет`
+          : `от ${formatRangeValue(institution.range_min)} класса`;
       } else if (hasRangeType && institution.range_max !== null) {
         rangeInfo = institution.type === "preschool"
-          ? `до ${institution.range_max} лет`
-          : `до ${institution.range_max} класса`;
+          ? `до ${formatRangeValue(institution.range_max)} лет`
+          : `до ${formatRangeValue(institution.range_max)} класса`;
       }
   
       const uniqueConditions = institution.conditions

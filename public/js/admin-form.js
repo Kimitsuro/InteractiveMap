@@ -97,10 +97,12 @@ Object.assign(AdminManager.prototype, {
         document.getElementById("rangeMin").placeholder = "От (лет)";
         document.getElementById("rangeMax").placeholder = "До (лет)";
         unit.textContent = "(лет)";
-        document.getElementById("rangeMin").min = "1";
-        document.getElementById("rangeMin").max = "7";
+        document.getElementById("rangeMin").min = "1.5";
+        document.getElementById("rangeMin").max = "8";
+        document.getElementById("rangeMin").step = "0.5";
         document.getElementById("rangeMax").min = "1";
-        document.getElementById("rangeMax").max = "7";
+        document.getElementById("rangeMax").max = "8";
+        document.getElementById("rangeMax").step = "0.5";
       } else if (type === "school" || type === "school_internat") {
         label.textContent = "Диапазон классов";
         document.getElementById("rangeMin").placeholder = "От (класс)";
@@ -108,8 +110,10 @@ Object.assign(AdminManager.prototype, {
         unit.textContent = "(классов)";
         document.getElementById("rangeMin").min = "1";
         document.getElementById("rangeMin").max = "11";
+        document.getElementById("rangeMin").step = "1";
         document.getElementById("rangeMax").min = "1";
         document.getElementById("rangeMax").max = "11";
+        document.getElementById("rangeMax").step = "1";
       } else {
         group.classList.add("hidden");
         document.getElementById("rangeMin").value = "";
@@ -125,8 +129,8 @@ Object.assign(AdminManager.prototype, {
       const address = document.getElementById('institutionAddress').value.trim();
       const website = document.getElementById('institutionWebsite').value.trim();
       const aoopUrl = document.getElementById('institutionAoopUrl').value.trim();
-      const rangeMin = document.getElementById('rangeMin').value ? parseInt(document.getElementById('rangeMin').value) : null;
-      const rangeMax = document.getElementById('rangeMax').value ? parseInt(document.getElementById('rangeMax').value) : null;
+      const rangeMin = document.getElementById('rangeMin').value ? parseFloat(document.getElementById('rangeMin').value) : null;
+      const rangeMax = document.getElementById('rangeMax').value ? parseFloat(document.getElementById('rangeMax').value) : null;
       const directorName = document.getElementById('directorName').value.trim();
   
       const formData = {

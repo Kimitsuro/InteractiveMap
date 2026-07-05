@@ -5,7 +5,17 @@
 
 Object.assign(LipetskMap.prototype, {
 
-    applyCombinedFilters() {
+    hasActiveFilters() {
+      const activeTypeButtons = document.querySelectorAll('.type-filter-btn.active:not([data-type="all"])');
+      if (activeTypeButtons.length > 0) return true;
+
+      const searchTerm = document.getElementById("institutionSearch")?.value.trim();
+      if (searchTerm) return true;
+
+      return document.querySelectorAll('.filter-group-accordion input[type="checkbox"]:checked').length > 0;
+    },
+
+    applyCombinedFilters(options = {}) {
       const searchInput = document.getElementById("institutionSearch");
       const searchTerm = searchInput ? searchInput.value.trim() : "";
       const q = this.normalizeString(searchTerm);
@@ -96,7 +106,7 @@ Object.assign(LipetskMap.prototype, {
         return false;
       });
   
-      this.displayInstitutions(filtered);
+      this.displayInstitutions(filtered, options);
     },
   
     closeAllAccordions() {

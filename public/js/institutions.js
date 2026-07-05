@@ -14,20 +14,28 @@ Object.assign(LipetskMap.prototype, {
         this.districts = data.districts;
         this.districtIdMap = {};
         Object.entries(this.districts).forEach(([id, name]) => {
-          this.districtIdMap[name] = parseInt(id);
+          this.registerDistrictIdMapping(name, parseInt(id, 10));
         });
         this.populateLegend();
         this.populateDistrictSelect();
       } catch (error) {
         console.error("Error loading districts:", error);
-        this.districts = { 1: "Липецкий округ", 2: "Елецкий округ" };
+        this.districts = { 1: "г. Липецк", 2: "г. Елец" };
+        this.districtIdMap = {};
+        Object.entries(this.districts).forEach(([id, name]) => {
+          this.registerDistrictIdMapping(name, parseInt(id, 10));
+        });
         this.populateLegend();
       }
     },
   
-    async loadInstitutionsForDistrict(districtName) {
-      const districtId = this.districtIdMap[districtName];
+    async loadInstitutionsForDistrict(districtName, options = {}) {
+      const districtId = this.resolveDistrictId(districtName);
       if (!districtId) return;
+
+      const restorePage = options.page != null
+        ? parseInt(options.page, 10)
+        : (options.keepPage ? this.getListPage() : null);
   
       try {
         this.loaderTimeout = setTimeout(() => {
@@ -41,8 +49,20 @@ Object.assign(LipetskMap.prototype, {
         if (data.error) throw new Error(data.error);
   
         this.allInstitutions = Array.isArray(data.institutions) ? data.institutions : [];
-  
-        this.displayInstitutions(this.allInstitutions);
+
+        const displayOptions = restorePage != null && Number.isFinite(restorePage)
+          ? { page: restorePage }
+          : {};
+
+        if (this.hasActiveFilters()) {
+          this.applyCombinedFilters(displayOptions);
+        } else {
+          this.displayInstitutions(this.allInstitutions, displayOptions);
+        }
+
+        if (restorePage != null && Number.isFinite(restorePage)) {
+          this.restoreListPage(restorePage);
+        }
   
       } catch (error) {
         console.error('Error loading institutions:', error);
@@ -57,7 +77,7 @@ Object.assign(LipetskMap.prototype, {
   
     async loadRegionLinks(districtId) {
       const linksDiv = document.getElementById('regionLinks');
-      if (!linksDiv) return;
+      if (!linksDiv || !districtId) return;
       linksDiv.innerHTML = '';
   
       try {
@@ -65,18 +85,24 @@ Object.assign(LipetskMap.prototype, {
         if (!response.ok) throw new Error('HTTP ' + response.status);
         const data = await response.json();
         if (data.links && data.links.length > 0) {
-          linksDiv.innerHTML = data.links.map(link =>
-            `<a href="${link.linktoinstitution}" target="_blank" class="region-link">${link.linksto}</a>`
-          ).join('<br>');
+          linksDiv.innerHTML = data.links.map((link) => {
+            const href = this.sanitizeUrl(link.linktoinstitution);
+            if (!href) return '';
+            return `<a href="${href}" target="_blank" rel="noopener noreferrer" class="region-link">${this.escapeHtml(link.linksto)}</a>`;
+          }).filter(Boolean).join('<br>');
         }
       } catch (e) {
         linksDiv.innerHTML = '<span class="text-muted">Нет ссылок для региона</span>';
       }
     },
   
-    displayInstitutions(institutions) {
-      this.totalPages = Math.ceil(institutions.length / this.itemsPerPage);
-      this.currentPage = 1;
+    displayInstitutions(institutions, options = {}) {
+      const requestedPage = options.page != null
+        ? parseInt(options.page, 10)
+        : (options.keepPage ? this.getListPage() : 1);
+      const targetPage = Number.isFinite(requestedPage) && requestedPage > 0 ? requestedPage : 1;
+
+      this.totalPages = Math.ceil(institutions.length / this.itemsPerPage) || 1;
   
       const debugInfo = document.getElementById("debugInfo");
       const institutionCount = document.getElementById("institutionCount");
@@ -93,6 +119,7 @@ Object.assign(LipetskMap.prototype, {
         if (paginationTop) paginationTop.classList.add("hidden");
         if (paginationBottom) paginationBottom.classList.add("hidden");
         if (debugInfo) debugInfo.style.display = 'none';
+        this.setListPage(1);
         return;
       }
   
@@ -101,11 +128,22 @@ Object.assign(LipetskMap.prototype, {
       }
   
       this.displayedInstitutionsFull = institutions.slice();
-      this.totalPages = Math.ceil(this.displayedInstitutionsFull.length / this.itemsPerPage);
-      this.currentPage = 1;
+      this.totalPages = Math.ceil(this.displayedInstitutionsFull.length / this.itemsPerPage) || 1;
+      this.setListPage(Math.min(targetPage, this.totalPages));
   
       this.showCurrentPage();
       this.updatePagination();
+    },
+
+    restoreListPage(page) {
+      const targetPage = Math.min(
+        Math.max(1, parseInt(page, 10) || 1),
+        this.totalPages || 1
+      );
+      this.setListPage(targetPage);
+      this.showCurrentPage();
+      this.updatePagination();
+      this.scrollToInstitutions();
     },
   
     showCurrentPage() {
@@ -233,12 +271,13 @@ Object.assign(LipetskMap.prototype, {
     },
   
     createInstitutionCard(institution) {
+      const esc = (value) => this.escapeHtml(value);
       const typeNames = {
-        preschool: "Дошкольное",
-        school: "Школа",
+        preschool: "Дошкольное образовательное учреждение",
+        school: "Общеобразовательная школа",
         school_internat: "Школа-интернат",
-        spo: "СПО",
-        vo: "ВО",
+        spo: "Среднее профессиональное образование",
+        vo: "Высшее образование",
       };
       const conditionNames = {
         hearing_impairment: "Нарушения слуха",
@@ -250,38 +289,26 @@ Object.assign(LipetskMap.prototype, {
         multiple_disorders: "Множественные нарушения развития",
       };
       const admissionNames = {
-        certificate: "Свидетельство",
+        certificate: "Свидетельство об обучении",
         attestat: "Аттестат",
       };
   
       let rangeInfo = "";
-      if (institution.range_min !== null && institution.range_max !== null) {
+      const hasRangeType = ["preschool", "school", "school_internat"].includes(institution.type);
+      if (hasRangeType && institution.range_min !== null && institution.range_max !== null) {
         if (institution.type === "preschool") {
           rangeInfo = `${institution.range_min}-${institution.range_max} лет`;
-        } else if (
-          institution.type === "school" ||
-          institution.type === "school_internat"
-        ) {
+        } else {
           rangeInfo = `${institution.range_min}-${institution.range_max} классы`;
-        } else {
-          rangeInfo = `${institution.range_min}-${institution.range_max}`;
         }
-      } else if (institution.range_min !== null) {
-        if (institution.type === "preschool") {
-          rangeInfo = `от ${institution.range_min} лет`;
-        } else if (institution.type === "school" || institution.type === "school_internat") {
-          rangeInfo = `от ${institution.range_min} класса`;
-        } else {
-          rangeInfo = `от ${institution.range_min}`;
-        }
-      } else if (institution.range_max !== null) {
-        if (institution.type === "preschool") {
-          rangeInfo = `до ${institution.range_max} лет`;
-        } else if (institution.type === "school" || institution.type === "school_internat") {
-          rangeInfo = `до ${institution.range_max} класса`;
-        } else {
-          rangeInfo = `до ${institution.range_max}`;
-        }
+      } else if (hasRangeType && institution.range_min !== null) {
+        rangeInfo = institution.type === "preschool"
+          ? `от ${institution.range_min} лет`
+          : `от ${institution.range_min} класса`;
+      } else if (hasRangeType && institution.range_max !== null) {
+        rangeInfo = institution.type === "preschool"
+          ? `до ${institution.range_max} лет`
+          : `до ${institution.range_max} класса`;
       }
   
       const uniqueConditions = institution.conditions
@@ -299,8 +326,7 @@ Object.assign(LipetskMap.prototype, {
               ${uniqueConditions
             .map(
               (condition) =>
-                `<span class="tag condition">${conditionNames[condition] || condition
-                }</span>`
+                `<span class="tag condition">${esc(conditionNames[condition] || condition)}</span>`
             )
             .join("")}
             </div>
@@ -315,8 +341,7 @@ Object.assign(LipetskMap.prototype, {
               ${uniqueAdmission
             .map(
               (admission) =>
-                `<span class="tag admission">${admissionNames[admission] || admission
-                }</span>`
+                `<span class="tag admission">${esc(admissionNames[admission] || admission)}</span>`
             )
             .join("")}
             </div>
@@ -326,22 +351,23 @@ Object.assign(LipetskMap.prototype, {
       const aoopSection =
         institution.aoop_programs && institution.aoop_programs.length > 0
           ? `<div class="aoop-section">
-            <h5>Реализуемые АООП:</h5>
+            <h5>Реализуемые адаптированные образовательные программы:</h5>
             <ul class="aoop-list-card">
               ${institution.aoop_programs
             .map(
               (prog) => {
-                if (institution.aoop_url) {
-                  return `<li><a href="${institution.aoop_url}" target="_blank">${prog.name}</a></li>`;
-                } else {
-                  return `<li>${prog.name}</li>`;
+                const progName = esc(this.expandMedicalAbbreviations(prog.name));
+                const href = this.sanitizeUrl(prog.url || institution.aoop_url);
+                if (href) {
+                  return `<li><a href="${href}" target="_blank" rel="noopener noreferrer">${progName}</a></li>`;
                 }
+                return `<li>${progName}</li>`;
               }
             )
             .join("")}
             </ul>
             ${institution.aoop_url
-            ? `<div class="aoop-global-link"><strong>Общая ссылка на АООП:</strong> <a href="${institution.aoop_url}" target="_blank">${institution.aoop_url}</a></div>`
+            ? `<div class="aoop-global-link"><strong>Общая ссылка на адаптированные программы:</strong> ${this.renderTruncatedLink(institution.aoop_url)}</div>`
             : ''}
           </div>`
           : "";
@@ -355,28 +381,26 @@ Object.assign(LipetskMap.prototype, {
   
       return `
       <div class="institution-card">
-        <h4>${institution.name}</h4>
-        <span class="institution-type">${typeNames[institution.type] || institution.type
-        }</span>
+        <h4>${esc(institution.name)}</h4>
+        <span class="institution-type">${esc(typeNames[institution.type] || institution.type)}</span>
         
         ${institution.description
-          ? `<p class="institution-description">${institution.description}</p>`
+          ? `<p class="institution-description">${esc(institution.description)}</p>`
           : ""
         }
         
         <div class="institution-details">
         ${rangeInfo
-          ? `<div class="detail-item"><strong>${institution.type === "preschool" ? "Возраст:" : institution.type === "school" || institution.type === "school_internat" ? "Классы:" : "Диапазон:"}</strong> ${rangeInfo}</div>`
+          ? `<div class="detail-item"><strong>${institution.type === "preschool" ? "Возраст:" : institution.type === "school" || institution.type === "school_internat" ? "Классы:" : "Диапазон:"}</strong> ${esc(rangeInfo)}</div>`
           : ""
         }
-          <div class="detail-item"><strong>Округа:</strong> ${this.districts[institution.district_id] || "Неизвестный район"
-        }</div>
+          <div class="detail-item"><strong>Округ:</strong> ${esc(this.districts[institution.district_id] || "Неизвестный округ")}</div>
         </div>
         
         ${conditionsSection}
         ${admissionSection}
         ${institution.address 
-            ? `<div class="detail-item"><strong>Адрес:</strong>&nbsp;${institution.address}</div>` 
+            ? `<div class="detail-item detail-item-address"><strong>Адрес:</strong><span class="detail-value">${esc(institution.address.trim())}</span></div>` 
             : ""
         }
         ${aoopSection}
@@ -384,14 +408,13 @@ Object.assign(LipetskMap.prototype, {
         ${institution.director && institution.director.name
           ? `
           <div class="institution-contacts">
-            <div class="contact-item"><strong>Руководитель:</strong> ${institution.director.name
-          }</div>
+            <div class="contact-item"><strong>Руководитель:</strong> ${esc(institution.director.name)}</div>
             ${institution.director.phone
-            ? `<div class="contact-item"><strong>Телефон:</strong> ${institution.director.phone}</div>`
+            ? `<div class="contact-item"><strong>Телефон:</strong> ${esc(institution.director.phone)}</div>`
             : ""
           }
             ${institution.director.email
-            ? `<div class="contact-item"><strong>Email:</strong> ${institution.director.email}</div>`
+            ? `<div class="contact-item"><strong>Email:</strong> ${esc(this.formatEmailForDisplay(institution.director.email))}</div>`
             : ""
           }
           </div>
@@ -401,8 +424,8 @@ Object.assign(LipetskMap.prototype, {
         
         ${institution.website
           ? `
-          <div class="contact-item">
-            <strong>Сайт:</strong> <a href="${institution.website}" target="_blank">${institution.website}</a>
+          <div class="contact-item contact-item-link">
+            <strong>Сайт:</strong> ${this.renderTruncatedLink(institution.website)}
           </div>
         `
           : ""
@@ -431,7 +454,7 @@ Object.assign(LipetskMap.prototype, {
   
     handlePrevPage() {
       if (this.currentPage > 1) {
-        this.currentPage--;
+        this.setListPage(this.currentPage - 1);
         this.showCurrentPage();
         this.updatePagination();
         this.scrollToInstitutions();
@@ -440,7 +463,7 @@ Object.assign(LipetskMap.prototype, {
   
     handleNextPage() {
       if (this.currentPage < this.totalPages) {
-        this.currentPage++;
+        this.setListPage(this.currentPage + 1);
         this.showCurrentPage();
         this.updatePagination();
         this.scrollToInstitutions();
@@ -448,8 +471,9 @@ Object.assign(LipetskMap.prototype, {
     },
   
     handlePageClick(page) {
-      if (page !== this.currentPage) {
-        this.currentPage = page;
+      const targetPage = parseInt(page, 10);
+      if (Number.isFinite(targetPage) && targetPage !== this.currentPage) {
+        this.setListPage(targetPage);
         this.showCurrentPage();
         this.updatePagination();
         this.scrollToInstitutions();
@@ -457,13 +481,10 @@ Object.assign(LipetskMap.prototype, {
     },
   
     scrollToInstitutions() {
-      const institutionsSection = document.querySelector(".institutions-section");
-      if (institutionsSection) {
-        institutionsSection.scrollIntoView({
-          behavior: "smooth",
-          block: "start",
-        });
-      }
+      const section = document.querySelector(".institutions-section");
+      if (!section) return;
+
+      section.scrollTo({ top: 0, behavior: "smooth" });
     },
   
   });

@@ -4,11 +4,34 @@
 
 let lipetskMap;
 
-document.addEventListener("DOMContentLoaded", () => {
-  lipetskMap = new LipetskMap();
-  lipetskMap.init();
+const ASSET_VERSION = '20260705b';
 
-  new AdminManager(lipetskMap);
+function loadScript(src) {
+  return new Promise((resolve, reject) => {
+    const script = document.createElement('script');
+    script.src = src.includes('?') ? src : `${src}?v=${ASSET_VERSION}`;
+    script.onload = resolve;
+    script.onerror = reject;
+    document.body.appendChild(script);
+  });
+}
+
+async function loadAdminScripts() {
+  await loadScript('js/admin.js');
+  await loadScript('js/admin-auth.js');
+  await loadScript('js/admin-form.js');
+  await loadScript('js/admin-crud.js');
+}
+
+document.addEventListener("DOMContentLoaded", async () => {
+  lipetskMap = new LipetskMap();
+  lipetskMap.isAdminMode = window.IS_ADMIN_ROUTE === true;
+  await lipetskMap.init();
+
+  if (window.IS_ADMIN_ROUTE) {
+    await loadAdminScripts();
+    new AdminManager(lipetskMap);
+  }
 });
 
 window.addEventListener('error', () => {

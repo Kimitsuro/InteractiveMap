@@ -1,13 +1,9 @@
 <?php
 require_once __DIR__ . '/../../config/database.php';
+require_once __DIR__ . '/../../config/security.php';
 require_once __DIR__ . '/../../src/Database.php';
-header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Methods: GET");
-header("Access-Control-Allow-Headers: Content-Type");
 
-if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
-    jsonResponse(['error' => 'Method not allowed'], 405);
-}
+initApi(['methods' => ['GET'], 'method' => 'GET']);
 
 $district_id = isset($_GET['district_id']) ? intval($_GET['district_id']) : 0;
 if ($district_id < 1) {

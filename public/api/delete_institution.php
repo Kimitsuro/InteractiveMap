@@ -1,16 +1,10 @@
 <?php
-session_start();
 require_once __DIR__ . '/../../config/database.php';
+require_once __DIR__ . '/../../config/security.php';
 require_once __DIR__ . '/../../src/Database.php';
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: POST');
-header('Access-Control-Allow-Headers: Content-Type');
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    jsonResponse(['error' => 'Method not allowed'], 405);
-}
-if (!isset($_SESSION['admin_id'])) {
-    jsonResponse(['error' => 'Unauthorized'], 401);
-}
+
+initApi(['methods' => ['POST'], 'method' => 'POST', 'admin' => true, 'csrf' => true, 'credentials' => true]);
+
 $input = json_decode(file_get_contents('php://input'), true) ?: $_POST;
 $id = $input['id'] ?? null;
 if (!$id || !is_numeric($id)) {

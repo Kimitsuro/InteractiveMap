@@ -7,14 +7,18 @@ Object.assign(AdminManager.prototype, {
 
   async editInstitution(id) {
     try {
-      const districtId = this.map.institutions.find(inst => inst.id === id)?.district_id || 1;
+      const restorePage = this.map.getListPage();
+      const districtId = this.map.displayedInstitutions.find(inst => inst.id === id)?.district_id
+        || this.map.allInstitutions.find(inst => inst.id === id)?.district_id
+        || 1;
       const params = new URLSearchParams({ district_id: districtId, id });
       const response = await fetch(`/api/get_institution.php?${params}`);
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       const data = await response.json();
-      if (data.error || !data.institution || data.institution.length === 0) {
+      if (data.error || !data.institution) {
         throw new Error('Учреждение не найдено');
       }
+      this.map.pendingListPage = restorePage;
       this.openInstitutionForm(data.institution);
     } catch (error) {
       console.error('Error loading for edit:', error);
@@ -24,10 +28,12 @@ Object.assign(AdminManager.prototype, {
 
   async deleteInstitution(id) {
     if (!confirm("Вы уверены, что хотите удалить это учреждение?")) return;
+    const restorePage = this.map.getListPage();
     try {
       const response = await fetch('/api/delete_institution.php', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        credentials: 'same-origin',
+        headers: this.map.getAdminHeaders({ 'Content-Type': 'application/json' }),
         body: JSON.stringify({ id })
       });
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
@@ -35,7 +41,8 @@ Object.assign(AdminManager.prototype, {
       if (result.error) throw new Error(result.error);
       if (!document.getElementById("districtModal").classList.contains("hidden")) {
         const districtName = document.getElementById("regionName").textContent;
-        await this.map.loadInstitutionsForDistrict(districtName);
+        await this.map.loadInstitutionsForDistrict(districtName, { page: restorePage });
+        this.map.restoreListPage(restorePage);
       }
     } catch (error) {
       console.error('Error deleting institution:', error);
@@ -45,43 +52,34 @@ Object.assign(AdminManager.prototype, {
 
   async saveInstitution() {
     try {
-      console.log("Начало сохранения учреждения...");
-
+      const restorePage = this.map.pendingListPage ?? this.map.getListPage();
       const data = this.collectFormData();
-      console.log("Собранные данные:", data);
 
-      let url;
-      if (this.map.editingInstitution && this.map.editingInstitution.id) {
-        url = '/api/update_institution.php';
-        console.log("Режим: ОБНОВЛЕНИЕ");
-      } else {
-        url = '/api/create_institution.php';
-        console.log("Режим: СОЗДАНИЕ");
-      }
-
-      console.log("Отправка запроса на:", url);
+      const url = (this.map.editingInstitution && this.map.editingInstitution.id)
+        ? '/api/update_institution.php'
+        : '/api/create_institution.php';
 
       const response = await fetch(url, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        credentials: 'same-origin',
+        headers: this.map.getAdminHeaders({ 'Content-Type': 'application/json' }),
         body: JSON.stringify(data)
       });
 
-      console.log("Статус ответа:", response.status);
-
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       const result = await response.json();
-      console.log("Ответ сервера:", result);
 
       if (result.error) throw new Error(result.error);
 
       document.getElementById("institutionModal").classList.add("hidden");
+      this.map.clearInstitutionForm();
       if (!document.getElementById("districtModal").classList.contains("hidden")) {
         const districtName = document.getElementById("regionName").textContent;
-        await this.map.loadInstitutionsForDistrict(districtName);
+        await this.map.loadInstitutionsForDistrict(districtName, { page: restorePage });
+        this.map.restoreListPage(restorePage);
       }
 
-      console.log("Сохранение завершено успешно!");
+      this.map.pendingListPage = null;
 
     } catch (error) {
       console.error('Error saving institution:', error);
@@ -102,8 +100,14 @@ Object.assign(AdminManager.prototype, {
     const certificateCheckbox = document.getElementById('doc_certificate');
     const rangeLabel = document.getElementById('rangeLabel');
     const rangeUnit = document.getElementById('rangeUnit');
+    const rangeGroup = document.getElementById('rangeGroup');
 
     if (!attestatCheckbox) return;
+
+    if (rangeGroup) {
+      const showRange = ['preschool', 'school', 'school_internat'].includes(type);
+      rangeGroup.classList.toggle('hidden', !showRange);
+    }
 
     // 1. Сброс состояний по умолчанию
     attestatCheckbox.disabled = false;
@@ -130,10 +134,6 @@ Object.assign(AdminManager.prototype, {
     } else if (type === 'school' || type === 'school_internat') {
       if (rangeLabel) rangeLabel.textContent = "Классы обучения";
       if (rangeUnit) rangeUnit.textContent = "(классы)";
-    } else {
-      // Для СПО и ВО
-      if (rangeLabel) rangeLabel.textContent = "Курсы обучения / Возраст";
-      if (rangeUnit) rangeUnit.textContent = "(курс/лет)";
     }
   }
 

@@ -4,8 +4,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Интерактивная карта образовательных учреждений Липецкой области: школы, детские сады, колледжи и вузы. Поиск по округам, фильтры по условиям обучения и адаптированным программам.">
     <title>Интерактивная карта образовательных учреждений Липецкой области</title>
     <link rel="stylesheet" href="styles.css">
+    <script>
+        window.IS_ADMIN_ROUTE = /\/admin(?:\/|$)/.test(window.location.pathname);
+        if (window.IS_ADMIN_ROUTE) {
+            document.documentElement.classList.add('admin-route');
+        }
+    </script>
 </head>
 
 <body>
@@ -49,12 +56,11 @@
                     <div class="institution-type-filter">
                         <div class="type-filter-buttons">
                             <button class="type-filter-btn active" data-type="all">Все</button>
-                            <button class="type-filter-btn" data-type="preschool" id="">Детские сады</button>
-                            <button class="type-filter-btn" data-type="school">Школы</button>
-                            <button class="type-filter-btn" data-type="school_internat">Интернаты</button>
-                            <button class="type-filter-btn" data-type="spo">СПО(Среднее профессиональное
-                                образование)</button>
-                            <button class="type-filter-btn" data-type="vo">ВО(Высшее образование)</button>
+                            <button class="type-filter-btn" data-type="preschool">Дошкольное образовательное учреждение</button>
+                            <button class="type-filter-btn" data-type="school">Общеобразовательная школа</button>
+                            <button class="type-filter-btn" data-type="school_internat">Школа-интернат</button>
+                            <button class="type-filter-btn" data-type="spo">Среднее профессиональное образование</button>
+                            <button class="type-filter-btn" data-type="vo">Высшее образование</button>
                         </div>
                     </div>
                     <button id="closeModal" class="close-btn">&times;</button>
@@ -104,8 +110,7 @@
                             <button id="nextPageBottom" class="pagination-btn pagination-next"
                                 type="button">&gt;</button>
                         </div>
-                        <div id="debugInfo" style="text-align: center; color: #666; font-size: 12px; margin-top: 10px;">
-                        </div>
+                        <div id="debugInfo" class="institutions-count-info"></div>
                     </div>
 
                     <div class="filters-overlay" id="filtersOverlay"></div>
@@ -118,15 +123,15 @@
                                 <button class="accordion-toggle ">Тип учреждения</button>
                                 <div class="accordion-content">
                                     <label class="filter-option lab-check"><input type="checkbox" value="preschool">
-                                        Детские сады</label>
+                                        Дошкольное образовательное учреждение</label>
                                     <label class="filter-option lab-check"><input type="checkbox" value="school">
-                                        Школы</label>
+                                        Общеобразовательная школа</label>
                                     <label class="filter-option lab-check"><input type="checkbox" value="spo">
-                                        СПО(Среднее профессиональное образование)</label>
-                                    <label class="filter-option lab-check"><input type="checkbox" value="vo"> ВО(Высшее
-                                        образование)</label>
+                                        Среднее профессиональное образование</label>
+                                    <label class="filter-option lab-check"><input type="checkbox" value="vo">
+                                        Высшее образование</label>
                                     <label class="filter-option lab-check"><input type="checkbox"
-                                            value="school_internat"> Интернаты</label>
+                                            value="school_internat"> Школа-интернат</label>
                                 </div>
                             </div>
 
@@ -145,18 +150,18 @@
                             </div>
 
                             <div class="filter-group-accordion">
-                                <button class="accordion-toggle">Условия обучения (ОВЗ)</button>
+                                <button class="accordion-toggle">Условия обучения (ограниченные возможности здоровья)</button>
                                 <div class="accordion-content">
                                     <label class="filter-option lab-check"><input type="checkbox"
-                                            value="hearing_impairment"> Нарушение слуха</label>
+                                            value="hearing_impairment"> Нарушения слуха</label>
                                     <label class="filter-option lab-check"><input type="checkbox"
-                                            value="vision_impairment"> Нарушение зрения</label>
+                                            value="vision_impairment"> Нарушения зрения</label>
                                     <label class="filter-option lab-check"><input type="checkbox"
-                                            value="speech_impairment"> Нарушение речи</label>
+                                            value="speech_impairment"> Нарушения речи</label>
                                     <label class="filter-option lab-check"><input type="checkbox" value="autism">
-                                        РАС</label>
+                                        Расстройство аутистического спектра</label>
                                     <label class="filter-option lab-check"><input type="checkbox"
-                                            value="mental_retardation"> ЗПР</label>
+                                            value="mental_retardation"> Задержка психического развития</label>
                                     <label class="filter-option lab-check"><input type="checkbox"
                                             value="multiple_disorders"> Множественные
                                         нарушения</label>
@@ -164,10 +169,10 @@
                             </div>
 
                             <div class="filter-group-accordion">
-                                <button class="accordion-toggle">Программы АООП(Адаптированная программа)</button>
+                                <button class="accordion-toggle">Адаптированные образовательные программы</button>
                                 <div class="accordion-content">
                                     <label class="filter-option lab-check"><input type="checkbox" value="aoop"> Есть
-                                        программы АООП(Адаптированная программа)</label>
+                                        адаптированные образовательные программы</label>
                                 </div>
                             </div>
 
@@ -239,11 +244,11 @@
                             <label for="institutionType">Тип учреждения *</label>
                             <select id="institutionType" required>
                                 <option value="">Выберите тип</option>
-                                <option value="preschool">Дошкольное</option>
-                                <option value="school">Школа</option>
+                                <option value="preschool">Дошкольное образовательное учреждение</option>
+                                <option value="school">Общеобразовательная школа</option>
                                 <option value="school_internat">Школа-интернат</option>
-                                <option value="spo">СПО(Среднее профессиональное образование)</option>
-                                <option value="vo">ВО(Высшее образование)</option>
+                                <option value="spo">Среднее профессиональное образование</option>
+                                <option value="vo">Высшее образование</option>
                             </select>
                         </div>
 
@@ -251,7 +256,7 @@
                             <label>Условия приема:</label>
                             <div class="checkbox-group">
                                 <label><input type="checkbox" value="certificate" name="admission" id="doc_certificate">
-                                    Свидетельство</label>
+                                    Свидетельство об обучении</label>
                                 <label><input type="checkbox" value="attestat" name="admission" id="doc_attestat">
                                     Аттестат</label>
                             </div>
@@ -288,9 +293,9 @@
                         </div>
 
                         <div class="form-group" id="aoopGroup">
-                            <label>Реализуемые АООП(Адаптированная программа)</label>
+                            <label>Реализуемые адаптированные образовательные программы</label>
                             <div class="form-group">
-                                <label for="institutionAoopUrl">Ссылка на АООП (для всех программ)</label>
+                                <label for="institutionAoopUrl">Общая ссылка на адаптированные программы</label>
                                 <input type="url" id="institutionAoopUrl" placeholder="https://example.com/aoop"
                                     style="width: 100%; padding: 8px; box-sizing: border-box;">
                             </div>
@@ -312,12 +317,13 @@
 
                         <div class="form-group">
                             <label for="directorPhone">Телефон руководителя</label>
-                            <input type="tel" id="directorPhone">
+                            <input type="tel" id="directorPhone" placeholder="+7 (4742) 27-22-24 или 27-22-24" autocomplete="tel">
+                            <small id="directorPhoneHint" class="field-hint">Можно вводить с +7, скобками и дефисами — при сохранении номер приведётся к стандартному виду</small>
                         </div>
 
                         <div class="form-group">
                             <label for="directorEmail">Email руководителя</label>
-                            <input type="email" id="directorEmail">
+                            <input type="text" id="directorEmail" inputmode="email" autocomplete="email">
                         </div>
 
                         <div class="form-group">
@@ -333,19 +339,38 @@
                 </div>
             </div>
         </div>
+
+        <footer class="site-footer">
+            <div class="site-footer-inner">
+                <div class="site-footer-info">
+                    <p class="site-footer-title">Департамент образования Липецкой области</p>
+                    <p class="site-footer-meta">Интерактивная карта образовательных учреждений</p>
+                    <p class="site-footer-meta">Контакты: уточните email и телефон департамента перед публикацией</p>
+                </div>
+                <nav class="site-footer-links" aria-label="Служебные ссылки">
+                    <a href="/privacy.html">Обработка персональных данных</a>
+                </nav>
+            </div>
+        </footer>
     </div>
 
-    <script src="js/main.js"></script>
-    <script src="js/utils.js"></script>
-    <script src="js/map.js"></script>
-    <script src="js/institutions.js"></script>
-    <script src="js/filters.js"></script>
-    <script src="js/admin.js"></script>
-    <script src="js/admin-auth.js"></script>
-    <script src="js/admin-form.js"></script>
-    <script src="js/admin-crud.js"></script>
-    <script src="js/bootstrap.js"></script>
-    <script src="js/accessibility.js"></script>
+    <div id="cookieNotice" class="cookie-notice hidden" role="dialog" aria-live="polite" aria-label="Уведомление о cookie">
+        <p>
+            Сайт сохраняет настройки доступности в вашем браузере (localStorage).
+            Подробнее — в разделе
+            <a href="/privacy.html">обработки персональных данных</a>.
+        </p>
+        <button type="button" id="cookieNoticeAccept" class="btn btn-primary">Понятно</button>
+    </div>
+
+    <script src="js/main.js?v=20260705b"></script>
+    <script src="js/utils.js?v=20260705b"></script>
+    <script src="js/map.js?v=20260705b"></script>
+    <script src="js/institutions.js?v=20260705b"></script>
+    <script src="js/filters.js?v=20260705b"></script>
+    <script src="js/bootstrap.js?v=20260705b"></script>
+    <script src="js/accessibility.js?v=20260705b"></script>
+    <script src="js/legal.js?v=20260705b"></script>
 </body>
 
 </html>

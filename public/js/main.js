@@ -9,12 +9,15 @@ class LipetskMap {
       this.editingInstitution = null;
       this.institutions = [];
       this.districts = {};
+      this.mapDistricts = {};
       this.districtIdMap = {};
       this.districtColors = {};
       this.aoopCounter = 0;
       this.isAdmin = false;
       this.animationPlayed = false;
       this.currentPage = 1;
+      this.listPage = 1;
+      this.pendingListPage = null;
       this.itemsPerPage = 10;
       this.totalPages = 0;
       this.allInstitutions = [];
@@ -22,6 +25,7 @@ class LipetskMap {
       this.loaderTimeout = null;
       this.pageLoaderTimeout = null;
       this.activeDistrict = null;
+      this.csrfToken = null;
       this.hoverTimeout = null;
     }
   

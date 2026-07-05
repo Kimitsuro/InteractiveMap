@@ -50,7 +50,7 @@ CREATE TABLE IF NOT EXISTS directors (
     phone VARCHAR(20),
     email VARCHAR(100),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE INDEX idx_directors_name ON directors(full_name);
@@ -120,6 +120,7 @@ CREATE TABLE IF NOT EXISTS aoop_programs (
     id SERIAL PRIMARY KEY,
     institution_id INTEGER NOT NULL REFERENCES institutions(id) ON DELETE CASCADE,
     name VARCHAR(255) NOT NULL,
+    url VARCHAR(500),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT check_aoop_name_not_empty CHECK (LENGTH(TRIM(name)) > 0)
@@ -202,8 +203,8 @@ INSERT INTO condition_types (code, name_ru, description) VALUES
     ('vision_impairment', 'Нарушения зрения', 'Для детей с нарушениями зрения'),
     ('musculoskeletal_impairment', 'Нарушения опорно-двигательного аппарата', 'Для детей с НОДА'),
     ('speech_impairment', 'Нарушения речи', 'Для детей с тяжелыми нарушениями речи'),
-    ('mental_retardation', 'Умственная отсталость', 'Для детей с интеллектуальными нарушениями'),
-    ('autism', 'Расстройства аутистического спектра', 'Для детей с РАС'),
+    ('mental_retardation', 'Задержка психического развития', 'Для детей с задержкой психического развития'),
+    ('autism', 'Расстройство аутистического спектра', 'Для детей с расстройством аутистического спектра'),
     ('multiple_disorders', 'Множественные нарушения развития', 'Для детей со сложными дефектами')
 ON CONFLICT (code) DO NOTHING;
 

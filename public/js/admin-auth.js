@@ -7,13 +7,16 @@ Object.assign(AdminManager.prototype, {
 
     async checkSession() {
       try {
-        const response = await fetch('/api/check_session.php');
+        const response = await fetch('/api/check_session.php', { credentials: 'same-origin' });
         const data = await response.json();
-        if (data.loggedIn) {
+        if (data.loggedIn && window.IS_ADMIN_ROUTE) {
           this.map.isAdmin = true;
+          if (data.csrfToken) {
+            this.map.csrfToken = data.csrfToken;
+          }
           this.showAdminPanel();
           if (!document.getElementById("districtModal").classList.contains("hidden")) {
-            const districtName = document.getElementById("modalTitle").textContent;
+            const districtName = document.getElementById("regionName").textContent;
             await this.map.loadInstitutionsForDistrict(districtName);
           }
         }
@@ -39,12 +42,16 @@ Object.assign(AdminManager.prototype, {
       try {
         const response = await fetch('/api/login.php', {
           method: 'POST',
+          credentials: 'same-origin',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ login, password })
         });
         const data = await response.json();
         if (data.success) {
           this.map.isAdmin = true;
+          if (data.csrfToken) {
+            this.map.csrfToken = data.csrfToken;
+          }
           this.showAdminPanel();
           this.hideLoginModal();
         } else {
@@ -58,8 +65,9 @@ Object.assign(AdminManager.prototype, {
   
     async handleLogout() {
       try {
-        await fetch('/api/logout.php', { method: 'POST' });
+        await fetch('/api/logout.php', { method: 'POST', credentials: 'same-origin' });
         this.map.isAdmin = false;
+        this.map.csrfToken = null;
         document.getElementById('adminPanel').classList.add('hidden');
         document.getElementById('adminLogin').classList.remove('hidden');
         if (!document.getElementById("districtModal").classList.contains("hidden")) {

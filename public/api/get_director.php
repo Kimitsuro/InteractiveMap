@@ -1,36 +1,27 @@
 <?php
-session_start();
 require_once __DIR__ . '/../../config/database.php';
+require_once __DIR__ . '/../../config/security.php';
 require_once __DIR__ . '/../../src/Database.php';
 
-header('Content-Type: application/json');
-header('Access-Control-Allow-Origin: *');
+initApi(['methods' => ['GET'], 'method' => 'GET', 'admin' => true, 'credentials' => true]);
 
 if (!isset($_GET['id'])) {
-    echo json_encode(['error' => 'Director ID is required']);
-    exit;
+    jsonResponse(['error' => 'Director ID is required'], 400);
 }
 
-$directorId = (int)$_GET['id'];
+$directorId = (int) $_GET['id'];
 
 try {
-    $pdo = Database::getInstance();
-    
     $sql = "SELECT id, full_name, phone, email FROM directors WHERE id = ?";
-    
     $directors = Database::query($sql, [$directorId]);
-    
+
     if (empty($directors)) {
-        echo json_encode(['error' => 'Director not found']);
-        exit;
+        jsonResponse(['error' => 'Director not found'], 404);
     }
-    
-    $director = $directors[0];
-    
-    echo json_encode(['director' => $director]);
-    
+
+    jsonResponse(['director' => $directors[0]]);
 } catch (Exception $e) {
     error_log("Error in get_director: " . $e->getMessage());
-    echo json_encode(['error' => 'Internal server error']);
+    jsonResponse(['error' => 'Internal server error'], 500);
 }
 ?>

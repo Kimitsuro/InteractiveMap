@@ -69,7 +69,7 @@ Object.assign(LipetskMap.prototype, {
             polygon.style.transition = "transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.4s ease-out";
           }
   
-          this.districts[polygon.id] = {
+          this.mapDistricts[polygon.id] = {
             name: regionName,
             element: polygon,
             group: group,
@@ -161,6 +161,8 @@ Object.assign(LipetskMap.prototype, {
           this.animationPlayed = true;
         }, 300);
       }
+
+      this.populateLegend();
     },
   
     animateDistrictsAppearance() {
@@ -202,11 +204,13 @@ Object.assign(LipetskMap.prototype, {
     populateLegend() {
       const legendList = document.getElementById("legendList");
       if (!legendList) return;
-  
-      const sortedDistricts = Object.values(this.districts).sort();
+
+      const sortedDistricts = Object.keys(this.districtColors).sort((a, b) =>
+        a.localeCompare(b, 'ru')
+      );
       legendList.innerHTML = sortedDistricts
         .map((name) => {
-          const color = this.districtColors[name];
+          const color = this.getDistrictColor(name);
           return `
             <li class="legend-item" data-district-name="${name}">
               <div class="color-swatch" style="background-color: ${color};"></div>
@@ -226,7 +230,11 @@ Object.assign(LipetskMap.prototype, {
   
     populateDistrictSelect() {
       const districtSelect = document.getElementById("districtId");
-      const sortedDistricts = Object.values(this.districts).sort();
+      if (!districtSelect) return;
+
+      const sortedDistricts = Object.values(this.districts).sort((a, b) =>
+        a.localeCompare(b, 'ru')
+      );
       districtSelect.innerHTML = `
           <option value="">Выберите округ</option>
           ${sortedDistricts
@@ -238,11 +246,11 @@ Object.assign(LipetskMap.prototype, {
         `;
     },
   
-    getDistrictName(districtId) {
-      const name = Object.values(this.districts).find((name) =>
-        name.includes(districtId)
+    getDistrictName(regionId) {
+      const entry = Object.values(this.mapDistricts).find(
+        (district) => district.group && district.group.id === regionId
       );
-      return name || `Округ ${districtId}`;
+      return entry ? entry.name : `Округ ${regionId}`;
     },
   
     handleDistrictClick(e, districtName) {
@@ -252,11 +260,19 @@ Object.assign(LipetskMap.prototype, {
   
     openDistrictModal(districtName) {
       document.getElementById("districtModal").classList.remove("hidden");
+      document.getElementById("districtModal").dataset.listPage = "1";
+      this.setListPage(1);
       document.getElementById('regionName').textContent = districtName;
-      const districtId = this.districtIdMap[districtName];
-      this.loadRegionLinks(districtId);
-  
-      this.loadInstitutionsForDistrict(districtName);
+      const districtId = this.resolveDistrictId(districtName);
+      if (districtId) {
+        this.loadRegionLinks(districtId);
+        this.loadInstitutionsForDistrict(districtName);
+      } else {
+        document.getElementById('regionLinks').innerHTML = '';
+        document.getElementById("institutionsList").innerHTML =
+          '<p class="text-muted">Район не найден в базе данных</p>';
+      }
+
       const searchInput = document.getElementById("institutionSearch");
       this.resetFiltersUI();
       if (searchInput) searchInput.value = '';
@@ -266,18 +282,20 @@ Object.assign(LipetskMap.prototype, {
     async loadDistrictSVG(districtName) {
       const svgModal = document.querySelector("#districtModal .region-image");
       if (!svgModal) return;
+
+      const mapDistrictName = this.resolveMapDistrictName(districtName);
   
       try {
         const mainSvg = document.querySelector("#mapWrapper svg");
         if (!mainSvg) return;
   
         let regionGroup = mainSvg.querySelector(
-          `g[data-region-name="${districtName}"]`
+          `g[data-region-name="${mapDistrictName}"]`
         );
-        if (!regionGroup && districtName === "Липецк (город)") {
+        if (!regionGroup && mapDistrictName === "Липецк (город)") {
           regionGroup = mainSvg.querySelector("#lipeck");
         }
-        if (!regionGroup && districtName === "г. Елец") {
+        if (!regionGroup && mapDistrictName === "г. Елец") {
           regionGroup = mainSvg.querySelector("#elets");
         }
   
@@ -332,7 +350,7 @@ Object.assign(LipetskMap.prototype, {
   
               polygon.setAttribute("points", newPoints.join(" "));
               clone.removeAttribute("transform");
-              polygon.style.fill = this.districtColors[districtName];
+              polygon.style.fill = this.getDistrictColor(mapDistrictName);
               polygon.style.stroke = "black";
               polygon.style.strokeWidth = "2";
               polygon.classList.add("region");

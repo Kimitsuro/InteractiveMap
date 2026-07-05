@@ -1,14 +1,9 @@
 <?php
 require_once __DIR__ . '/../../config/database.php';
+require_once __DIR__ . '/../../config/security.php';
 require_once __DIR__ . '/../../src/Database.php';
 
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: GET');
-header('Access-Control-Allow-Headers: Content-Type');
-
-if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
-    jsonResponse(['error' => 'Method not allowed'], 405);
-}
+initApi(['methods' => ['GET'], 'method' => 'GET']);
 
 $districtId = $_GET['district_id'] ?? null;
 if (!$districtId || !is_numeric($districtId)) {
@@ -23,7 +18,7 @@ $sql = "
         it.code as type_code, it.name_ru as type_name,
         array_agg(DISTINCT ct.code) FILTER (WHERE ct.code IS NOT NULL) as condition_codes,
         array_agg(DISTINCT at.code) FILTER (WHERE at.code IS NOT NULL) as admission_codes,
-        json_agg(json_build_object('id', ap.id, 'name', ap.name)) FILTER (WHERE ap.name IS NOT NULL) as aoop_programs
+        json_agg(json_build_object('id', ap.id, 'name', ap.name, 'url', ap.url)) FILTER (WHERE ap.name IS NOT NULL) as aoop_programs
     FROM institutions i
     LEFT JOIN directors d ON i.director_id = d.id
     LEFT JOIN institution_types it ON i.type_code = it.code
@@ -112,12 +107,12 @@ try {
         $inst['director'] = [
             'id' => $inst['director_id'] ?? null,
             'name' => $inst['director_name'] ?? '',
-            'phone' => $inst['director_phone'] ?? '',
-            'email' => $inst['director_email'] ?? ''
+            'phone' => formatPhoneForDisplay($inst['director_phone'] ?? '') ?? '',
+            'email' => normalizeEmailForDisplay($inst['director_email'] ?? '') ?? ''
         ];
         $inst['type'] = $typeMap[$inst['type_name']] ?? $inst['type_code'];
         $inst['district_id'] = (int)$districtId;
-        $inst['address'] = $inst['address'] ?? null;
+        $inst['address'] = isset($inst['address']) ? trim($inst['address']) : null;
         unset($inst['condition_codes'], $inst['admission_codes'], $inst['type_name'], $inst['director_name'], $inst['director_phone'], $inst['director_email'], $inst['director_id']);
     }
 

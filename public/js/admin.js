@@ -10,7 +10,7 @@ class AdminManager {
     }
   
     init() {
-      if (!window.location.pathname.includes('admin')) {
+      if (!window.IS_ADMIN_ROUTE) {
         return;
       }
       document.getElementById('adminLogin').classList.remove('hidden');
@@ -37,6 +37,28 @@ class AdminManager {
       });
       document.getElementById('institutionType').addEventListener('change', (e) => {
         this.toggleFormFields(e.target.value);
+      });
+      this.bindPhoneValidation();
+    }
+
+    bindPhoneValidation() {
+      const input = document.getElementById('directorPhone');
+      const hint = document.getElementById('directorPhoneHint');
+      if (!input || !hint) return;
+
+      const defaultHint = 'Можно вводить с +7, скобками и дефисами — при сохранении номер приведётся к стандартному виду';
+
+      input.addEventListener('input', () => {
+        const invalidChars = this.map.getInvalidPhoneCharacters(input.value);
+        if (invalidChars.length > 0) {
+          hint.textContent = `Недопустимые символы: ${invalidChars.join(', ')}`;
+          hint.classList.add('field-error');
+          input.classList.add('input-invalid');
+        } else {
+          hint.textContent = defaultHint;
+          hint.classList.remove('field-error');
+          input.classList.remove('input-invalid');
+        }
       });
     }
   }

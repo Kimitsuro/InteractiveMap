@@ -71,7 +71,10 @@ Object.assign(AdminManager.prototype, {
         this.toggleFormFields(inst.type);
   
         document.getElementById('institutionModalTitle').textContent = 'Редактировать учреждение';
-        this.map.editingInstitution = inst;
+      if (this.map.pendingListPage == null) {
+        this.map.pendingListPage = this.map.getListPage();
+      }
+      this.map.editingInstitution = inst;
         document.getElementById('institutionModal').classList.remove('hidden');
       } else {
         this.map.clearInstitutionForm();
@@ -108,14 +111,9 @@ Object.assign(AdminManager.prototype, {
         document.getElementById("rangeMax").min = "1";
         document.getElementById("rangeMax").max = "11";
       } else {
-        label.textContent = "Диапазон";
-        document.getElementById("rangeMin").placeholder = "От";
-        document.getElementById("rangeMax").placeholder = "До";
-        unit.textContent = "";
-        document.getElementById("rangeMin").removeAttribute("min");
-        document.getElementById("rangeMin").removeAttribute("max");
-        document.getElementById("rangeMax").removeAttribute("min");
-        document.getElementById("rangeMax").removeAttribute("max");
+        group.classList.add("hidden");
+        document.getElementById("rangeMin").value = "";
+        document.getElementById("rangeMax").value = "";
       }
     },
   
@@ -172,8 +170,14 @@ Object.assign(AdminManager.prototype, {
   
       const directorPhone = document.getElementById('directorPhone').value.trim();
       const directorEmail = document.getElementById('directorEmail').value.trim();
-  
-      if (directorPhone) formData.director.phone = directorPhone;
+
+      if (directorPhone) {
+        const invalidChars = this.map.getInvalidPhoneCharacters(directorPhone);
+        if (invalidChars.length > 0) {
+          throw new Error(`Телефон содержит недопустимые символы: ${invalidChars.join(', ')}`);
+        }
+        formData.director.phone = this.map.normalizePhone(directorPhone);
+      }
       if (directorEmail) formData.director.email = directorEmail;
   
       if (this.map.editingInstitution && this.map.editingInstitution.director?.id) {

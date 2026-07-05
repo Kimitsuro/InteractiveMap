@@ -11,6 +11,18 @@ class AccessibilityModule {
     init() {
         this.createAccessibilityPanel();
         this.bindEvents();
+        this.loadSavedFontSize();
+    }
+
+    loadSavedFontSize() {
+        const saved = localStorage.getItem('accessibilityFontSizePercent');
+        if (saved) {
+            const parsed = parseInt(saved, 10);
+            if (Number.isFinite(parsed)) {
+                this.currentFontSizePercent = Math.max(70, Math.min(130, parsed));
+                this.updateFontSize();
+            }
+        }
     }
 
     createAccessibilityPanel() {

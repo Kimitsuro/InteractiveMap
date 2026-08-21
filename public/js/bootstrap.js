@@ -4,7 +4,7 @@
 
 let lipetskMap;
 
-const ASSET_VERSION = '20260821j';
+const ASSET_VERSION = '20261114b';
 
 function loadScript(src) {
   return new Promise((resolve, reject) => {

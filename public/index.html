@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Интерактивная карта образовательных учреждений Липецкой области: школы, детские сады, колледжи и вузы. Поиск по округам, фильтры по условиям обучения и адаптированным программам.">
     <title>Интерактивная карта образовательных учреждений Липецкой области</title>
-    <link rel="stylesheet" href="/styles.css?v=20260821j">
+    <link rel="stylesheet" href="/styles.css?v=20261114b">
     <script>
         window.IS_ADMIN_ROUTE = /\/admin(?:\/|$)/.test(window.location.pathname);
         if (window.IS_ADMIN_ROUTE) {
@@ -161,7 +161,11 @@
                                     <label class="filter-option lab-check"><input type="checkbox" value="autism">
                                         Расстройство аутистического спектра</label>
                                     <label class="filter-option lab-check"><input type="checkbox"
-                                            value="mental_retardation"> Задержка психического развития</label>
+                                            value="mental_retardation"> Умственная отсталость</label>
+                                    <label class="filter-option lab-check"><input type="checkbox"
+                                            value="intellectual_impairment"> Нарушение интеллекта</label>
+                                    <label class="filter-option lab-check"><input type="checkbox"
+                                            value="psychic_development_delay"> Задержка психического развития</label>
                                     <label class="filter-option lab-check"><input type="checkbox"
                                             value="multiple_disorders"> Множественные
                                         нарушения</label>
@@ -204,6 +208,7 @@
                             <label for="adminPassword">Пароль</label>
                             <input type="password" id="adminPassword" required autocomplete="current-password">
                         </div>
+                        <p id="loginFormError" class="form-feedback form-feedback--error hidden" role="alert"></p>
                         <div class="form-actions">
                             <button type="submit" class="btn btn-primary">Войти</button>
                             <button type="button" id="cancelLogin" class="btn btn-secondary">Отмена</button>
@@ -283,12 +288,13 @@
                                 <label><input type="checkbox" value="musculoskeletal_impairment"> Нарушения
                                     опорно-двигательного аппарата</label>
                                 <label><input type="checkbox" value="speech_impairment"> Нарушения речи</label>
-                                <label><input type="checkbox" value="mental_retardation"> Задержка психического
-                                    развития</label>
                                 <label><input type="checkbox" value="autism"> Расстройство аутистического
                                     спектра</label>
-                                <label><input type="checkbox" value="multiple_disorders"> Множественные нарушения
+                                <label><input type="checkbox" value="mental_retardation"> Умственная отсталость</label>
+                                <label><input type="checkbox" value="intellectual_impairment"> Нарушение интеллекта</label>
+                                <label><input type="checkbox" value="psychic_development_delay"> Задержка психического
                                     развития</label>
+                                <label><input type="checkbox" value="multiple_disorders"> Множественные нарушения</label>
                             </div>
                         </div>
 
@@ -355,35 +361,47 @@
         <footer class="site-footer">
             <div class="site-footer-inner">
                 <div class="site-footer-info">
-                    <p class="site-footer-title">Департамент образования Липецкой области</p>
-                    <p class="site-footer-meta">Интерактивная карта образовательных учреждений</p>
-                    <p class="site-footer-meta">Контакты: уточните email и телефон департамента перед публикацией</p>
+                    <p class="site-footer-title">Интерактивная карта Липецкой области</p>
                 </div>
-                <nav class="site-footer-links" aria-label="Служебные ссылки">
-                    <a href="/privacy.html">Обработка персональных данных</a>
-                </nav>
             </div>
         </footer>
     </div>
 
+    <div id="confirmModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="confirmModalTitle">
+        <div class="modal-content confirm-modal-content">
+            <div class="modal-header">
+                <h2 id="confirmModalTitle">Подтверждение</h2>
+                <button type="button" id="closeConfirmModal" class="close-btn" aria-label="Закрыть">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p id="confirmModalMessage">Вы уверены?</p>
+                <div class="form-actions">
+                    <button type="button" id="confirmModalOk" class="btn btn-primary">Удалить</button>
+                    <button type="button" id="confirmModalCancel" class="btn btn-secondary">Отмена</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="appToast" class="app-toast hidden" role="status" aria-live="polite"></div>
+
     <div id="cookieNotice" class="cookie-notice hidden" role="dialog" aria-live="polite" aria-label="Уведомление о cookie">
         <p>
             Сайт сохраняет настройки доступности в вашем браузере (localStorage).
-            Подробнее — в разделе
-            <a href="/privacy.html">обработки персональных данных</a>.
         </p>
         <button type="button" id="cookieNoticeAccept" class="btn btn-primary">Понятно</button>
     </div>
 
-    <script src="/js/main.js?v=20260821j"></script>
-    <script src="/js/string-utils.js?v=20260821j"></script>
-    <script src="/js/utils.js?v=20260821j"></script>
-    <script src="/js/map.js?v=20260821j"></script>
-    <script src="/js/institutions.js?v=20260821j"></script>
-    <script src="/js/filters.js?v=20260821j"></script>
-    <script src="/js/bootstrap.js?v=20260821j"></script>
-    <script src="/js/accessibility.js?v=20260821j"></script>
-    <script src="/js/legal.js?v=20260821j"></script>
+    <script src="/js/ui-feedback.js?v=20261114b"></script>
+    <script src="/js/main.js?v=20261114b"></script>
+    <script src="/js/string-utils.js?v=20261114b"></script>
+    <script src="/js/utils.js?v=20261114b"></script>
+    <script src="/js/map.js?v=20261114b"></script>
+    <script src="/js/institutions.js?v=20261114b"></script>
+    <script src="/js/filters.js?v=20261114b"></script>
+    <script src="/js/bootstrap.js?v=20261114b"></script>
+    <script src="/js/accessibility.js?v=20261114b"></script>
+    <script src="/js/legal.js?v=20261114b"></script>
 </body>
 
 </html>

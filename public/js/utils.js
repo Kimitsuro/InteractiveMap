@@ -117,15 +117,39 @@ Object.assign(LipetskMap.prototype, {
       return normalized;
     },
 
+    // Коды районных центров Липецкой области (5 цифр + 5 цифр номера).
+    // Липецк — отдельно: 4742 + 6 цифр.
+    getLipetskDistrictAreaCodes() {
+      return [
+        '47461', // Грязи
+        '47462', // Добринка
+        '47463', // Доброе
+        '47464', // Лев Толстой
+        '47465', // Данков
+        '47466', // Лебедянь
+        '47467', // Елец
+        '47468', // Долгоруково
+        '47469', // Красное
+        '47471', // Задонск
+        '47472', // Усмань
+        '47473', // Волово
+        '47474', // Тербуны
+        '47475', // Чаплыгин
+        '47476', // Становое
+        '47477', // Хлевное
+        '47478', // Измалково
+      ];
+    },
+
     formatPhoneLocalPart(local) {
+      if (local.length === 7) {
+        return `${local.slice(0, 3)}-${local.slice(3, 5)}-${local.slice(5, 7)}`;
+      }
       if (local.length === 6) {
         return `${local.slice(0, 2)}-${local.slice(2, 4)}-${local.slice(4, 6)}`;
       }
       if (local.length === 5) {
         return `${local.slice(0, 1)}-${local.slice(1, 3)}-${local.slice(3, 5)}`;
-      }
-      if (local.length === 7) {
-        return `${local.slice(0, 3)}-${local.slice(3, 5)}-${local.slice(5, 7)}`;
       }
       return local;
     },
@@ -197,34 +221,26 @@ Object.assign(LipetskMap.prototype, {
       }
 
       const national = match[1];
+
+      // Мобильный: +7 (9XX) XXX-XX-XX
       if (national[0] === '9') {
-        return normalized;
+        return `+7 (${national.slice(0, 3)}) ${national.slice(3, 6)}-${national.slice(6, 8)}-${national.slice(8, 10)}`;
       }
 
-      if (national[0] === '4') {
-        const areaCodes5 = [
-          '47467', '47465', '47466', '47471', '47472', '47474',
-          '47475', '47477', '47461', '47463', '47464', '47468', '47469',
-        ];
-        for (const area of areaCodes5) {
-          if (national.startsWith(area)) {
-            const local = national.slice(area.length);
-            return `+7 (${area}) ${this.formatPhoneLocalPart(local)}`;
-          }
-        }
+      // Липецк: +7 (4742) XX-XX-XX
+      if (national.startsWith('4742')) {
+        return `+7 (4742) ${this.formatPhoneLocalPart(national.slice(4))}`;
+      }
 
-        const landline4 = national.match(/^(474\d)(\d{6})$/);
-        if (landline4) {
-          return `+7 (${landline4[1]}) ${this.formatPhoneLocalPart(landline4[2])}`;
-        }
-
-        const landline3 = national.match(/^(474)(\d{7})$/);
-        if (landline3) {
-          return `+7 (${landline3[1]}) ${this.formatPhoneLocalPart(landline3[2])}`;
+      // Районные центры области: +7 (474XX) X-XX-XX
+      for (const area of this.getLipetskDistrictAreaCodes()) {
+        if (national.startsWith(area)) {
+          return `+7 (${area}) ${this.formatPhoneLocalPart(national.slice(5))}`;
         }
       }
 
-      return normalized;
+      // Прочий городской: +7 (XXX) XXX-XX-XX
+      return `+7 (${national.slice(0, 3)}) ${national.slice(3, 6)}-${national.slice(6, 8)}-${national.slice(8, 10)}`;
     },
 
     getInvalidPhoneCharacters(value) {
@@ -383,9 +399,11 @@ Object.assign(LipetskMap.prototype, {
         vision_impairment: 'Нарушения зрения',
         musculoskeletal_impairment: 'Нарушения опорно-двигательного аппарата',
         speech_impairment: 'Нарушения речи',
-        mental_retardation: 'Задержка психического развития',
         autism: 'Расстройство аутистического спектра',
-        multiple_disorders: 'Множественные нарушения развития',
+        mental_retardation: 'Умственная отсталость',
+        intellectual_impairment: 'Нарушение интеллекта',
+        psychic_development_delay: 'Задержка психического развития',
+        multiple_disorders: 'Множественные нарушения',
       };
       return labels[code] || code;
     },

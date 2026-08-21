@@ -23,12 +23,18 @@ Object.assign(AdminManager.prototype, {
       this.openInstitutionForm(data.institution);
     } catch (error) {
       console.error('Error loading for edit:', error);
-      alert('Ошибка загрузки для редактирования: ' + error.message);
+      if (window.UiFeedback) {
+        UiFeedback.showToast('Ошибка загрузки для редактирования: ' + error.message, 'error');
+      }
     }
   },
 
   async deleteInstitution(id) {
-    if (!confirm("Вы уверены, что хотите удалить это учреждение?")) return;
+    const confirmed = window.UiFeedback
+      ? await UiFeedback.showConfirm('Вы уверены, что хотите удалить это учреждение?')
+      : window.confirm('Вы уверены, что хотите удалить это учреждение?');
+    if (!confirmed) return;
+
     const restorePage = this.map.getListPage();
     try {
       const response = await fetch('/api/delete_institution.php', {
@@ -44,9 +50,10 @@ Object.assign(AdminManager.prototype, {
         const districtName = document.getElementById("regionName").textContent;
         await this.map.loadInstitutionsForDistrict(districtName, { page: restorePage, scroll: true });
       }
+      if (window.UiFeedback) UiFeedback.showToast('Учреждение удалено', 'success');
     } catch (error) {
       console.error('Error deleting institution:', error);
-      alert('Ошибка удаления');
+      if (window.UiFeedback) UiFeedback.showToast('Ошибка удаления', 'error');
     }
   },
 
@@ -58,6 +65,7 @@ Object.assign(AdminManager.prototype, {
       const url = (this.map.editingInstitution && this.map.editingInstitution.id)
         ? '/api/update_institution.php'
         : '/api/create_institution.php';
+      const isUpdate = url.includes('update_');
 
       const response = await fetch(url, {
         method: 'POST',
@@ -79,10 +87,13 @@ Object.assign(AdminManager.prototype, {
       }
 
       this.map.pendingListPage = null;
+      if (window.UiFeedback) {
+        UiFeedback.showToast(isUpdate ? 'Учреждение обновлено' : 'Учреждение добавлено', 'success');
+      }
 
     } catch (error) {
       console.error('Error saving institution:', error);
-      alert(`Ошибка: ${error.message}`);
+      if (window.UiFeedback) UiFeedback.showToast('Ошибка: ' + error.message, 'error');
     }
   },
 

@@ -73,6 +73,8 @@ if (!empty($_GET['age']) && is_array($_GET['age'])) {
     }
     if ($ageFilters) {
         $where[] = '(' . implode(' OR ', $ageFilters) . ')';
+        // Возраст в годах — только для дошкольных; у школ range = классы (1–11).
+        $where[] = "i.type_code = 'preschool'";
     }
 }
 

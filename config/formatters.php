@@ -45,15 +45,38 @@ function normalizePhone(?string $phone): ?string {
     throw new InvalidArgumentException('Неверный формат телефона. Укажите +7 и 10 цифр или домашний номер из 6 цифр.');
 }
 
+/** Коды районных центров Липецкой области (5 цифр + 5 цифр номера). Липецк — 4742. */
+function lipetskDistrictAreaCodes(): array {
+    return [
+        '47461', // Грязи
+        '47462', // Добринка
+        '47463', // Доброе
+        '47464', // Лев Толстой
+        '47465', // Данков
+        '47466', // Лебедянь
+        '47467', // Елец
+        '47468', // Долгоруково
+        '47469', // Красное
+        '47471', // Задонск
+        '47472', // Усмань
+        '47473', // Волово
+        '47474', // Тербуны
+        '47475', // Чаплыгин
+        '47476', // Становое
+        '47477', // Хлевное
+        '47478', // Измалково
+    ];
+}
+
 function formatPhoneLocalPart(string $local): string {
+    if (strlen($local) === 7) {
+        return substr($local, 0, 3) . '-' . substr($local, 3, 2) . '-' . substr($local, 5, 2);
+    }
     if (strlen($local) === 6) {
         return substr($local, 0, 2) . '-' . substr($local, 2, 2) . '-' . substr($local, 4, 2);
     }
     if (strlen($local) === 5) {
         return substr($local, 0, 1) . '-' . substr($local, 1, 2) . '-' . substr($local, 3, 2);
-    }
-    if (strlen($local) === 7) {
-        return substr($local, 0, 3) . '-' . substr($local, 3, 2) . '-' . substr($local, 5, 2);
     }
     return $local;
 }
@@ -83,32 +106,31 @@ function formatPhoneForDisplay(?string $phone): ?string {
 
     $national = $matches[1];
 
+    // Мобильный: +7 (9XX) XXX-XX-XX
     if ($national[0] === '9') {
-        return $normalized;
+        return '+7 (' . substr($national, 0, 3) . ') '
+            . substr($national, 3, 3) . '-'
+            . substr($national, 6, 2) . '-'
+            . substr($national, 8, 2);
     }
 
-    if ($national[0] === '4') {
-        $areaCodes5 = [
-            '47467', '47465', '47466', '47471', '47472', '47474',
-            '47475', '47477', '47461', '47463', '47464', '47468', '47469',
-        ];
-        foreach ($areaCodes5 as $area) {
-            if (str_starts_with($national, $area)) {
-                $local = substr($national, strlen($area));
-                return '+7 (' . $area . ') ' . formatPhoneLocalPart($local);
-            }
-        }
+    // Липецк: +7 (4742) XX-XX-XX
+    if (str_starts_with($national, '4742')) {
+        return '+7 (4742) ' . formatPhoneLocalPart(substr($national, 4));
+    }
 
-        if (preg_match('/^(474\d)(\d{6})$/', $national, $parts)) {
-            return '+7 (' . $parts[1] . ') ' . formatPhoneLocalPart($parts[2]);
-        }
-
-        if (preg_match('/^(474)(\d{7})$/', $national, $parts)) {
-            return '+7 (' . $parts[1] . ') ' . formatPhoneLocalPart($parts[2]);
+    // Районные центры: +7 (474XX) X-XX-XX
+    foreach (lipetskDistrictAreaCodes() as $area) {
+        if (str_starts_with($national, $area)) {
+            return '+7 (' . $area . ') ' . formatPhoneLocalPart(substr($national, 5));
         }
     }
 
-    return $normalized;
+    // Прочий городской: +7 (XXX) XXX-XX-XX
+    return '+7 (' . substr($national, 0, 3) . ') '
+        . substr($national, 3, 3) . '-'
+        . substr($national, 6, 2) . '-'
+        . substr($national, 8, 2);
 }
 
 function normalizeEmailForDisplay(?string $email): ?string {

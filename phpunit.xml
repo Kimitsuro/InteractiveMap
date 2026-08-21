@@ -14,8 +14,7 @@
     </testsuites>
     <php>
         <env name="TEST_BASE_URL" value="http://127.0.0.1"/>
-        <env name="TEST_ADMIN_LOGIN" value="test_admin"/>
-        <env name="TEST_ADMIN_PASS" value="TestAdminPass123!"/>
-        <env name="TEST_ADMIN_EMAIL" value="test_admin@example.local"/>
+        <!-- Admin credentials: ADMIN_LOGIN / ADMIN_PASSWORD from container .env
+             (or override with TEST_ADMIN_LOGIN / TEST_ADMIN_PASS). -->
     </php>
 </phpunit>

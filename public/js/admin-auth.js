@@ -29,12 +29,17 @@ Object.assign(AdminManager.prototype, {
     hideLoginModal() {
       document.getElementById('loginModal').classList.add('hidden');
       document.getElementById('loginForm').reset();
+      if (window.UiFeedback) {
+        UiFeedback.setFormError(document.getElementById('loginFormError'), '');
+      }
     },
   
     async handleLogin(e) {
       e.preventDefault();
       const login = document.getElementById('adminLoginInput').value;
       const password = document.getElementById('adminPassword').value;
+      const errorEl = document.getElementById('loginFormError');
+      if (window.UiFeedback) UiFeedback.setFormError(errorEl, '');
   
       try {
         const response = await fetch('/api/login.php', {
@@ -48,12 +53,15 @@ Object.assign(AdminManager.prototype, {
           this.map.isAdmin = true;
           this.showAdminPanel();
           this.hideLoginModal();
+          if (window.UiFeedback) UiFeedback.showToast('Вход выполнен', 'success');
         } else {
-          alert('Ошибка входа: ' + (data.error || 'Неизвестная ошибка'));
+          const msg = 'Ошибка входа: ' + (data.error || 'Неизвестная ошибка');
+          if (window.UiFeedback) UiFeedback.setFormError(errorEl, msg);
+          else console.error(msg);
         }
       } catch (error) {
         console.error('Login error:', error);
-        alert('Ошибка входа');
+        if (window.UiFeedback) UiFeedback.setFormError(errorEl, 'Ошибка входа. Проверьте соединение и попробуйте снова.');
       }
     },
   

@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
-\restrict i6Y6bDZODqE5lkXs5e5hkOfGgRflAZlHUGFEZ4mU30cVR0fiYZv4KZEEcL1JEuf
+\restrict vydQ7wgyv9liKZhcw1YhQViIJqbud7lotAcvs4agNUg0czXSIyNvc7F3nO2akyu
 
 -- Dumped from database version 17.7
 -- Dumped by pg_dump version 17.7
@@ -19,86 +19,24 @@ SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
-ALTER TABLE IF EXISTS ONLY public.institutions DROP CONSTRAINT IF EXISTS institutions_type_code_fkey;
-ALTER TABLE IF EXISTS ONLY public.institutions DROP CONSTRAINT IF EXISTS institutions_district_id_fkey;
-ALTER TABLE IF EXISTS ONLY public.institutions DROP CONSTRAINT IF EXISTS institutions_director_id_fkey;
-ALTER TABLE IF EXISTS ONLY public.institution_conditions DROP CONSTRAINT IF EXISTS institution_conditions_institution_id_fkey;
-ALTER TABLE IF EXISTS ONLY public.institution_conditions DROP CONSTRAINT IF EXISTS institution_conditions_condition_code_fkey;
-ALTER TABLE IF EXISTS ONLY public.institution_admission DROP CONSTRAINT IF EXISTS institution_admission_institution_id_fkey;
-ALTER TABLE IF EXISTS ONLY public.institution_admission DROP CONSTRAINT IF EXISTS institution_admission_admission_code_fkey;
-ALTER TABLE IF EXISTS ONLY public.aoop_programs DROP CONSTRAINT IF EXISTS aoop_programs_institution_id_fkey;
-ALTER TABLE IF EXISTS ONLY public.action_log DROP CONSTRAINT IF EXISTS action_log_administrator_id_fkey;
-DROP TRIGGER IF EXISTS update_institutions_updated_at ON public.institutions;
-DROP TRIGGER IF EXISTS update_directors_updated_at ON public.directors;
-DROP INDEX IF EXISTS public.uq_aoop_institution_name;
-DROP INDEX IF EXISTS public.idx_institutions_type;
-DROP INDEX IF EXISTS public.idx_institutions_range;
-DROP INDEX IF EXISTS public.idx_institutions_district;
-DROP INDEX IF EXISTS public.idx_institutions_director;
-DROP INDEX IF EXISTS public.idx_inst_conditions_type;
-DROP INDEX IF EXISTS public.idx_inst_admission_type;
-DROP INDEX IF EXISTS public.idx_districts_name;
-DROP INDEX IF EXISTS public.idx_directors_name;
-DROP INDEX IF EXISTS public.idx_directors_email;
-DROP INDEX IF EXISTS public.idx_aoop_institution;
-ALTER TABLE IF EXISTS ONLY public.schema_migrations DROP CONSTRAINT IF EXISTS schema_migrations_pkey;
-ALTER TABLE IF EXISTS ONLY public.institutions DROP CONSTRAINT IF EXISTS institutions_pkey;
-ALTER TABLE IF EXISTS ONLY public.institution_types DROP CONSTRAINT IF EXISTS institution_types_pkey;
-ALTER TABLE IF EXISTS ONLY public.institution_conditions DROP CONSTRAINT IF EXISTS institution_conditions_pkey;
-ALTER TABLE IF EXISTS ONLY public.institution_admission DROP CONSTRAINT IF EXISTS institution_admission_pkey;
-ALTER TABLE IF EXISTS ONLY public.districts DROP CONSTRAINT IF EXISTS districts_pkey;
-ALTER TABLE IF EXISTS ONLY public.districts DROP CONSTRAINT IF EXISTS districts_name_key;
-ALTER TABLE IF EXISTS ONLY public.directors DROP CONSTRAINT IF EXISTS directors_pkey;
-ALTER TABLE IF EXISTS ONLY public.condition_types DROP CONSTRAINT IF EXISTS condition_types_pkey;
-ALTER TABLE IF EXISTS ONLY public.aoop_programs DROP CONSTRAINT IF EXISTS aoop_programs_pkey;
-ALTER TABLE IF EXISTS ONLY public.admission_types DROP CONSTRAINT IF EXISTS admission_types_pkey;
-ALTER TABLE IF EXISTS ONLY public.administrators DROP CONSTRAINT IF EXISTS administrators_pkey;
-ALTER TABLE IF EXISTS ONLY public.administrators DROP CONSTRAINT IF EXISTS administrators_login_key;
-ALTER TABLE IF EXISTS ONLY public.administrators DROP CONSTRAINT IF EXISTS administrators_email_key;
-ALTER TABLE IF EXISTS ONLY public.action_log DROP CONSTRAINT IF EXISTS action_log_pkey;
-ALTER TABLE IF EXISTS public.institutions ALTER COLUMN id DROP DEFAULT;
-ALTER TABLE IF EXISTS public.districts ALTER COLUMN id DROP DEFAULT;
-ALTER TABLE IF EXISTS public.directors ALTER COLUMN id DROP DEFAULT;
-ALTER TABLE IF EXISTS public.aoop_programs ALTER COLUMN id DROP DEFAULT;
-ALTER TABLE IF EXISTS public.administrators ALTER COLUMN id DROP DEFAULT;
-ALTER TABLE IF EXISTS public.action_log ALTER COLUMN id DROP DEFAULT;
-DROP TABLE IF EXISTS public.schema_migrations;
-DROP SEQUENCE IF EXISTS public.institutions_id_seq;
-DROP TABLE IF EXISTS public.institutions;
-DROP TABLE IF EXISTS public.institution_types;
-DROP TABLE IF EXISTS public.institution_conditions;
-DROP TABLE IF EXISTS public.institution_admission;
-DROP SEQUENCE IF EXISTS public.districts_id_seq;
-DROP TABLE IF EXISTS public.districts;
-DROP SEQUENCE IF EXISTS public.directors_id_seq;
-DROP TABLE IF EXISTS public.directors;
-DROP TABLE IF EXISTS public.condition_types;
-DROP SEQUENCE IF EXISTS public.aoop_programs_id_seq;
-DROP TABLE IF EXISTS public.aoop_programs;
-DROP TABLE IF EXISTS public.admission_types;
-DROP SEQUENCE IF EXISTS public.administrators_id_seq;
-DROP TABLE IF EXISTS public.administrators;
-DROP SEQUENCE IF EXISTS public.action_log_id_seq;
-DROP TABLE IF EXISTS public.action_log;
-DROP FUNCTION IF EXISTS public.update_updated_at_column();
-DROP FUNCTION IF EXISTS public.normalize_inst_name(t text);
--- *not* dropping schema, since initdb creates it
 --
--- Name: public; Type: SCHEMA; Schema: -; Owner: -
+-- Name: public; Type: SCHEMA; Schema: -; Owner: user
 --
 
 -- *not* creating schema, since initdb creates it
 
 
+ALTER SCHEMA public OWNER TO "user";
+
 --
--- Name: SCHEMA public; Type: COMMENT; Schema: -; Owner: -
+-- Name: SCHEMA public; Type: COMMENT; Schema: -; Owner: user
 --
 
 COMMENT ON SCHEMA public IS '';
 
 
 --
--- Name: normalize_inst_name(text); Type: FUNCTION; Schema: public; Owner: -
+-- Name: normalize_inst_name(text); Type: FUNCTION; Schema: public; Owner: user
 --
 
 CREATE FUNCTION public.normalize_inst_name(t text) RETURNS text
@@ -119,8 +57,10 @@ CREATE FUNCTION public.normalize_inst_name(t text) RETURNS text
 $$;
 
 
+ALTER FUNCTION public.normalize_inst_name(t text) OWNER TO "user";
+
 --
--- Name: update_updated_at_column(); Type: FUNCTION; Schema: public; Owner: -
+-- Name: update_updated_at_column(); Type: FUNCTION; Schema: public; Owner: user
 --
 
 CREATE FUNCTION public.update_updated_at_column() RETURNS trigger
@@ -133,12 +73,14 @@ END;
 $$;
 
 
+ALTER FUNCTION public.update_updated_at_column() OWNER TO "user";
+
 SET default_tablespace = '';
 
 SET default_table_access_method = heap;
 
 --
--- Name: action_log; Type: TABLE; Schema: public; Owner: -
+-- Name: action_log; Type: TABLE; Schema: public; Owner: user
 --
 
 CREATE TABLE public.action_log (
@@ -153,8 +95,10 @@ CREATE TABLE public.action_log (
 );
 
 
+ALTER TABLE public.action_log OWNER TO "user";
+
 --
--- Name: action_log_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: action_log_id_seq; Type: SEQUENCE; Schema: public; Owner: user
 --
 
 CREATE SEQUENCE public.action_log_id_seq
@@ -166,21 +110,22 @@ CREATE SEQUENCE public.action_log_id_seq
     CACHE 1;
 
 
+ALTER SEQUENCE public.action_log_id_seq OWNER TO "user";
+
 --
--- Name: action_log_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+-- Name: action_log_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: user
 --
 
 ALTER SEQUENCE public.action_log_id_seq OWNED BY public.action_log.id;
 
 
 --
--- Name: administrators; Type: TABLE; Schema: public; Owner: -
+-- Name: administrators; Type: TABLE; Schema: public; Owner: user
 --
 
 CREATE TABLE public.administrators (
     id integer NOT NULL,
     login character varying(50) NOT NULL,
-    email character varying(100) NOT NULL,
     password_hash character varying(255) NOT NULL,
     full_name character varying(150) NOT NULL,
     created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
@@ -189,8 +134,10 @@ CREATE TABLE public.administrators (
 );
 
 
+ALTER TABLE public.administrators OWNER TO "user";
+
 --
--- Name: administrators_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: administrators_id_seq; Type: SEQUENCE; Schema: public; Owner: user
 --
 
 CREATE SEQUENCE public.administrators_id_seq
@@ -202,15 +149,17 @@ CREATE SEQUENCE public.administrators_id_seq
     CACHE 1;
 
 
+ALTER SEQUENCE public.administrators_id_seq OWNER TO "user";
+
 --
--- Name: administrators_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+-- Name: administrators_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: user
 --
 
 ALTER SEQUENCE public.administrators_id_seq OWNED BY public.administrators.id;
 
 
 --
--- Name: admission_types; Type: TABLE; Schema: public; Owner: -
+-- Name: admission_types; Type: TABLE; Schema: public; Owner: user
 --
 
 CREATE TABLE public.admission_types (
@@ -221,15 +170,17 @@ CREATE TABLE public.admission_types (
 );
 
 
+ALTER TABLE public.admission_types OWNER TO "user";
+
 --
--- Name: TABLE admission_types; Type: COMMENT; Schema: public; Owner: -
+-- Name: TABLE admission_types; Type: COMMENT; Schema: public; Owner: user
 --
 
 COMMENT ON TABLE public.admission_types IS 'Справочник типов документов для приема';
 
 
 --
--- Name: aoop_programs; Type: TABLE; Schema: public; Owner: -
+-- Name: aoop_programs; Type: TABLE; Schema: public; Owner: user
 --
 
 CREATE TABLE public.aoop_programs (
@@ -242,15 +193,17 @@ CREATE TABLE public.aoop_programs (
 );
 
 
+ALTER TABLE public.aoop_programs OWNER TO "user";
+
 --
--- Name: TABLE aoop_programs; Type: COMMENT; Schema: public; Owner: -
+-- Name: TABLE aoop_programs; Type: COMMENT; Schema: public; Owner: user
 --
 
 COMMENT ON TABLE public.aoop_programs IS 'АООП программы учреждений';
 
 
 --
--- Name: aoop_programs_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: aoop_programs_id_seq; Type: SEQUENCE; Schema: public; Owner: user
 --
 
 CREATE SEQUENCE public.aoop_programs_id_seq
@@ -262,15 +215,17 @@ CREATE SEQUENCE public.aoop_programs_id_seq
     CACHE 1;
 
 
+ALTER SEQUENCE public.aoop_programs_id_seq OWNER TO "user";
+
 --
--- Name: aoop_programs_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+-- Name: aoop_programs_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: user
 --
 
 ALTER SEQUENCE public.aoop_programs_id_seq OWNED BY public.aoop_programs.id;
 
 
 --
--- Name: condition_types; Type: TABLE; Schema: public; Owner: -
+-- Name: condition_types; Type: TABLE; Schema: public; Owner: user
 --
 
 CREATE TABLE public.condition_types (
@@ -281,15 +236,17 @@ CREATE TABLE public.condition_types (
 );
 
 
+ALTER TABLE public.condition_types OWNER TO "user";
+
 --
--- Name: TABLE condition_types; Type: COMMENT; Schema: public; Owner: -
+-- Name: TABLE condition_types; Type: COMMENT; Schema: public; Owner: user
 --
 
 COMMENT ON TABLE public.condition_types IS 'Справочник типов особых условий обучения';
 
 
 --
--- Name: directors; Type: TABLE; Schema: public; Owner: -
+-- Name: directors; Type: TABLE; Schema: public; Owner: user
 --
 
 CREATE TABLE public.directors (
@@ -303,22 +260,24 @@ CREATE TABLE public.directors (
 );
 
 
+ALTER TABLE public.directors OWNER TO "user";
+
 --
--- Name: TABLE directors; Type: COMMENT; Schema: public; Owner: -
+-- Name: TABLE directors; Type: COMMENT; Schema: public; Owner: user
 --
 
 COMMENT ON TABLE public.directors IS 'Директора образовательных учреждений';
 
 
 --
--- Name: COLUMN directors.full_name; Type: COMMENT; Schema: public; Owner: -
+-- Name: COLUMN directors.full_name; Type: COMMENT; Schema: public; Owner: user
 --
 
 COMMENT ON COLUMN public.directors.full_name IS 'ФИО директора';
 
 
 --
--- Name: directors_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: directors_id_seq; Type: SEQUENCE; Schema: public; Owner: user
 --
 
 CREATE SEQUENCE public.directors_id_seq
@@ -330,15 +289,17 @@ CREATE SEQUENCE public.directors_id_seq
     CACHE 1;
 
 
+ALTER SEQUENCE public.directors_id_seq OWNER TO "user";
+
 --
--- Name: directors_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+-- Name: directors_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: user
 --
 
 ALTER SEQUENCE public.directors_id_seq OWNED BY public.directors.id;
 
 
 --
--- Name: districts; Type: TABLE; Schema: public; Owner: -
+-- Name: districts; Type: TABLE; Schema: public; Owner: user
 --
 
 CREATE TABLE public.districts (
@@ -348,15 +309,17 @@ CREATE TABLE public.districts (
 );
 
 
+ALTER TABLE public.districts OWNER TO "user";
+
 --
--- Name: TABLE districts; Type: COMMENT; Schema: public; Owner: -
+-- Name: TABLE districts; Type: COMMENT; Schema: public; Owner: user
 --
 
 COMMENT ON TABLE public.districts IS 'Районы Липецкой области';
 
 
 --
--- Name: districts_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: districts_id_seq; Type: SEQUENCE; Schema: public; Owner: user
 --
 
 CREATE SEQUENCE public.districts_id_seq
@@ -368,15 +331,17 @@ CREATE SEQUENCE public.districts_id_seq
     CACHE 1;
 
 
+ALTER SEQUENCE public.districts_id_seq OWNER TO "user";
+
 --
--- Name: districts_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+-- Name: districts_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: user
 --
 
 ALTER SEQUENCE public.districts_id_seq OWNED BY public.districts.id;
 
 
 --
--- Name: institution_admission; Type: TABLE; Schema: public; Owner: -
+-- Name: institution_admission; Type: TABLE; Schema: public; Owner: user
 --
 
 CREATE TABLE public.institution_admission (
@@ -386,15 +351,17 @@ CREATE TABLE public.institution_admission (
 );
 
 
+ALTER TABLE public.institution_admission OWNER TO "user";
+
 --
--- Name: TABLE institution_admission; Type: COMMENT; Schema: public; Owner: -
+-- Name: TABLE institution_admission; Type: COMMENT; Schema: public; Owner: user
 --
 
 COMMENT ON TABLE public.institution_admission IS 'Связь учреждений с типами документов для приема';
 
 
 --
--- Name: institution_conditions; Type: TABLE; Schema: public; Owner: -
+-- Name: institution_conditions; Type: TABLE; Schema: public; Owner: user
 --
 
 CREATE TABLE public.institution_conditions (
@@ -404,15 +371,17 @@ CREATE TABLE public.institution_conditions (
 );
 
 
+ALTER TABLE public.institution_conditions OWNER TO "user";
+
 --
--- Name: TABLE institution_conditions; Type: COMMENT; Schema: public; Owner: -
+-- Name: TABLE institution_conditions; Type: COMMENT; Schema: public; Owner: user
 --
 
 COMMENT ON TABLE public.institution_conditions IS 'Связь учреждений с особыми условиями обучения';
 
 
 --
--- Name: institution_types; Type: TABLE; Schema: public; Owner: -
+-- Name: institution_types; Type: TABLE; Schema: public; Owner: user
 --
 
 CREATE TABLE public.institution_types (
@@ -423,15 +392,17 @@ CREATE TABLE public.institution_types (
 );
 
 
+ALTER TABLE public.institution_types OWNER TO "user";
+
 --
--- Name: TABLE institution_types; Type: COMMENT; Schema: public; Owner: -
+-- Name: TABLE institution_types; Type: COMMENT; Schema: public; Owner: user
 --
 
 COMMENT ON TABLE public.institution_types IS 'Справочник типов образовательных учреждений';
 
 
 --
--- Name: institutions; Type: TABLE; Schema: public; Owner: -
+-- Name: institutions; Type: TABLE; Schema: public; Owner: user
 --
 
 CREATE TABLE public.institutions (
@@ -453,29 +424,31 @@ CREATE TABLE public.institutions (
 );
 
 
+ALTER TABLE public.institutions OWNER TO "user";
+
 --
--- Name: TABLE institutions; Type: COMMENT; Schema: public; Owner: -
+-- Name: TABLE institutions; Type: COMMENT; Schema: public; Owner: user
 --
 
 COMMENT ON TABLE public.institutions IS 'Образовательные учреждения';
 
 
 --
--- Name: COLUMN institutions.range_min; Type: COMMENT; Schema: public; Owner: -
+-- Name: COLUMN institutions.range_min; Type: COMMENT; Schema: public; Owner: user
 --
 
 COMMENT ON COLUMN public.institutions.range_min IS 'Минимум диапазона (возраст для дошкольных, класс для школ); дробные значения, напр. 1.5';
 
 
 --
--- Name: COLUMN institutions.range_max; Type: COMMENT; Schema: public; Owner: -
+-- Name: COLUMN institutions.range_max; Type: COMMENT; Schema: public; Owner: user
 --
 
 COMMENT ON COLUMN public.institutions.range_max IS 'Максимум диапазона (возраст для дошкольных, класс для школ)';
 
 
 --
--- Name: institutions_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: institutions_id_seq; Type: SEQUENCE; Schema: public; Owner: user
 --
 
 CREATE SEQUENCE public.institutions_id_seq
@@ -487,15 +460,17 @@ CREATE SEQUENCE public.institutions_id_seq
     CACHE 1;
 
 
+ALTER SEQUENCE public.institutions_id_seq OWNER TO "user";
+
 --
--- Name: institutions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+-- Name: institutions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: user
 --
 
 ALTER SEQUENCE public.institutions_id_seq OWNED BY public.institutions.id;
 
 
 --
--- Name: schema_migrations; Type: TABLE; Schema: public; Owner: -
+-- Name: schema_migrations; Type: TABLE; Schema: public; Owner: user
 --
 
 CREATE TABLE public.schema_migrations (
@@ -504,172 +479,69 @@ CREATE TABLE public.schema_migrations (
 );
 
 
+ALTER TABLE public.schema_migrations OWNER TO "user";
+
 --
--- Name: action_log id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: action_log id; Type: DEFAULT; Schema: public; Owner: user
 --
 
 ALTER TABLE ONLY public.action_log ALTER COLUMN id SET DEFAULT nextval('public.action_log_id_seq'::regclass);
 
 
 --
--- Name: administrators id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: administrators id; Type: DEFAULT; Schema: public; Owner: user
 --
 
 ALTER TABLE ONLY public.administrators ALTER COLUMN id SET DEFAULT nextval('public.administrators_id_seq'::regclass);
 
 
 --
--- Name: aoop_programs id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: aoop_programs id; Type: DEFAULT; Schema: public; Owner: user
 --
 
 ALTER TABLE ONLY public.aoop_programs ALTER COLUMN id SET DEFAULT nextval('public.aoop_programs_id_seq'::regclass);
 
 
 --
--- Name: directors id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: directors id; Type: DEFAULT; Schema: public; Owner: user
 --
 
 ALTER TABLE ONLY public.directors ALTER COLUMN id SET DEFAULT nextval('public.directors_id_seq'::regclass);
 
 
 --
--- Name: districts id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: districts id; Type: DEFAULT; Schema: public; Owner: user
 --
 
 ALTER TABLE ONLY public.districts ALTER COLUMN id SET DEFAULT nextval('public.districts_id_seq'::regclass);
 
 
 --
--- Name: institutions id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: institutions id; Type: DEFAULT; Schema: public; Owner: user
 --
 
 ALTER TABLE ONLY public.institutions ALTER COLUMN id SET DEFAULT nextval('public.institutions_id_seq'::regclass);
 
 
 --
--- Data for Name: action_log; Type: TABLE DATA; Schema: public; Owner: -
+-- Data for Name: action_log; Type: TABLE DATA; Schema: public; Owner: user
 --
 
 COPY public.action_log (id, administrator_id, action, entity, record_id, old_data, new_data, created_at) FROM stdin;
-1	1	UPDATE	institutions	47	{"name": "ГОАОУ \\"ЦОРиО\\"", "type": "school_internat", "range": {"max": 11, "min": 1}, "address": "Россия, 398024, г. Липецк, ул. Механизаторов, д. 9", "website": "https://co-corio-lipeck-r42.gosweb.gosuslugi.ru/", "aoop_url": "https://corio48.gosuslugi.ru/svedeniya-ob-obrazovatelnoy-organizatsii/dokumenty/dokumenty-all_398.html", "director": {"name": "Вишнякова Екатерина Анатольевна", "email": "sko34@mail.ru", "phone": "+7 4742 242-777"}, "conditions": ["mental_retardation", "vision_impairment"], "description": null, "district_id": 186, "aoop_programs": [{"id": 39, "name": "Государственное Бюджетное Общеобразовательное Учреждение «Специальная школа-интернат г. Ельца»"}, {"id": 24, "name": "Адаптированная основная образовательная программа дошкольного образования для слепых детей детского сада"}, {"id": 25, "name": "Адаптированная основная общеобразовательная программа начального общего образования для слепых обучающихся (вариант 3.2)"}, {"id": 26, "name": "Адаптированная основная общеобразовательная программа начального общего образования для слепых обучающихся с умеренной, тяжелой, глубокой умственной отсталостью (интеллектуальными нарушениями) (вариант 3.4)"}, {"id": 27, "name": "Адаптированная основная общеобразовательная программа начального общего образования для слабовидящих обучающихся (вариант 4.1)"}, {"id": 28, "name": "Адаптированная основная общеобразовательная программа начального общего образования для слабовидящих обучающихся (вариант 4.2)"}, {"id": 29, "name": "Адаптированная основная общеобразовательная программа начального общего образования для слабовидящих обучающихся с умственной отсталостью (интеллектуальными нарушениями) (вариант 4.3)"}, {"id": 30, "name": "Адаптированная основная общеобразовательная программа начального общего образования для слабовидящих обучающихся с интеллектуальными нарушениями"}, {"id": 31, "name": "ЦДО НОО"}, {"id": 32, "name": "Адаптированная основная общеобразовательная программа основного общего образования для слепых обучающихся (вариант 3.2)"}, {"id": 33, "name": "Адаптированная основная общеобразовательная программа основного общего образования для слабовидящих детей (вариант 4.2)"}, {"id": 34, "name": "Адаптированная основная общеобразовательная программа основного общего образования для слабовидящих обучающихся с умственной отсталостью (интеллектуальными нарушениями) (вариант 1)"}, {"id": 35, "name": "Адаптированная основная общеобразовательная программа основного общего образования для слабовидящих обучающихся с умственной отсталостью (интеллектуальными нарушениями) (вариант 2)"}, {"id": 36, "name": "ЦДО ООО"}, {"id": 37, "name": "Адаптированная основная общеобразовательная программа среднего общего образования для слепых и слабовидящих детей"}, {"id": 38, "name": "ЦДО СОО"}, {"id": 24, "name": "Адаптированная основная образовательная программа дошкольного образования для слепых детей детского сада"}, {"id": 25, "name": "Адаптированная основная общеобразовательная программа начального общего образования для слепых обучающихся (вариант 3.2)"}, {"id": 26, "name": "Адаптированная основная общеобразовательная программа начального общего образования для слепых обучающихся с умеренной, тяжелой, глубокой умственной отсталостью (интеллектуальными нарушениями) (вариант 3.4)"}, {"id": 27, "name": "Адаптированная основная общеобразовательная программа начального общего образования для слабовидящих обучающихся (вариант 4.1)"}, {"id": 28, "name": "Адаптированная основная общеобразовательная программа начального общего образования для слабовидящих обучающихся (вариант 4.2)"}, {"id": 29, "name": "Адаптированная основная общеобразовательная программа начального общего образования для слабовидящих обучающихся с умственной отсталостью (интеллектуальными нарушениями) (вариант 4.3)"}, {"id": 30, "name": "Адаптированная основная общеобразовательная программа начального общего образования для слабовидящих обучающихся с интеллектуальными нарушениями"}, {"id": 31, "name": "ЦДО НОО"}, {"id": 32, "name": "Адаптированная основная общеобразовательная программа основного общего образования для слепых обучающихся (вариант 3.2)"}, {"id": 33, "name": "Адаптированная основная общеобразовательная программа основного общего образования для слабовидящих детей (вариант 4.2)"}, {"id": 34, "name": "Адаптированная основная общеобразовательная программа основного общего образования для слабовидящих обучающихся с умственной отсталостью (интеллектуальными нарушениями) (вариант 1)"}, {"id": 35, "name": "Адаптированная основная общеобразовательная программа основного общего образования для слабовидящих обучающихся с умственной отсталостью (интеллектуальными нарушениями) (вариант 2)"}, {"id": 36, "name": "ЦДО ООО"}, {"id": 37, "name": "Адаптированная основная общеобразовательная программа среднего общего образования для слепых и слабовидящих детей"}, {"id": 38, "name": "ЦДО СОО"}, {"id": 39, "name": "Государственное Бюджетное Общеобразовательное Учреждение «Специальная школа-интернат г. Ельца»"}], "conditionsAdmission": ["certificate"]}	{"id": 47, "name": "ГОАОУ \\"ЦОРиО\\"", "type": "school_internat", "range": {"max": 11, "min": 1}, "address": "Россия, 398024, г. Липецк, ул. Механизаторов, д. 9", "website": "https://co-corio-lipeck-r42.gosweb.gosuslugi.ru/", "aoop_url": "https://corio48.gosuslugi.ru/svedeniya-ob-obrazovatelnoy-organizatsii/dokumenty/dokumenty-all_398.html", "director": {"id": 46, "name": "Вишнякова Екатерина Анатольевна", "email": "sko34@mail.ru", "phone": "+7 4742 242-777"}, "conditions": ["vision_impairment", "mental_retardation"], "description": null, "district_id": 186, "aoop_programs": [{"name": "Адаптированная основная образовательная программа дошкольного образования для слепых детей детского сада"}, {"name": "Адаптированная основная общеобразовательная программа начального общего образования для слепых обучающихся (вариант 3.2)"}, {"name": "Адаптированная основная общеобразовательная программа начального общего образования для слепых обучающихся с умеренной, тяжелой, глубокой умственной отсталостью (интеллектуальными нарушениями) (вариант 3.4)"}, {"name": "Адаптированная основная общеобразовательная программа начального общего образования для слабовидящих обучающихся (вариант 4.1)"}, {"name": "Адаптированная основная общеобразовательная программа начального общего образования для слабовидящих обучающихся (вариант 4.2)"}, {"name": "Адаптированная основная общеобразовательная программа начального общего образования для слабовидящих обучающихся с умственной отсталостью (интеллектуальными нарушениями) (вариант 4.3)"}, {"name": "Адаптированная основная общеобразовательная программа начального общего образования для слабовидящих обучающихся с интеллектуальными нарушениями"}, {"name": "ЦДО НОО"}, {"name": "Адаптированная основная общеобразовательная программа основного общего образования для слепых обучающихся (вариант 3.2)"}, {"name": "Адаптированная основная общеобразовательная программа основного общего образования для слабовидящих детей (вариант 4.2)"}, {"name": "Адаптированная основная общеобразовательная программа основного общего образования для слабовидящих обучающихся с умственной отсталостью (интеллектуальными нарушениями) (вариант 1)"}, {"name": "Адаптированная основная общеобразовательная программа основного общего образования для слабовидящих обучающихся с умственной отсталостью (интеллектуальными нарушениями) (вариант 2)"}, {"name": "Адаптированная основная общеобразовательная программа среднего общего образования для слепых и слабовидящих детей"}, {"name": "Государственное Бюджетное Общеобразовательное Учреждение «Специальная школа-интернат г. Ельца»"}], "conditionsAdmission": ["certificate"]}	2026-07-04 21:09:32.846132
-2	1	UPDATE	institutions	70	{"name": "МБДОУ д/с \\" Солнышко\\" с.Троекурово Чаплыгинского района", "type": "preschool", "range": {"max": 7, "min": 2}, "address": "399910 Липецкая область ,Чаплыгинский район, село Троекурово, улица Новая, дом 8", "website": "https://ds-solnishko-troekurovo.gosuslugi.ru/", "aoop_url": null, "director": {"name": "Будакова Ирина Николаевна", "email": "i.budakova2013@yandex.ru", "phone": ""}, "conditions": [], "description": null, "district_id": 205, "aoop_programs": [], "conditionsAdmission": ["attestat"]}	{"id": 70, "name": "МБДОУ д/с \\" Солнышко\\" с. Троекурово Чаплыгинского района", "type": "preschool", "range": {"max": 7, "min": 2}, "address": "399910 Липецкая область, Чаплыгинский район, село Троекурово, улица Новая, дом 8", "website": "https://ds-solnishko-troekurovo.gosuslugi.ru/", "aoop_url": null, "director": {"id": 69, "name": "Будакова Ирина Николаевна", "email": "i.budakova2013@yandex.ru"}, "conditions": [], "description": null, "district_id": 205, "aoop_programs": [], "conditionsAdmission": []}	2026-07-04 21:11:55.315795
-3	1	UPDATE	institutions	69	{"name": "МБДОУ д/с \\"Буратино\\" с.Братовка Чаплыгинского муниципального района Липецкой области", "type": "preschool", "range": {"max": 7, "min": 2}, "address": "Липецкая область Чаплыгинский район село Братовка улица Свинушки дом 5", "website": "https://ds-buratino-chaplygin-r42.gosweb.gosuslugi.ru/", "aoop_url": null, "director": {"name": "Седых Марина Михайловна", "email": "t.belikova2014@yandex.ru", "phone": ""}, "conditions": [], "description": null, "district_id": 205, "aoop_programs": [], "conditionsAdmission": ["attestat"]}	{"id": 69, "name": "МБДОУ д/с \\"Буратино\\" с. Братовка Чаплыгинского муниципального района Липецкой области", "type": "preschool", "range": {"max": 7, "min": 2}, "address": "Липецкая область Чаплыгинский район село Братовка улица Свинушки дом 5", "website": "https://ds-buratino-chaplygin-r42.gosweb.gosuslugi.ru/", "aoop_url": null, "director": {"id": 68, "name": "Седых Марина Михайловна", "email": "t.belikova2014@yandex.ru"}, "conditions": [], "description": null, "district_id": 205, "aoop_programs": [], "conditionsAdmission": []}	2026-07-04 21:12:26.663033
-4	1	UPDATE	institutions	70	{"name": "МБДОУ д/с \\" Солнышко\\" с. Троекурово Чаплыгинского района", "type": "preschool", "range": {"max": 7, "min": 2}, "address": "399910 Липецкая область, Чаплыгинский район, село Троекурово, улица Новая, дом 8", "website": "https://ds-solnishko-troekurovo.gosuslugi.ru/", "aoop_url": null, "director": {"name": "Будакова Ирина Николаевна", "email": "i.budakova2013@yandex.ru", "phone": ""}, "conditions": [], "description": null, "district_id": 205, "aoop_programs": [], "conditionsAdmission": []}	{"id": 70, "name": "МБДОУ д/с \\" Солнышко\\" с. Троекурово Чаплыгинского района", "type": "preschool", "range": {"max": 7, "min": 2}, "address": "399910 Липецкая область, Чаплыгинский округ, село Троекурово, улица Новая, дом 8", "website": "https://ds-solnishko-troekurovo.gosuslugi.ru/", "aoop_url": null, "director": {"id": 69, "name": "Будакова Ирина Николаевна", "email": "i.budakova2013@yandex.ru"}, "conditions": [], "description": null, "district_id": 205, "aoop_programs": [], "conditionsAdmission": []}	2026-07-04 21:14:29.194191
-5	1	UPDATE	institutions	73	{"name": "МБДОУ д/с \\" Теремок\\" с. Конюшки Чаплыгинский муниципальный район Липецкая область", "type": "preschool", "range": {"max": 7, "min": 2}, "address": "Липецкая область Чаплыгинский район село Конюшки улица Центральная дом 220 индекс 399911", "website": "https://ds-teremok-konyushki-r42.gosweb.gosuslugi.ru/", "aoop_url": null, "director": {"name": "Кудряшова Любовь Викторовна", "email": "", "phone": "8 (47475) 2-17-33"}, "conditions": [], "description": null, "district_id": 205, "aoop_programs": [], "conditionsAdmission": ["attestat"]}	{"id": 73, "name": "МБДОУ д/с \\" Теремок\\" с. Конюшки Чаплыгинский муниципальный район Липецкая область", "type": "preschool", "range": {"max": 7, "min": 2}, "address": "Липецкая область Чаплыгинский округ село Конюшки улица Центральная дом 220 индекс 399911", "website": "https://ds-teremok-konyushki-r42.gosweb.gosuslugi.ru/", "aoop_url": null, "director": {"id": 72, "name": "Кудряшова Любовь Викторовна", "phone": "8 (47475) 2-17-33"}, "conditions": [], "description": null, "district_id": 205, "aoop_programs": [], "conditionsAdmission": []}	2026-07-04 21:14:36.43817
-6	1	UPDATE	institutions	69	{"name": "МБДОУ д/с \\"Буратино\\" с. Братовка Чаплыгинского муниципального района Липецкой области", "type": "preschool", "range": {"max": 7, "min": 2}, "address": "Липецкая область Чаплыгинский район село Братовка улица Свинушки дом 5", "website": "https://ds-buratino-chaplygin-r42.gosweb.gosuslugi.ru/", "aoop_url": null, "director": {"name": "Седых Марина Михайловна", "email": "t.belikova2014@yandex.ru", "phone": ""}, "conditions": [], "description": null, "district_id": 205, "aoop_programs": [], "conditionsAdmission": []}	{"id": 69, "name": "МБДОУ д/с \\"Буратино\\" с. Братовка Чаплыгинского муниципального района Липецкой области", "type": "preschool", "range": {"max": 7, "min": 2}, "address": "Липецкая область Чаплыгинский округ село Братовка улица Свинушки дом 5", "website": "https://ds-buratino-chaplygin-r42.gosweb.gosuslugi.ru/", "aoop_url": null, "director": {"id": 68, "name": "Седых Марина Михайловна", "email": "t.belikova2014@yandex.ru"}, "conditions": [], "description": null, "district_id": 205, "aoop_programs": [], "conditionsAdmission": []}	2026-07-04 21:14:45.159679
-7	1	UPDATE	institutions	72	{"name": "МБДОУ д/с \\"Ивушка\\"", "type": "preschool", "range": {"max": 7, "min": 2}, "address": "Липецкая область Чаплыгинский район поселок Рощинский улица Молодежная 1", "website": "https://ds-ivushka-roshhinskij-r42.gosweb.gosuslugi.ru/", "aoop_url": null, "director": {"name": "Кривоносова Ольга Сергеевна", "email": "olgakrivonosova@inbox.ru", "phone": ""}, "conditions": [], "description": null, "district_id": 205, "aoop_programs": [], "conditionsAdmission": ["attestat"]}	{"id": 72, "name": "МБДОУ д/с \\"Ивушка\\"", "type": "preschool", "range": {"max": 7, "min": 2}, "address": "Липецкая область Чаплыгинский округ поселок Рощинский улица Молодежная 1", "website": "https://ds-ivushka-roshhinskij-r42.gosweb.gosuslugi.ru/", "aoop_url": null, "director": {"id": 71, "name": "Кривоносова Ольга Сергеевна", "email": "olgakrivonosova@inbox.ru"}, "conditions": [], "description": null, "district_id": 205, "aoop_programs": [], "conditionsAdmission": []}	2026-07-04 21:14:51.253048
-8	1	UPDATE	institutions	74	{"name": "МБДОУ д/с \\"Малыш\\" с. Ломовое Чаплыгинский район Липецкая область", "type": "preschool", "range": {"max": 7, "min": 2}, "address": "399931, Липецкая область Чаплыгинский район село Ломовое улица Советская д.21", "website": "https://ds-malysh-lomovoe-r42.gosweb.gosuslugi.ru/", "aoop_url": null, "director": {"name": "Григорьева Марина Владимировна", "email": "malish-ds@yandex.ru", "phone": ""}, "conditions": [], "description": null, "district_id": 205, "aoop_programs": [], "conditionsAdmission": ["attestat"]}	{"id": 74, "name": "МБДОУ д/с \\"Малыш\\" с. Ломовое Чаплыгинский район Липецкая область", "type": "preschool", "range": {"max": 7, "min": 2}, "address": "399931, Липецкая область Чаплыгинский округ село Ломовое улица Советская д.21", "website": "https://ds-malysh-lomovoe-r42.gosweb.gosuslugi.ru/", "aoop_url": null, "director": {"id": 73, "name": "Григорьева Марина Владимировна", "email": "malish-ds@yandex.ru"}, "conditions": [], "description": null, "district_id": 205, "aoop_programs": [], "conditionsAdmission": []}	2026-07-04 21:15:04.043497
-9	1	UPDATE	institutions	75	{"name": "МБДОУ д/с \\"Полянка\\" с. Новополянье Чаплыгинского района", "type": "preschool", "range": {"max": 7, "min": 2}, "address": "399941, Липецкая обл., Чаплыгинский р-он, с. Новополянье, ул. Школьная д.6", "website": "https://ds-polyanka-novopolyane-r42.gosweb.gosuslugi.ru/", "aoop_url": null, "director": {"name": "Ступа Елена Викторовна", "email": "novopolanieds@yandex.ru", "phone": ""}, "conditions": [], "description": null, "district_id": 205, "aoop_programs": [], "conditionsAdmission": ["attestat"]}	{"id": 75, "name": "МБДОУ д/с \\"Полянка\\" с. Новополянье Чаплыгинского района", "type": "preschool", "range": {"max": 7, "min": 2}, "address": "399941, Липецкая обл., Чаплыгинский округ, с. Новополянье, ул. Школьная д.6", "website": "https://ds-polyanka-novopolyane-r42.gosweb.gosuslugi.ru/", "aoop_url": null, "director": {"id": 74, "name": "Ступа Елена Викторовна", "email": "novopolanieds@yandex.ru"}, "conditions": [], "description": null, "district_id": 205, "aoop_programs": [], "conditionsAdmission": []}	2026-07-04 21:15:12.962929
-10	1	UPDATE	institutions	67	{"name": "МБДОУ д/с \\"Светлячок\\" г. Чаплыгина", "type": "preschool", "range": {"max": 7, "min": 2}, "address": "399900, Липецкая область, Чаплыгинский район, город Чаплыгин, улица Ломоносова, д. 46А", "website": "https://ds-svetlyachok-chaplygin-r42.gosweb.gosuslugi.ru/", "aoop_url": null, "director": {"name": "Некрасова Людмила Викторовна", "email": "svetlyachek-ds@yandex.ru", "phone": ""}, "conditions": [], "description": null, "district_id": 205, "aoop_programs": [], "conditionsAdmission": ["attestat"]}	{"id": 67, "name": "МБДОУ д/с \\"Светлячок\\" г. Чаплыгина", "type": "preschool", "range": {"max": 7, "min": 2}, "address": "399900, Липецкая область, Чаплыгинский округ, город Чаплыгин, улица Ломоносова, д. 46А", "website": "https://ds-svetlyachok-chaplygin-r42.gosweb.gosuslugi.ru/", "aoop_url": null, "director": {"id": 66, "name": "Некрасова Людмила Викторовна", "email": "svetlyachek-ds@yandex.ru"}, "conditions": [], "description": null, "district_id": 205, "aoop_programs": [], "conditionsAdmission": []}	2026-07-04 21:15:20.96546
-69	1	DELETE	institutions	86	{"id": 86, "name": "Елецкий филиал АНО ВО «РосНОУ»", "type": "vo", "range": {"max": null, "min": null}, "address": "398050, г. Липецк, ул. Интернациональная, д. 3", "website": "https://eletsrosnou.ru/", "aoop_url": null, "director": {"name": "Гончарова Елена Александровна", "email": "lip@ranepa.ru", "phone": "+74742272224"}, "conditions": [], "description": null, "district_id": 186, "aoop_programs": [], "conditionsAdmission": ["attestat"]}	\N	2026-07-04 22:32:34.419602
-11	1	UPDATE	institutions	63	{"name": "МБДОУ д/с \\"Светлячок\\" с.Ярлуково", "type": "preschool", "range": {"max": 7, "min": 2}, "address": "399072 Липецкая область Грязинский район с.Ярлуково ул.Советская д. 11 \\"А\\". ДОУ Чаплыгин Муниципальное бюджетное дошкольное образовательное учреждение детский сад \\"Сказка\\" г. Чаплыгина Липецкой области", "website": "https://ds-svetlyachok-yarlukovo-r42.gosweb.gosuslugi.ru/", "aoop_url": null, "director": {"name": "Ульшина Ирина Ивановна", "email": "svetliachek48@yandex.ru", "phone": ""}, "conditions": [], "description": null, "district_id": 205, "aoop_programs": [], "conditionsAdmission": ["attestat"]}	{"id": 63, "name": "МБДОУ д/с \\"Светлячок\\" с.Ярлуково", "type": "preschool", "range": {"max": 7, "min": 2}, "address": "399072 Липецкая область Грязинский район с. Ярлуково ул. Советская д. 11 \\"А\\"", "website": "https://ds-svetlyachok-yarlukovo-r42.gosweb.gosuslugi.ru/", "aoop_url": null, "director": {"id": 62, "name": "Ульшина Ирина Ивановна", "email": "svetliachek48@yandex.ru"}, "conditions": [], "description": null, "district_id": 205, "aoop_programs": [], "conditionsAdmission": []}	2026-07-04 21:17:11.518873
-12	1	UPDATE	institutions	70	{"name": "МБДОУ д/с \\" Солнышко\\" с. Троекурово Чаплыгинского района", "type": "preschool", "range": {"max": 7, "min": 2}, "address": "399910 Липецкая область, Чаплыгинский округ, село Троекурово, улица Новая, дом 8", "website": "https://ds-solnishko-troekurovo.gosuslugi.ru/", "aoop_url": null, "director": {"name": "Будакова Ирина Николаевна", "email": "i.budakova2013@yandex.ru", "phone": ""}, "conditions": [], "description": null, "district_id": 205, "aoop_programs": [], "conditionsAdmission": []}	{"id": 70, "name": "МБДОУ д/с \\" Солнышко\\" с. Троекурово Чаплыгинского округа", "type": "preschool", "range": {"max": 7, "min": 2}, "address": "399910 Липецкая область, Чаплыгинский округ, село Троекурово, улица Новая, дом 8", "website": "https://ds-solnishko-troekurovo.gosuslugi.ru/", "aoop_url": null, "director": {"id": 69, "name": "Будакова Ирина Николаевна", "email": "i.budakova2013@yandex.ru"}, "conditions": [], "description": null, "district_id": 205, "aoop_programs": [], "conditionsAdmission": []}	2026-07-04 21:17:58.511469
-13	1	UPDATE	institutions	73	{"name": "МБДОУ д/с \\" Теремок\\" с. Конюшки Чаплыгинский муниципальный район Липецкая область", "type": "preschool", "range": {"max": 7, "min": 2}, "address": "Липецкая область Чаплыгинский округ село Конюшки улица Центральная дом 220 индекс 399911", "website": "https://ds-teremok-konyushki-r42.gosweb.gosuslugi.ru/", "aoop_url": null, "director": {"name": "Кудряшова Любовь Викторовна", "email": "", "phone": "8 (47475) 2-17-33"}, "conditions": [], "description": null, "district_id": 205, "aoop_programs": [], "conditionsAdmission": []}	{"id": 73, "name": "МБДОУ д/с \\" Теремок\\" с. Конюшки Чаплыгинский округ Липецкая область", "type": "preschool", "range": {"max": 7, "min": 2}, "address": "Липецкая область Чаплыгинский округ село Конюшки улица Центральная дом 220 индекс 399911", "website": "https://ds-teremok-konyushki-r42.gosweb.gosuslugi.ru/", "aoop_url": null, "director": {"id": 72, "name": "Кудряшова Любовь Викторовна", "phone": "8 (47475) 2-17-33"}, "conditions": [], "description": null, "district_id": 205, "aoop_programs": [], "conditionsAdmission": []}	2026-07-04 21:18:25.985958
-14	1	UPDATE	institutions	73	{"name": "МБДОУ д/с \\" Теремок\\" с. Конюшки Чаплыгинский округ Липецкая область", "type": "preschool", "range": {"max": 7, "min": 2}, "address": "Липецкая область Чаплыгинский округ село Конюшки улица Центральная дом 220 индекс 399911", "website": "https://ds-teremok-konyushki-r42.gosweb.gosuslugi.ru/", "aoop_url": null, "director": {"name": "Кудряшова Любовь Викторовна", "email": "", "phone": "8 (47475) 2-17-33"}, "conditions": [], "description": null, "district_id": 205, "aoop_programs": [], "conditionsAdmission": []}	{"id": 73, "name": "МБДОУ д/с \\" Теремок\\" с. Конюшки Чаплыгинский округ Липецкая область", "type": "preschool", "range": {"max": 7, "min": 2}, "address": "Липецкая область Чаплыгинский округ село Конюшки улица Центральная дом 220 индекс 399911", "website": "https://ds-teremok-konyushki-r42.gosweb.gosuslugi.ru/", "aoop_url": null, "director": {"id": 72, "name": "Кудряшова Любовь Викторовна", "phone": "8 (4747) 52-17-33"}, "conditions": [], "description": null, "district_id": 205, "aoop_programs": [], "conditionsAdmission": []}	2026-07-04 21:18:50.382437
-15	1	UPDATE	institutions	69	{"name": "МБДОУ д/с \\"Буратино\\" с. Братовка Чаплыгинского муниципального района Липецкой области", "type": "preschool", "range": {"max": 7, "min": 2}, "address": "Липецкая область Чаплыгинский округ село Братовка улица Свинушки дом 5", "website": "https://ds-buratino-chaplygin-r42.gosweb.gosuslugi.ru/", "aoop_url": null, "director": {"name": "Седых Марина Михайловна", "email": "t.belikova2014@yandex.ru", "phone": ""}, "conditions": [], "description": null, "district_id": 205, "aoop_programs": [], "conditionsAdmission": []}	{"id": 69, "name": "МБДОУ д/с \\"Буратино\\" с. Братовка Чаплыгинского округа Липецкой области", "type": "preschool", "range": {"max": 7, "min": 2}, "address": "Липецкая область Чаплыгинский округ село Братовка улица Свинушки дом 5", "website": "https://ds-buratino-chaplygin-r42.gosweb.gosuslugi.ru/", "aoop_url": null, "director": {"id": 68, "name": "Седых Марина Михайловна", "email": "t.belikova2014@yandex.ru"}, "conditions": [], "description": null, "district_id": 205, "aoop_programs": [], "conditionsAdmission": []}	2026-07-04 21:19:19.401239
-16	1	UPDATE	institutions	74	{"name": "МБДОУ д/с \\"Малыш\\" с. Ломовое Чаплыгинский район Липецкая область", "type": "preschool", "range": {"max": 7, "min": 2}, "address": "399931, Липецкая область Чаплыгинский округ село Ломовое улица Советская д.21", "website": "https://ds-malysh-lomovoe-r42.gosweb.gosuslugi.ru/", "aoop_url": null, "director": {"name": "Григорьева Марина Владимировна", "email": "malish-ds@yandex.ru", "phone": ""}, "conditions": [], "description": null, "district_id": 205, "aoop_programs": [], "conditionsAdmission": []}	{"id": 74, "name": "МБДОУ д/с \\"Малыш\\" с. Ломовое Чаплыгинский округ Липецкая область", "type": "preschool", "range": {"max": 7, "min": 2}, "address": "399931, Липецкая область Чаплыгинский округ село Ломовое улица Советская д.21", "website": "https://ds-malysh-lomovoe-r42.gosweb.gosuslugi.ru/", "aoop_url": null, "director": {"id": 73, "name": "Григорьева Марина Владимировна", "email": "malish-ds@yandex.ru"}, "conditions": [], "description": null, "district_id": 205, "aoop_programs": [], "conditionsAdmission": []}	2026-07-04 21:20:22.798711
-17	1	UPDATE	institutions	75	{"name": "МБДОУ д/с \\"Полянка\\" с. Новополянье Чаплыгинского района", "type": "preschool", "range": {"max": 7, "min": 2}, "address": "399941, Липецкая обл., Чаплыгинский округ, с. Новополянье, ул. Школьная д.6", "website": "https://ds-polyanka-novopolyane-r42.gosweb.gosuslugi.ru/", "aoop_url": null, "director": {"name": "Ступа Елена Викторовна", "email": "novopolanieds@yandex.ru", "phone": ""}, "conditions": [], "description": null, "district_id": 205, "aoop_programs": [], "conditionsAdmission": []}	{"id": 75, "name": "МБДОУ д/с \\"Полянка\\" с. Новополянье Чаплыгинского округа", "type": "preschool", "range": {"max": 7, "min": 2}, "address": "399941, Липецкая обл., Чаплыгинский округ, с. Новополянье, ул. Школьная д.6", "website": "https://ds-polyanka-novopolyane-r42.gosweb.gosuslugi.ru/", "aoop_url": null, "director": {"id": 74, "name": "Ступа Елена Викторовна", "email": "novopolanieds@yandex.ru"}, "conditions": [], "description": null, "district_id": 205, "aoop_programs": [], "conditionsAdmission": []}	2026-07-04 21:20:52.810643
-18	1	UPDATE	institutions	63	{"name": "МБДОУ д/с \\"Светлячок\\" с.Ярлуково", "type": "preschool", "range": {"max": 7, "min": 2}, "address": "399072 Липецкая область Грязинский район с. Ярлуково ул. Советская д. 11 \\"А\\"", "website": "https://ds-svetlyachok-yarlukovo-r42.gosweb.gosuslugi.ru/", "aoop_url": null, "director": {"name": "Ульшина Ирина Ивановна", "email": "svetliachek48@yandex.ru", "phone": ""}, "conditions": [], "description": null, "district_id": 205, "aoop_programs": [], "conditionsAdmission": []}	{"id": 63, "name": "МБДОУ д/с \\"Светлячок\\" с.Ярлуково", "type": "preschool", "range": {"max": 7, "min": 2}, "address": "399072 Липецкая область Грязинский округ с. Ярлуково ул. Советская д. 11 \\"А\\"", "website": "https://ds-svetlyachok-yarlukovo-r42.gosweb.gosuslugi.ru/", "aoop_url": null, "director": {"id": 62, "name": "Ульшина Ирина Ивановна", "email": "svetliachek48@yandex.ru"}, "conditions": [], "description": null, "district_id": 205, "aoop_programs": [], "conditionsAdmission": []}	2026-07-04 21:21:30.856199
-19	1	UPDATE	institutions	63	{"name": "МБДОУ д/с \\"Светлячок\\" с.Ярлуково", "type": "preschool", "range": {"max": 7, "min": 2}, "address": "399072 Липецкая область Грязинский округ с. Ярлуково ул. Советская д. 11 \\"А\\"", "website": "https://ds-svetlyachok-yarlukovo-r42.gosweb.gosuslugi.ru/", "aoop_url": null, "director": {"name": "Ульшина Ирина Ивановна", "email": "svetliachek48@yandex.ru", "phone": ""}, "conditions": [], "description": null, "district_id": 205, "aoop_programs": [], "conditionsAdmission": []}	{"id": 63, "name": "МБДОУ д/с \\"Светлячок\\" с.Ярлуково", "type": "preschool", "range": {"max": 7, "min": 2}, "address": "399072 Липецкая область Грязинский округ с. Ярлуково ул. Советская д. 11 \\"А\\"", "website": "https://ds-svetlyachok-yarlukovo-r42.gosweb.gosuslugi.ru/", "aoop_url": null, "director": {"id": 62, "name": "Ульшина Ирина Ивановна", "email": "svetliachek48@yandex.ru"}, "conditions": [], "description": null, "district_id": 189, "aoop_programs": [], "conditionsAdmission": []}	2026-07-04 21:22:41.817059
-20	1	UPDATE	institutions	64	{"name": "МБДОУ д/с \\"Сказка\\" г.Чаплыгин", "type": "preschool", "range": {"max": 7, "min": 2}, "address": "399902 Российская Федерация, Липецкая область, город Чаплыгин, улица Советская, дом 2 \\"г\\"", "website": "https://ds-skazka-chaplygin-r42.gosweb.gosuslugi.ru/", "aoop_url": null, "director": {"name": "Грушихина Ольга Алексеевна", "email": "madou-skazka@yandex.ru", "phone": ""}, "conditions": [], "description": null, "district_id": 205, "aoop_programs": [], "conditionsAdmission": ["attestat"]}	{"id": 64, "name": "МБДОУ д/с \\"Сказка\\" г. Чаплыгин", "type": "preschool", "range": {"max": 7, "min": 2}, "address": "399902 Российская Федерация, Липецкая область, город Чаплыгин, улица Советская, дом 2 \\"г\\"", "website": "https://ds-skazka-chaplygin-r42.gosweb.gosuslugi.ru/", "aoop_url": null, "director": {"id": 63, "name": "Грушихина Ольга Алексеевна", "email": "madou-skazka@yandex.ru"}, "conditions": [], "description": null, "district_id": 205, "aoop_programs": [], "conditionsAdmission": []}	2026-07-04 21:23:03.843857
-98	3	CREATE	institutions	533	\N	{"name": "TEST_CRUD_1787331908_8390", "type": "school", "range": {"max": 11, "min": 1}, "address": "тест", "website": "https://example.com/", "aoop_url": null, "director": {"id": null, "name": "Тестов Тест Тестович", "email": "test.director.1787331908@example.local", "phone": "+79001112233"}, "conditions": ["autism"], "description": "phpunit", "district_id": 188, "aoop_programs": [{"url": "https://example.com/aoop.pdf", "name": "TEST AOOP"}], "conditionsAdmission": ["certificate"]}	2026-08-21 17:05:08.634986
-21	1	UPDATE	institutions	31	{"name": "ГОБПОУ «Чаплыгинский аграрный колледж»", "type": "spo", "range": {"max": null, "min": null}, "address": "399900, Липецкая обл., г. Чаплыгин, ул. Московская, д. 3", "website": "https://college-chak-r42.gosweb.gosuslugi.ru/", "aoop_url": null, "director": {"name": "Ермолов Юрий Алексеевич", "email": "cac@chaplygin.lipetsk.ru", "phone": "8(47475) 2-17-97"}, "conditions": [], "description": null, "district_id": 205, "aoop_programs": [], "conditionsAdmission": ["attestat"]}	{"id": 31, "name": "ГОБПОУ «Чаплыгинский аграрный колледж»", "type": "spo", "range": {"max": null, "min": null}, "address": "399900, Липецкая обл., г. Чаплыгин, ул. Московская, д. 3", "website": "https://college-chak-r42.gosweb.gosuslugi.ru/", "aoop_url": null, "director": {"id": 30, "name": "Ермолов Юрий Алексеевич", "email": "cac@chaplygin.lipetsk.ru", "phone": "8(4747) 52-17-97"}, "conditions": [], "description": null, "district_id": 205, "aoop_programs": [], "conditionsAdmission": ["attestat"]}	2026-07-04 21:23:30.400334
-22	1	UPDATE	institutions	71	{"name": "МБДОУ д/с \\"Чебурашка\\" с.Кривополянье Чаплыгинского муниципального района", "type": "preschool", "range": {"max": 7, "min": 2}, "address": "399940 Липецкая область, Чаплыгинский район, село Кривополянье, улица 10-й Пятилетки, дом 7.", "website": "https://ds-cheburashka-krivopolyane-r42.gosweb.gosuslugi.ru/", "aoop_url": null, "director": {"name": "Моисеева Светлана Николаевна", "email": "dscheburashka.m@yandex.ru", "phone": ""}, "conditions": [], "description": null, "district_id": 205, "aoop_programs": [], "conditionsAdmission": ["attestat"]}	{"id": 71, "name": "МБДОУ д/с \\"Чебурашка\\" с. Кривополянье Чаплыгинского округа", "type": "preschool", "range": {"max": 7, "min": 2}, "address": "399940 Липецкая область, Чаплыгинский район, село Кривополянье, улица 10-й Пятилетки, дом 7.", "website": "https://ds-cheburashka-krivopolyane-r42.gosweb.gosuslugi.ru/", "aoop_url": null, "director": {"id": 70, "name": "Моисеева Светлана Николаевна", "email": "dscheburashka.m@yandex.ru"}, "conditions": [], "description": null, "district_id": 205, "aoop_programs": [], "conditionsAdmission": []}	2026-07-04 21:24:55.125422
-23	1	UPDATE	institutions	71	{"name": "МБДОУ д/с \\"Чебурашка\\" с. Кривополянье Чаплыгинского округа", "type": "preschool", "range": {"max": 7, "min": 2}, "address": "399940 Липецкая область, Чаплыгинский район, село Кривополянье, улица 10-й Пятилетки, дом 7.", "website": "https://ds-cheburashka-krivopolyane-r42.gosweb.gosuslugi.ru/", "aoop_url": null, "director": {"name": "Моисеева Светлана Николаевна", "email": "dscheburashka.m@yandex.ru", "phone": ""}, "conditions": [], "description": null, "district_id": 205, "aoop_programs": [], "conditionsAdmission": []}	{"id": 71, "name": "МБДОУ д/с \\"Чебурашка\\" с. Кривополянье Чаплыгинского округа", "type": "preschool", "range": {"max": 7, "min": 2}, "address": "399940 Липецкая область, Чаплыгинский округ, село Кривополянье, улица 10-й Пятилетки, дом 7.", "website": "https://ds-cheburashka-krivopolyane-r42.gosweb.gosuslugi.ru/", "aoop_url": null, "director": {"id": 70, "name": "Моисеева Светлана Николаевна", "email": "dscheburashka.m@yandex.ru"}, "conditions": [], "description": null, "district_id": 205, "aoop_programs": [], "conditionsAdmission": []}	2026-07-04 21:26:23.823812
-24	1	UPDATE	institutions	9	{"name": "МБОУ ОШ п.Тупки", "type": "school", "range": {"max": 11, "min": 1}, "address": "Липецкая область, Чаплыгинский район, п.Тупки, ул.Зеленая, д.56", "website": "https://sh-tupki-r42.gosweb.gosuslugi.ru/", "aoop_url": null, "director": {"name": "Аксёнова Вера Николаевна", "email": "sc-tupki@schools48.ru", "phone": ""}, "conditions": [], "description": null, "district_id": 205, "aoop_programs": [], "conditionsAdmission": ["attestat"]}	{"id": 9, "name": "МБОУ ОШ п.Тупки", "type": "school", "range": {"max": 11, "min": 1}, "address": "Липецкая область, Чаплыгинский округ, п.Тупки, ул.Зеленая, д.56", "website": "https://sh-tupki-r42.gosweb.gosuslugi.ru/", "aoop_url": null, "director": {"id": 9, "name": "Аксёнова Вера Николаевна", "email": "sc-tupki@schools48.ru"}, "conditions": [], "description": null, "district_id": 205, "aoop_programs": [], "conditionsAdmission": []}	2026-07-04 21:30:57.097105
-25	1	UPDATE	institutions	9	{"name": "МБОУ ОШ п.Тупки", "type": "school", "range": {"max": 11, "min": 1}, "address": "Липецкая область, Чаплыгинский округ, п.Тупки, ул.Зеленая, д.56", "website": "https://sh-tupki-r42.gosweb.gosuslugi.ru/", "aoop_url": null, "director": {"name": "Аксёнова Вера Николаевна", "email": "sc-tupki@schools48.ru", "phone": ""}, "conditions": [], "description": null, "district_id": 205, "aoop_programs": [], "conditionsAdmission": []}	{"id": 9, "name": "МБОУ ОШ п. Тупки", "type": "school", "range": {"max": 11, "min": 1}, "address": "Липецкая область, Чаплыгинский округ, п. Тупки, ул. Зеленая, д. 56", "website": "https://sh-tupki-r42.gosweb.gosuslugi.ru/", "aoop_url": null, "director": {"id": 9, "name": "Аксёнова Вера Николаевна", "email": "sc-tupki@schools48.ru"}, "conditions": [], "description": null, "district_id": 205, "aoop_programs": [], "conditionsAdmission": []}	2026-07-04 21:32:04.966263
-26	1	UPDATE	institutions	7	{"name": "МБОУ ОШ с. Пиково", "type": "school", "range": {"max": 11, "min": 1}, "address": "399932, Липецкая область, Чаплыгинский район, село Пиково, ул. Школьная д.2", "website": "https://sh-pikovo-r42.gosweb.gosuslugi.ru/", "aoop_url": null, "director": {"name": "Белкина Галина Владимировна", "email": "galyabelckina@yandex.ru", "phone": ""}, "conditions": [], "description": null, "district_id": 205, "aoop_programs": [], "conditionsAdmission": ["attestat"]}	{"id": 7, "name": "МБОУ ОШ с. Пиково", "type": "school", "range": {"max": 11, "min": 1}, "address": "399932, Липецкая область, Чаплыгинский округ, село Пиково, ул. Школьная д.2", "website": "https://sh-pikovo-r42.gosweb.gosuslugi.ru/", "aoop_url": null, "director": {"id": 7, "name": "Белкина Галина Владимировна", "email": "galyabelckina@yandex.ru"}, "conditions": [], "description": null, "district_id": 205, "aoop_programs": [], "conditionsAdmission": []}	2026-07-04 21:35:47.060563
-27	1	UPDATE	institutions	8	{"name": "МБОУ ОШ с.Нарышкино", "type": "school", "range": {"max": 11, "min": 1}, "address": "399933 Липецкая область, Чаплыгинский район, д. Лозовка", "website": "https://sh-naryshkino-lozovka-r42.gosweb.gosuslugi.ru/", "aoop_url": null, "director": {"name": "Малявина Елена Анатольевна", "email": "narschool2015@mail.ru", "phone": ""}, "conditions": [], "description": null, "district_id": 205, "aoop_programs": [], "conditionsAdmission": ["attestat"]}	{"id": 8, "name": "МБОУ ОШ с. Нарышкино", "type": "school", "range": {"max": 11, "min": 1}, "address": "399933 Липецкая область, Чаплыгинский округ, д. Лозовка", "website": "https://sh-naryshkino-lozovka-r42.gosweb.gosuslugi.ru/", "aoop_url": null, "director": {"id": 8, "name": "Малявина Елена Анатольевна", "email": "narschool2015@mail.ru"}, "conditions": [], "description": null, "district_id": 205, "aoop_programs": [], "conditionsAdmission": []}	2026-07-04 21:39:59.762104
-28	1	UPDATE	institutions	5	{"name": "МБОУ СШ с. Колыбельское", "type": "school", "range": {"max": 11, "min": 1}, "address": "399947, Липецкая область. Чаплыгинский район, с. Колыбельское, ул. Центральная, д. 35", "website": "https://kolibschool.gosuslugi.ru/", "aoop_url": null, "director": {"name": "Толмачева Ирина Александровна", "email": "iratolmacheva.1982@mail.ru", "phone": ""}, "conditions": [], "description": null, "district_id": 205, "aoop_programs": [], "conditionsAdmission": ["attestat"]}	{"id": 5, "name": "МБОУ СШ с. Колыбельское", "type": "school", "range": {"max": 11, "min": 1}, "address": "399947, Липецкая область. Чаплыгинский округ, с. Колыбельское, ул. Центральная, д. 35", "website": "https://kolibschool.gosuslugi.ru/", "aoop_url": null, "director": {"id": 5, "name": "Толмачева Ирина Александровна", "email": "iratolmacheva.1982@mail.ru"}, "conditions": [], "description": null, "district_id": 205, "aoop_programs": [], "conditionsAdmission": []}	2026-07-04 21:40:27.749866
-29	1	UPDATE	institutions	4	{"name": "МБОУ СШ с.Троекурово", "type": "school", "range": {"max": 11, "min": 1}, "address": null, "website": "https://sh-troekurovo-r42.gosweb.gosuslugi.ru/", "aoop_url": null, "director": {"name": "Еремин Федор Николаевич", "email": "sc-troekur@schools48.ru", "phone": ""}, "conditions": [], "description": null, "district_id": 205, "aoop_programs": [], "conditionsAdmission": ["attestat"]}	{"id": 4, "name": "МБОУ СШ с. Троекурово", "type": "school", "range": {"max": 11, "min": 1}, "address": null, "website": "https://sh-troekurovo-r42.gosweb.gosuslugi.ru/", "aoop_url": null, "director": {"id": 4, "name": "Еремин Федор Николаевич", "email": "sc-troekur@schools48.ru"}, "conditions": [], "description": null, "district_id": 205, "aoop_programs": [], "conditionsAdmission": []}	2026-07-04 21:40:46.336333
-30	1	UPDATE	institutions	1	{"name": "МБОУ СШ №1 им. Героя Советского Союза Кузнецова Н.А.", "type": "school", "range": {"max": 11, "min": 1}, "address": "РФ 399900 Липецкая область, Чаплыгинский район, город Чаплыгин, улица Свободы, дом 2 а", "website": "https://shkola1-chap.gosuslugi.ru/", "aoop_url": null, "director": {"name": "Подлесных Оксана Анатольевна", "email": "shkola158@mail.ru", "phone": ""}, "conditions": [], "description": null, "district_id": 205, "aoop_programs": [], "conditionsAdmission": ["attestat"]}	{"id": 1, "name": "МБОУ СШ №1 им. Героя Советского Союза Кузнецова Н.А.", "type": "school", "range": {"max": 11, "min": 1}, "address": "РФ 399900 Липецкая область, Чаплыгинский округ, город Чаплыгин, улица Свободы, дом 2 а", "website": "https://shkola1-chap.gosuslugi.ru/", "aoop_url": null, "director": {"id": 1, "name": "Подлесных Оксана Анатольевна", "email": "shkola158@mail.ru"}, "conditions": [], "description": null, "district_id": 205, "aoop_programs": [], "conditionsAdmission": []}	2026-07-04 21:41:23.239361
-31	1	UPDATE	institutions	6	{"name": "МБОУ СШ №1 с. Кривополянье", "type": "school", "range": {"max": 11, "min": 1}, "address": "399940, Липецкая область, Чаплыгинский район, село Кривополянье, улица Дзержинского, дом 35.", "website": "https://sh1-krivopolyane-r42.gosweb.gosuslugi.ru/", "aoop_url": null, "director": {"name": "Батищева Ирина Николаевна", "email": "batisheva.71@mail.ru", "phone": ""}, "conditions": [], "description": null, "district_id": 205, "aoop_programs": [], "conditionsAdmission": ["attestat"]}	{"id": 6, "name": "МБОУ СШ №1 с. Кривополянье", "type": "school", "range": {"max": 11, "min": 1}, "address": "399940, Липецкая область, Чаплыгинский округ, село Кривополянье, улица Дзержинского, дом 35.", "website": "https://sh1-krivopolyane-r42.gosweb.gosuslugi.ru/", "aoop_url": null, "director": {"id": 6, "name": "Батищева Ирина Николаевна", "email": "batisheva.71@mail.ru"}, "conditions": [], "description": null, "district_id": 205, "aoop_programs": [], "conditionsAdmission": []}	2026-07-04 21:41:41.314061
-32	1	UPDATE	institutions	2	{"name": "МБОУ СШ №2 г.Чаплыгина", "type": "school", "range": {"max": 11, "min": 1}, "address": "399900 Липецкая область, Чаплыгинский район, город Чаплыгин, улица Ленина, дом", "website": "https://sch2-chaplygin.gosuslugi.ru/", "aoop_url": null, "director": {"name": "Степочкина Ольга Сергеевна", "email": "sc2ch@schools48.ru", "phone": ""}, "conditions": [], "description": null, "district_id": 205, "aoop_programs": [], "conditionsAdmission": ["attestat"]}	{"id": 2, "name": "МБОУ СШ №2 г. Чаплыгина", "type": "school", "range": {"max": 11, "min": 1}, "address": "399900 Липецкая область, Чаплыгинский округ, город Чаплыгин, улица Ленина, дом", "website": "https://sch2-chaplygin.gosuslugi.ru/", "aoop_url": null, "director": {"id": 2, "name": "Степочкина Ольга Сергеевна", "email": "sc2ch@schools48.ru"}, "conditions": [], "description": null, "district_id": 205, "aoop_programs": [], "conditionsAdmission": []}	2026-07-04 21:41:57.594876
-33	1	UPDATE	institutions	3	{"name": "МБОУ СШ №4 г.Чаплыгина имени П.П.Семёнова-Тян-Шанского", "type": "school", "range": {"max": 11, "min": 1}, "address": "399902, Липецкая область, город Чаплыгин, улица Советская, дом 10А", "website": "https://sch4chaplygin.gosuslugi.ru/", "aoop_url": null, "director": {"name": "Яковлева Татьяна Сергеевна", "email": "sch4chaplygin@yandex.ru", "phone": ""}, "conditions": [], "description": null, "district_id": 205, "aoop_programs": [], "conditionsAdmission": ["attestat"]}	{"id": 3, "name": "МБОУ СШ №4 г. Чаплыгина имени П.П. Семёнова-Тян-Шанского", "type": "school", "range": {"max": 11, "min": 1}, "address": "399902, Липецкая область, город Чаплыгин, улица Советская, дом 10А", "website": "https://sch4chaplygin.gosuslugi.ru/", "aoop_url": null, "director": {"id": 3, "name": "Яковлева Татьяна Сергеевна", "email": "sch4chaplygin@yandex.ru"}, "conditions": [], "description": null, "district_id": 205, "aoop_programs": [], "conditionsAdmission": []}	2026-07-04 21:42:25.779652
-34	1	UPDATE	institutions	76	{"name": "Муниципальное бюджетное дошкольное образовательное учреждение детский сад «Колосок» села Новое Петелино Чаплыгинского муниципального района Липецкой области", "type": "preschool", "range": {"max": 7, "min": 2}, "address": "399915 Липецкая область Чаплыгинский район улица Молодежная дом 10", "website": "https://dskolosok-petelino.gosuslugi.ru/", "aoop_url": null, "director": {"name": "Черешнева Ирина Геннадьевна", "email": "irina.novoepetelino@yandex.ru", "phone": ""}, "conditions": [], "description": null, "district_id": 205, "aoop_programs": [], "conditionsAdmission": ["attestat"]}	{"id": 76, "name": "Муниципальное бюджетное дошкольное образовательное учреждение детский сад «Колосок» села Новое Петелино Чаплыгинского муниципального района Липецкой области", "type": "preschool", "range": {"max": 7, "min": 2}, "address": "399915 Липецкая область Чаплыгинский округ улица Молодежная дом 10", "website": "https://dskolosok-petelino.gosuslugi.ru/", "aoop_url": null, "director": {"id": 75, "name": "Черешнева Ирина Геннадьевна", "email": "irina.novoepetelino@yandex.ru"}, "conditions": [], "description": null, "district_id": 205, "aoop_programs": [], "conditionsAdmission": []}	2026-07-04 21:43:13.450304
-35	1	UPDATE	institutions	76	{"name": "Муниципальное бюджетное дошкольное образовательное учреждение детский сад «Колосок» села Новое Петелино Чаплыгинского муниципального района Липецкой области", "type": "preschool", "range": {"max": 7, "min": 2}, "address": "399915 Липецкая область Чаплыгинский округ улица Молодежная дом 10", "website": "https://dskolosok-petelino.gosuslugi.ru/", "aoop_url": null, "director": {"name": "Черешнева Ирина Геннадьевна", "email": "irina.novoepetelino@yandex.ru", "phone": ""}, "conditions": [], "description": null, "district_id": 205, "aoop_programs": [], "conditionsAdmission": []}	{"id": 76, "name": "Муниципальное бюджетное дошкольное образовательное учреждение детский сад «Колосок» села Новое Петелино Чаплыгинского муниципального района Липецкой области", "type": "preschool", "range": {"max": 7, "min": 2}, "address": "399915 Липецкая область Чаплыгинский округ село Новое Петелино улица Молодежная дом 10", "website": "https://dskolosok-petelino.gosuslugi.ru/", "aoop_url": null, "director": {"id": 75, "name": "Черешнева Ирина Геннадьевна", "email": "irina.novoepetelino@yandex.ru"}, "conditions": [], "description": null, "district_id": 205, "aoop_programs": [], "conditionsAdmission": []}	2026-07-04 21:44:05.367938
-36	1	UPDATE	institutions	52	{"name": "ГБОУ «Специальная школа – интернат г. Усмань»", "type": "school_internat", "range": {"max": 11, "min": 1}, "address": "399370, Липецкая область, город Усмань, улица Басова, дом 5", "website": "https://sh-internat-usman24.gosuslugi.ru/", "aoop_url": "https://sh-internat-usman24.gosuslugi.ru/svedeniya-ob-obrazovatelnoy-organizatsii/obrazovanie/", "director": {"name": "Беляева Олеся Анатольевна", "email": "sh.internat.usman@yandex.ru", "phone": "8(47472) 23173 8(474"}, "conditions": ["autism", "mental_retardation", "multiple_disorders", "musculoskeletal_impairment"], "description": null, "district_id": 203, "aoop_programs": [{"id": 55, "name": "Адаптированная основная образовательная программа начального общего образования для обучающихся с НОДА с умеренной, тяжелой, глубокой умственной отсталостью (интеллектуальными нарушениями), ТМНР (вариант 6.4)"}, {"id": 58, "name": "Адаптированная основная общеобразовательная программа начального общего образования для обучающихся с РАС с умеренной, тяжелой, глубокой умственной отсталостью (интеллектуальными нарушениями), ТМНР (вариант 8.4)"}, {"id": 57, "name": "Адаптированная основная общеобразовательная программа образования обучающихся с легкой умственной отсталостью (интеллектуальными нарушениями) (вариант 1)"}, {"id": 56, "name": "Адаптированная основная общеобразовательная программа образования обучающихся с умеренной, тяжелой, глубокой умственной отсталостью (интеллектуальными нарушениями), тяжелыми и множественными нарушениями развития (вариант 2)"}, {"id": 55, "name": "Адаптированная основная образовательная программа начального общего образования для обучающихся с НОДА с умеренной, тяжелой, глубокой умственной отсталостью (интеллектуальными нарушениями), ТМНР (вариант 6.4)"}, {"id": 56, "name": "Адаптированная основная общеобразовательная программа образования обучающихся с умеренной, тяжелой, глубокой умственной отсталостью (интеллектуальными нарушениями), тяжелыми и множественными нарушениями развития (вариант 2)"}, {"id": 57, "name": "Адаптированная основная общеобразовательная программа образования обучающихся с легкой умственной отсталостью (интеллектуальными нарушениями) (вариант 1)"}, {"id": 58, "name": "Адаптированная основная общеобразовательная программа начального общего образования для обучающихся с РАС с умеренной, тяжелой, глубокой умственной отсталостью (интеллектуальными нарушениями), ТМНР (вариант 8.4)"}, {"id": 58, "name": "Адаптированная основная общеобразовательная программа начального общего образования для обучающихся с РАС с умеренной, тяжелой, глубокой умственной отсталостью (интеллектуальными нарушениями), ТМНР (вариант 8.4)"}, {"id": 55, "name": "Адаптированная основная образовательная программа начального общего образования для обучающихся с НОДА с умеренной, тяжелой, глубокой умственной отсталостью (интеллектуальными нарушениями), ТМНР (вариант 6.4)"}, {"id": 56, "name": "Адаптированная основная общеобразовательная программа образования обучающихся с умеренной, тяжелой, глубокой умственной отсталостью (интеллектуальными нарушениями), тяжелыми и множественными нарушениями развития (вариант 2)"}, {"id": 57, "name": "Адаптированная основная общеобразовательная программа образования обучающихся с легкой умственной отсталостью (интеллектуальными нарушениями) (вариант 1)"}, {"id": 55, "name": "Адаптированная основная образовательная программа начального общего образования для обучающихся с НОДА с умеренной, тяжелой, глубокой умственной отсталостью (интеллектуальными нарушениями), ТМНР (вариант 6.4)"}, {"id": 58, "name": "Адаптированная основная общеобразовательная программа начального общего образования для обучающихся с РАС с умеренной, тяжелой, глубокой умственной отсталостью (интеллектуальными нарушениями), ТМНР (вариант 8.4)"}, {"id": 57, "name": "Адаптированная основная общеобразовательная программа образования обучающихся с легкой умственной отсталостью (интеллектуальными нарушениями) (вариант 1)"}, {"id": 56, "name": "Адаптированная основная общеобразовательная программа образования обучающихся с умеренной, тяжелой, глубокой умственной отсталостью (интеллектуальными нарушениями), тяжелыми и множественными нарушениями развития (вариант 2)"}], "conditionsAdmission": ["certificate"]}	{"id": 52, "name": "ГБОУ «Специальная школа – интернат г. Усмань»", "type": "school_internat", "range": {"max": 11, "min": 1}, "address": "399370, Липецкая область, город Усмань, улица Басова, дом 5", "website": "https://sh-internat-usman24.gosuslugi.ru/", "aoop_url": "https://sh-internat-usman24.gosuslugi.ru/svedeniya-ob-obrazovatelnoy-organizatsii/obrazovanie/", "director": {"id": 51, "name": "Беляева Олеся Анатольевна", "email": "sh.internat.usman@yandex.ru", "phone": "8 (4747) 223173"}, "conditions": ["musculoskeletal_impairment", "mental_retardation", "autism", "multiple_disorders"], "description": null, "district_id": 203, "aoop_programs": [{"name": "Адаптированная основная образовательная программа начального общего образования для обучающихся с НОДА с умеренной, тяжелой, глубокой умственной отсталостью (интеллектуальными нарушениями), ТМНР (вариант 6.4)"}, {"name": "Адаптированная основная общеобразовательная программа образования обучающихся с умеренной, тяжелой, глубокой умственной отсталостью (интеллектуальными нарушениями), тяжелыми и множественными нарушениями развития (вариант 2)"}, {"name": "Адаптированная основная общеобразовательная программа образования обучающихся с легкой умственной отсталостью (интеллектуальными нарушениями) (вариант 1)"}, {"name": "Адаптированная основная общеобразовательная программа начального общего образования для обучающихся с РАС с умеренной, тяжелой, глубокой умственной отсталостью (интеллектуальными нарушениями), ТМНР (вариант 8.4)"}], "conditionsAdmission": ["certificate"]}	2026-07-04 21:47:59.795336
-37	1	UPDATE	institutions	43	{"name": "ГОБПОУ «Усманский промышленно-технологический колледж»", "type": "spo", "range": {"max": null, "min": null}, "address": "399370, Липецкая область, г. Усмань, ул. Ленина, 2", "website": "https://www.usmcollege.ru/", "aoop_url": null, "director": {"name": "Афанасьев Юрий Владимирович", "email": "usmagrokol@mail.ru", "phone": "8 (47472) 4-05-16"}, "conditions": [], "description": null, "district_id": 203, "aoop_programs": [], "conditionsAdmission": ["attestat"]}	{"id": 43, "name": "ГОБПОУ «Усманский промышленно-технологический колледж»", "type": "spo", "range": {"max": null, "min": null}, "address": "399370, Липецкая область, г. Усмань, ул. Ленина, 2", "website": "https://www.usmcollege.ru/", "aoop_url": null, "director": {"id": 42, "name": "Афанасьев Юрий Владимирович", "email": "usmagrokol@mail.ru", "phone": "8 (4747) 24-05-16"}, "conditions": [], "description": null, "district_id": 203, "aoop_programs": [], "conditionsAdmission": ["attestat"]}	2026-07-04 21:48:37.807371
-38	1	UPDATE	institutions	35	{"name": "ГОБПОУ «УМПК»", "type": "spo", "range": {"max": null, "min": null}, "address": "Липецкая область, г. Усмань, ул. К.Маркса, д.42", "website": "https://college-umpk.gosuslugi.ru/", "aoop_url": "https://docs.yandex.ru/docs/view?url=ya-disk-public%3A%2F%2F7a1OGfEs%2FRKyMGJ5fY0g4LvZTnolwxXLGxYnUD7%2B6m6CTfRaWLFKg1IJjQXujuJ2q%2FJ6bpmRyOJonT3VoXnDag%3D%3D&name=%2B%D0%BE%D0%BF%20%D0%A0%D0%B0%D0%B1%D0%BE%D1%87%D0%B8%D0%B9%20%D0%B7%D0%B5%D0%BB%D0%B5%D0%BD%D0%BE%D0%B3%D0%BE%20%D1%85%D0%BE%D0%B7%D0%B2%D0%B0%D0%B2.pdf&nosw=1", "director": {"name": "Смольянинов Олег Алексеевич", "email": "uspk48@yandex.ru", "phone": "+7 (47472) 21459"}, "conditions": [], "description": null, "district_id": 203, "aoop_programs": [{"id": 11, "name": "Адаптированная образовательная программа профессиональной подготовки обучающихся с ограниченными возможностями здоровья на базе выпускников специальных (коррекционных) школ VIII вида без получения среднего общего образования по профессии 13459 Рабочий зел"}], "conditionsAdmission": ["attestat"]}	{"id": 35, "name": "ГОБПОУ «УМПК»", "type": "spo", "range": {"max": null, "min": null}, "address": "Липецкая область, г. Усмань, ул. К.Маркса, д.42", "website": "https://college-umpk.gosuslugi.ru/", "aoop_url": "https://docs.yandex.ru/docs/view?url=ya-disk-public%3A%2F%2F7a1OGfEs%2FRKyMGJ5fY0g4LvZTnolwxXLGxYnUD7%2B6m6CTfRaWLFKg1IJjQXujuJ2q%2FJ6bpmRyOJonT3VoXnDag%3D%3D&name=%2B%D0%BE%D0%BF%20%D0%A0%D0%B0%D0%B1%D0%BE%D1%87%D0%B8%D0%B9%20%D0%B7%D0%B5%D0%BB%D0%B5%D0%BD%D0%BE%D0%B3%D0%BE%20%D1%85%D0%BE%D0%B7%D0%B2%D0%B0%D0%B2.pdf&nosw=1", "director": {"id": 34, "name": "Смольянинов Олег Алексеевич", "email": "uspk48@yandex.ru", "phone": "+7 (4747) 221459"}, "conditions": [], "description": null, "district_id": 203, "aoop_programs": [{"name": "Адаптированная образовательная программа профессиональной подготовки обучающихся с ограниченными возможностями здоровья на базе выпускников специальных (коррекционных) школ VIII вида без получения среднего общего образования по профессии 13459 Рабочий зел"}], "conditionsAdmission": ["attestat"]}	2026-07-04 21:48:50.639626
-39	1	UPDATE	institutions	46	{"name": "ГБОУ Липецкой области «Специальная школа-интернат с. Вторые Тербуны»", "type": "school_internat", "range": {"max": 11, "min": 1}, "address": "Липецкая область, Тербунский район, с. Вторые Тербуны, ул. Советская, д. 54", "website": "https://internat2e.ru/", "aoop_url": "https://terbunyinter.gosuslugi.ru/netcat_files/33/46/AOOP_OUO_26_variant_1.pdf", "director": {"name": "Демидов Сергей Николаевич", "email": "te2e@mail.ru", "phone": "47474) 2-83-84"}, "conditions": ["autism", "mental_retardation", "multiple_disorders"], "description": null, "district_id": 202, "aoop_programs": [{"id": 21, "name": "Адаптированная основная общеобразовательная программа образования обучающихся с легкой умственной отсталостью (интеллектуальными нарушениями) (вариант 1)"}, {"id": 22, "name": "Адаптированная основная общеобразовательная программа образования обучающихся с умеренной, тяжелой и глубокой умственной отсталостью (интеллектуальными нарушениями), тяжелыми и множественными нарушениями развития (вариант 2)"}, {"id": 23, "name": "Адаптированная основная общеобразовательная программа начального общего образования обучающихся с расстройствами аутистического спектра (вариант 8.4)"}, {"id": 21, "name": "Адаптированная основная общеобразовательная программа образования обучающихся с легкой умственной отсталостью (интеллектуальными нарушениями) (вариант 1)"}, {"id": 22, "name": "Адаптированная основная общеобразовательная программа образования обучающихся с умеренной, тяжелой и глубокой умственной отсталостью (интеллектуальными нарушениями), тяжелыми и множественными нарушениями развития (вариант 2)"}, {"id": 23, "name": "Адаптированная основная общеобразовательная программа начального общего образования обучающихся с расстройствами аутистического спектра (вариант 8.4)"}, {"id": 21, "name": "Адаптированная основная общеобразовательная программа образования обучающихся с легкой умственной отсталостью (интеллектуальными нарушениями) (вариант 1)"}, {"id": 22, "name": "Адаптированная основная общеобразовательная программа образования обучающихся с умеренной, тяжелой и глубокой умственной отсталостью (интеллектуальными нарушениями), тяжелыми и множественными нарушениями развития (вариант 2)"}, {"id": 23, "name": "Адаптированная основная общеобразовательная программа начального общего образования обучающихся с расстройствами аутистического спектра (вариант 8.4)"}], "conditionsAdmission": ["certificate"]}	{"id": 46, "name": "ГБОУ Липецкой области «Специальная школа-интернат с. Вторые Тербуны»", "type": "school_internat", "range": {"max": 11, "min": 1}, "address": "Липецкая область, Тербунский округ, с. Вторые Тербуны, ул. Советская, д. 54", "website": "https://internat2e.ru/", "aoop_url": "https://terbunyinter.gosuslugi.ru/netcat_files/33/46/AOOP_OUO_26_variant_1.pdf", "director": {"id": 45, "name": "Демидов Сергей Николаевич", "email": "te2e@mail.ru", "phone": "+7 (4747) 42-83-84"}, "conditions": ["mental_retardation", "autism", "multiple_disorders"], "description": null, "district_id": 202, "aoop_programs": [{"name": "Адаптированная основная общеобразовательная программа образования обучающихся с легкой умственной отсталостью (интеллектуальными нарушениями) (вариант 1)"}, {"name": "Адаптированная основная общеобразовательная программа образования обучающихся с умеренной, тяжелой и глубокой умственной отсталостью (интеллектуальными нарушениями), тяжелыми и множественными нарушениями развития (вариант 2)"}, {"name": "Адаптированная основная общеобразовательная программа начального общего образования обучающихся с расстройствами аутистического спектра (вариант 8.4)"}], "conditionsAdmission": ["certificate"]}	2026-07-04 21:50:44.324821
-40	1	UPDATE	institutions	46	{"name": "ГБОУ Липецкой области «Специальная школа-интернат с. Вторые Тербуны»", "type": "school_internat", "range": {"max": 11, "min": 1}, "address": "Липецкая область, Тербунский округ, с. Вторые Тербуны, ул. Советская, д. 54", "website": "https://internat2e.ru/", "aoop_url": "https://terbunyinter.gosuslugi.ru/netcat_files/33/46/AOOP_OUO_26_variant_1.pdf", "director": {"name": "Демидов Сергей Николаевич", "email": "te2e@mail.ru", "phone": "+7 (4747) 42-83-84"}, "conditions": ["autism", "mental_retardation", "multiple_disorders"], "description": null, "district_id": 202, "aoop_programs": [{"id": 131, "name": "Адаптированная основная общеобразовательная программа образования обучающихся с легкой умственной отсталостью (интеллектуальными нарушениями) (вариант 1)"}, {"id": 132, "name": "Адаптированная основная общеобразовательная программа образования обучающихся с умеренной, тяжелой и глубокой умственной отсталостью (интеллектуальными нарушениями), тяжелыми и множественными нарушениями развития (вариант 2)"}, {"id": 133, "name": "Адаптированная основная общеобразовательная программа начального общего образования обучающихся с расстройствами аутистического спектра (вариант 8.4)"}, {"id": 131, "name": "Адаптированная основная общеобразовательная программа образования обучающихся с легкой умственной отсталостью (интеллектуальными нарушениями) (вариант 1)"}, {"id": 132, "name": "Адаптированная основная общеобразовательная программа образования обучающихся с умеренной, тяжелой и глубокой умственной отсталостью (интеллектуальными нарушениями), тяжелыми и множественными нарушениями развития (вариант 2)"}, {"id": 133, "name": "Адаптированная основная общеобразовательная программа начального общего образования обучающихся с расстройствами аутистического спектра (вариант 8.4)"}, {"id": 131, "name": "Адаптированная основная общеобразовательная программа образования обучающихся с легкой умственной отсталостью (интеллектуальными нарушениями) (вариант 1)"}, {"id": 132, "name": "Адаптированная основная общеобразовательная программа образования обучающихся с умеренной, тяжелой и глубокой умственной отсталостью (интеллектуальными нарушениями), тяжелыми и множественными нарушениями развития (вариант 2)"}, {"id": 133, "name": "Адаптированная основная общеобразовательная программа начального общего образования обучающихся с расстройствами аутистического спектра (вариант 8.4)"}], "conditionsAdmission": ["certificate"]}	{"id": 46, "name": "ГБОУ Липецкой области «Специальная школа-интернат с. Вторые Тербуны»", "type": "school_internat", "range": {"max": 11, "min": 1}, "address": "Липецкая область, Тербунский округ, с. Вторые Тербуны, ул. Советская, д. 54", "website": "https://internat2e.ru/", "aoop_url": "https://terbunyinter.gosuslugi.ru/netcat_files/33/46/AOOP_OUO_26_variant_1.pdf", "director": {"id": 45, "name": "Демидов Сергей Николаевич", "email": "te2e@mail.ru", "phone": "+74747428384"}, "conditions": ["mental_retardation", "autism", "multiple_disorders"], "description": null, "district_id": 202, "aoop_programs": [{"name": "Адаптированная основная общеобразовательная программа образования обучающихся с легкой умственной отсталостью (интеллектуальными нарушениями) (вариант 1)"}, {"name": "Адаптированная основная общеобразовательная программа образования обучающихся с умеренной, тяжелой и глубокой умственной отсталостью (интеллектуальными нарушениями), тяжелыми и множественными нарушениями развития (вариант 2)"}, {"name": "Адаптированная основная общеобразовательная программа начального общего образования обучающихся с расстройствами аутистического спектра (вариант 8.4)"}], "conditionsAdmission": ["certificate"]}	2026-07-04 21:56:56.591274
-41	1	UPDATE	institutions	28	{"name": "ГОБПОУ «ЛТПИТУ»", "type": "spo", "range": {"max": null, "min": null}, "address": "399610, Липецкая область, г. Лебедянь, ул. Ленина, дом 32", "website": "https://ltpitu.gosuslugi.ru/", "aoop_url": null, "director": {"name": "Голикова Светлана Алексеевна", "email": "ltpitu@лтпиту.рф", "phone": "+7 (47466) 5-36-19"}, "conditions": [], "description": null, "district_id": 198, "aoop_programs": [], "conditionsAdmission": ["attestat"]}	{"id": 28, "name": "ГОБПОУ «ЛТПИТУ»", "type": "spo", "range": {"max": null, "min": null}, "address": "399610, Липецкая область, г. Лебедянь, ул. Ленина, дом 32", "website": "https://ltpitu.gosuslugi.ru/", "aoop_url": null, "director": {"id": 27, "name": "Голикова Светлана Алексеевна", "email": "ltpitu@xn--h1afmlcg.xn--p1ai", "phone": "+74746653619"}, "conditions": [], "description": null, "district_id": 198, "aoop_programs": [], "conditionsAdmission": ["attestat"]}	2026-07-04 21:58:09.759184
-42	1	UPDATE	institutions	28	{"name": "ГОБПОУ «ЛТПИТУ»", "type": "spo", "range": {"max": null, "min": null}, "address": "399610, Липецкая область, г. Лебедянь, ул. Ленина, дом 32", "website": "https://ltpitu.gosuslugi.ru/", "aoop_url": null, "director": {"name": "Голикова Светлана Алексеевна", "email": "ltpitu@xn--h1afmlcg.xn--p1ai", "phone": "+74746653619"}, "conditions": [], "description": null, "district_id": 198, "aoop_programs": [], "conditionsAdmission": ["attestat"]}	{"id": 28, "name": "ГОБПОУ «ЛТПИТУ»", "type": "spo", "range": {"max": null, "min": null}, "address": "399610, Липецкая область, г. Лебедянь, ул. Ленина, дом 32", "website": "https://ltpitu.gosuslugi.ru/", "aoop_url": null, "director": {"id": 27, "name": "Голикова Светлана Алексеевна", "email": "ltpitu@xn--h1afmlcg.xn--p1ai", "phone": "+74746653619"}, "conditions": [], "description": null, "district_id": 198, "aoop_programs": [], "conditionsAdmission": ["attestat"]}	2026-07-04 21:58:43.507758
-43	1	UPDATE	institutions	28	{"name": "ГОБПОУ «ЛТПИТУ»", "type": "spo", "range": {"max": null, "min": null}, "address": "399610, Липецкая область, г. Лебедянь, ул. Ленина, дом 32", "website": "https://ltpitu.gosuslugi.ru/", "aoop_url": null, "director": {"name": "Голикова Светлана Алексеевна", "email": "ltpitu@xn--h1afmlcg.xn--p1ai", "phone": "+74746653619"}, "conditions": [], "description": null, "district_id": 198, "aoop_programs": [], "conditionsAdmission": ["attestat"]}	{"id": 28, "name": "ГОБПОУ «ЛТПИТУ»", "type": "spo", "range": {"max": null, "min": null}, "address": "399610, Липецкая область, г. Лебедянь, ул. Ленина, дом 32", "website": "https://ltpitu.gosuslugi.ru/", "aoop_url": null, "director": {"id": 27, "name": "Голикова Светлана Алексеевна", "email": "ltpitu@лтпиту.рф", "phone": "+74746653619"}, "conditions": [], "description": null, "district_id": 198, "aoop_programs": [], "conditionsAdmission": ["attestat"]}	2026-07-04 22:05:32.624674
-44	1	UPDATE	institutions	34	{"name": "ГОБПОУ «Лебедянский Педагогический Колледж»", "type": "spo", "range": {"max": null, "min": null}, "address": "Липецкая область, г. Лебедянь, ул. Мира, д. 1", "website": "https://lebpedcol.ru", "aoop_url": null, "director": {"name": "Шовская Ольга Петровна", "email": "pedcol@lebedyan.lipetsk.ru", "phone": "47466) 5-12-48"}, "conditions": [], "description": null, "district_id": 198, "aoop_programs": [], "conditionsAdmission": ["attestat"]}	{"id": 34, "name": "ГОБПОУ «Лебедянский Педагогический Колледж»", "type": "spo", "range": {"max": null, "min": null}, "address": "Липецкая область, г. Лебедянь, ул. Мира, д. 1", "website": "https://lebpedcol.ru", "aoop_url": null, "director": {"id": 33, "name": "Шовская Ольга Петровна", "email": "pedcol@lebedyan.lipetsk.ru", "phone": "+74746651248"}, "conditions": [], "description": null, "district_id": 198, "aoop_programs": [], "conditionsAdmission": ["attestat"]}	2026-07-04 22:06:20.859236
-45	1	UPDATE	institutions	31	{"name": "ГОБПОУ «Чаплыгинский аграрный колледж»", "type": "spo", "range": {"max": null, "min": null}, "address": "399900, Липецкая обл., г. Чаплыгин, ул. Московская, д. 3", "website": "https://college-chak-r42.gosweb.gosuslugi.ru/", "aoop_url": null, "director": {"name": "Ермолов Юрий Алексеевич", "email": "cac@chaplygin.lipetsk.ru", "phone": "8(4747) 52-17-97"}, "conditions": [], "description": null, "district_id": 205, "aoop_programs": [], "conditionsAdmission": ["attestat"]}	{"id": 31, "name": "ГОБПОУ «Чаплыгинский аграрный колледж»", "type": "spo", "range": {"max": null, "min": null}, "address": "399900, Липецкая обл., г. Чаплыгин, ул. Московская, д. 3", "website": "https://college-chak-r42.gosweb.gosuslugi.ru/", "aoop_url": null, "director": {"id": 30, "name": "Ермолов Юрий Алексеевич", "email": "cac@chaplygin.lipetsk.ru", "phone": "+74747521797"}, "conditions": [], "description": null, "district_id": 205, "aoop_programs": [], "conditionsAdmission": ["attestat"]}	2026-07-04 22:06:55.322393
-46	1	UPDATE	institutions	73	{"name": "МБДОУ д/с \\" Теремок\\" с. Конюшки Чаплыгинский округ Липецкая область", "type": "preschool", "range": {"max": 7, "min": 2}, "address": "Липецкая область Чаплыгинский округ село Конюшки улица Центральная дом 220 индекс 399911", "website": "https://ds-teremok-konyushki-r42.gosweb.gosuslugi.ru/", "aoop_url": null, "director": {"name": "Кудряшова Любовь Викторовна", "email": "", "phone": "8 (4747) 52-17-33"}, "conditions": [], "description": null, "district_id": 205, "aoop_programs": [], "conditionsAdmission": []}	{"id": 73, "name": "МБДОУ д/с \\" Теремок\\" с. Конюшки Чаплыгинский округ Липецкая область", "type": "preschool", "range": {"max": 7, "min": 2}, "address": "Липецкая область Чаплыгинский округ село Конюшки улица Центральная дом 220 индекс 399911", "website": "https://ds-teremok-konyushki-r42.gosweb.gosuslugi.ru/", "aoop_url": null, "director": {"id": 72, "name": "Кудряшова Любовь Викторовна", "phone": "+74747521733"}, "conditions": [], "description": null, "district_id": 205, "aoop_programs": [], "conditionsAdmission": []}	2026-07-04 22:07:13.996205
-47	1	UPDATE	institutions	26	{"name": "ГОБПОУ «Конь-Колодезский аграрный техникум»", "type": "spo", "range": {"max": null, "min": null}, "address": "Липецкая область, Хлевенский округ, с. Конь-Колодезь, ул. Березовая аллея 74", "website": "https://kkolodez-edu.gosuslugi.ru/", "aoop_url": "https://kkolodez-edu.gosuslugi.ru/svedeniya-ob-organizatsii/dokumenty/adaptirovannaya-osnovnaya-obrazovatelnaya-programma-professionalnogo-obucheniya-po-professii-13450-rabochiy-zelenogo-hozyaystva.html", "director": {"name": "Жуликов Сергей Викторович", "email": "k-kol.teh@mail.ru", "phone": "+7 (47477) 3-52-30"}, "conditions": [], "description": null, "district_id": 204, "aoop_programs": [{"id": 5, "name": "Адаптированная основная образовательная программа профессионального обучения по профессии 13450 Кухонный рабочий"}, {"id": 6, "name": "Адаптированная основная образовательная программа профессионального обучения по профессии 13450 Рабочий зеленого хозяйства"}], "conditionsAdmission": ["attestat"]}	{"id": 26, "name": "ГОБПОУ «Конь-Колодезский аграрный техникум»", "type": "spo", "range": {"max": null, "min": null}, "address": "Липецкая область, Хлевенский округ, с. Конь-Колодезь, ул. Березовая аллея 74", "website": "https://kkolodez-edu.gosuslugi.ru/", "aoop_url": "https://kkolodez-edu.gosuslugi.ru/svedeniya-ob-organizatsii/dokumenty/adaptirovannaya-osnovnaya-obrazovatelnaya-programma-professionalnogo-obucheniya-po-professii-13450-rabochiy-zelenogo-hozyaystva.html", "director": {"id": 25, "name": "Жуликов Сергей Викторович", "email": "k-kol.teh@mail.ru", "phone": "+74747735230"}, "conditions": [], "description": null, "district_id": 204, "aoop_programs": [{"name": "Адаптированная основная образовательная программа профессионального обучения по профессии 13450 Кухонный рабочий"}, {"name": "Адаптированная основная образовательная программа профессионального обучения по профессии 13450 Рабочий зеленого хозяйства"}], "conditionsAdmission": ["attestat"]}	2026-07-04 22:08:17.149333
-48	1	UPDATE	institutions	45	{"name": "ГБОУ «Специальная школа-интернат г. Задонска»", "type": "school_internat", "range": {"max": 11, "min": 1}, "address": "399200, Липецкая область, Задонский район, г. Задонск, ул. Крупской, д. 13", "website": "https://zainternat.gosuslugi.ru/", "aoop_url": "https://zainternat.gosuslugi.ru/svedeniya-ob-obrazovatelnoy-organizatsii/obrazovanie/", "director": {"name": "Левченко Наталия Ивановна", "email": "zainternat@mail.ru", "phone": "+7 (47471) 2-32-47"}, "conditions": ["hearing_impairment", "mental_retardation"], "description": null, "district_id": 195, "aoop_programs": [{"id": 14, "name": "Адаптированная основная общеобразовательная программа начального общего образования глухих обучающихся (вариант 1.2)"}, {"id": 15, "name": "Адаптированная основная общеобразовательная программа начального общего образования глухих обучающихся (вариант 1.3)"}, {"id": 16, "name": "Адаптированная основная общеобразовательная программа начального общего образования для слабослышащих и позднооглохших обучающихся (вариант 2.2)"}, {"id": 17, "name": "Адаптированная основная образовательная программа основного общего образования для обучающихся с нарушениями слуха (вариант 1.2)"}, {"id": 18, "name": "Адаптированная основная образовательная программа основного общего образования для обучающихся с нарушениями слуха (вариант 2.2.2)"}, {"id": 19, "name": "программа образования обучающихся с нарушением интеллекта (для 1–9 классов) Вариант 1"}, {"id": 20, "name": "программа образования обучающихся с нарушением интеллекта (для 1–9 классов) Вариант 2"}, {"id": 14, "name": "Адаптированная основная общеобразовательная программа начального общего образования глухих обучающихся (вариант 1.2)"}, {"id": 15, "name": "Адаптированная основная общеобразовательная программа начального общего образования глухих обучающихся (вариант 1.3)"}, {"id": 16, "name": "Адаптированная основная общеобразовательная программа начального общего образования для слабослышащих и позднооглохших обучающихся (вариант 2.2)"}, {"id": 17, "name": "Адаптированная основная образовательная программа основного общего образования для обучающихся с нарушениями слуха (вариант 1.2)"}, {"id": 18, "name": "Адаптированная основная образовательная программа основного общего образования для обучающихся с нарушениями слуха (вариант 2.2.2)"}, {"id": 19, "name": "программа образования обучающихся с нарушением интеллекта (для 1–9 классов) Вариант 1"}, {"id": 20, "name": "программа образования обучающихся с нарушением интеллекта (для 1–9 классов) Вариант 2"}], "conditionsAdmission": ["certificate"]}	{"id": 45, "name": "ГБОУ «Специальная школа-интернат г. Задонска»", "type": "school_internat", "range": {"max": 11, "min": 1}, "address": "399200, Липецкая область, Задонский район, г. Задонск, ул. Крупской, д. 13", "website": "https://zainternat.gosuslugi.ru/", "aoop_url": "https://zainternat.gosuslugi.ru/svedeniya-ob-obrazovatelnoy-organizatsii/obrazovanie/", "director": {"id": 44, "name": "Левченко Наталия Ивановна", "email": "zainternat@mail.ru", "phone": "+74747123247"}, "conditions": ["hearing_impairment", "mental_retardation"], "description": null, "district_id": 195, "aoop_programs": [{"name": "Адаптированная основная общеобразовательная программа начального общего образования глухих обучающихся (вариант 1.2)"}, {"name": "Адаптированная основная общеобразовательная программа начального общего образования глухих обучающихся (вариант 1.3)"}, {"name": "Адаптированная основная общеобразовательная программа начального общего образования для слабослышащих и позднооглохших обучающихся (вариант 2.2)"}, {"name": "Адаптированная основная образовательная программа основного общего образования для обучающихся с нарушениями слуха (вариант 1.2)"}, {"name": "Адаптированная основная образовательная программа основного общего образования для обучающихся с нарушениями слуха (вариант 2.2.2)"}, {"name": "программа образования обучающихся с нарушением интеллекта (для 1–9 классов) Вариант 1"}, {"name": "программа образования обучающихся с нарушением интеллекта (для 1–9 классов) Вариант 2"}], "conditionsAdmission": ["certificate"]}	2026-07-04 22:09:09.918607
-49	1	UPDATE	institutions	38	{"name": "ГОБ ПОУ «Задонский политехнический техникум им. дважды героя Советского Союза М.Т. Степанищева»", "type": "spo", "range": {"max": null, "min": null}, "address": "Липецкая область, г. Задонск, ул. Труда, 20", "website": "https://tech-zpt-r42.gosweb.gosuslugi.ru/", "aoop_url": null, "director": {"name": "Дорохин Валерий Владимирович", "email": "zakollej@yandex.ru", "phone": "+7 (47471) 2-64-59"}, "conditions": [], "description": null, "district_id": 195, "aoop_programs": [], "conditionsAdmission": ["attestat"]}	{"id": 38, "name": "ГОБ ПОУ «Задонский политехнический техникум им. дважды героя Советского Союза М.Т. Степанищева»", "type": "spo", "range": {"max": null, "min": null}, "address": "Липецкая область, г. Задонск, ул. Труда, 20", "website": "https://tech-zpt-r42.gosweb.gosuslugi.ru/", "aoop_url": null, "director": {"id": 37, "name": "Дорохин Валерий Владимирович", "email": "zakollej@yandex.ru", "phone": "+74747126459"}, "conditions": [], "description": null, "district_id": 195, "aoop_programs": [], "conditionsAdmission": ["attestat"]}	2026-07-04 22:09:31.327776
-50	1	UPDATE	institutions	50	{"name": "ГБОУ «Специальная школа- интернат с. Ериловка»", "type": "school_internat", "range": {"max": 11, "min": 1}, "address": "399768, Липецкая область, Елецкий муниципальный район, сельское поселение Черкасский сельсовет, село Ериловка, ул. 40 лет Победы, дом 29.", "website": "https://sh-spck-int-erilovka-r42.gosweb.gosuslugi.ru", "aoop_url": "https://sh-spck-int-erilovka-r42.gosweb.gosuslugi.ru/svedeniya-ob-obrazovatelnoy-organizatsii/obrazovanie/", "director": {"name": "Самойлова Ольга Николаевна", "email": "sc-erilovka@schools48.ru", "phone": "+7(4742) 28-85-98"}, "conditions": ["autism", "mental_retardation"], "description": null, "district_id": 194, "aoop_programs": [{"id": 48, "name": "Адаптированная основная общеобразовательная программа начального общего образования обучающихся с расстройствами аутистического спектра (вариант 8.3)"}, {"id": 45, "name": "Адаптированная основная общеобразовательная программа начального общего образования обучающихся с расстройствами аутистического спектра (вариант 8.4)"}, {"id": 46, "name": "Адаптированная основная общеобразовательная программа образования обучающихся с умственной отсталостью (интеллектуальными нарушениями) (Вариант 1)"}, {"id": 47, "name": "Адаптированная основная общеобразовательная программа образования обучающихся с умственной отсталостью (интеллектуальными нарушениями) (Вариант 2)"}, {"id": 45, "name": "Адаптированная основная общеобразовательная программа начального общего образования обучающихся с расстройствами аутистического спектра (вариант 8.4)"}, {"id": 46, "name": "Адаптированная основная общеобразовательная программа образования обучающихся с умственной отсталостью (интеллектуальными нарушениями) (Вариант 1)"}, {"id": 47, "name": "Адаптированная основная общеобразовательная программа образования обучающихся с умственной отсталостью (интеллектуальными нарушениями) (Вариант 2)"}, {"id": 48, "name": "Адаптированная основная общеобразовательная программа начального общего образования обучающихся с расстройствами аутистического спектра (вариант 8.3)"}], "conditionsAdmission": ["certificate"]}	{"id": 50, "name": "ГБОУ «Специальная школа-интернат с. Ериловка»", "type": "school_internat", "range": {"max": 11, "min": 1}, "address": "399768, Липецкая область, Елецкий округ, сельское поселение Черкасский сельсовет, село Ериловка, ул. 40 лет Победы, дом 29.", "website": "https://sh-spck-int-erilovka-r42.gosweb.gosuslugi.ru", "aoop_url": "https://sh-spck-int-erilovka-r42.gosweb.gosuslugi.ru/svedeniya-ob-obrazovatelnoy-organizatsii/obrazovanie/", "director": {"id": 49, "name": "Самойлова Ольга Николаевна", "email": "sc-erilovka@schools48.ru", "phone": "+74742288598"}, "conditions": ["mental_retardation", "autism"], "description": null, "district_id": 194, "aoop_programs": [{"name": "Адаптированная основная общеобразовательная программа начального общего образования обучающихся с расстройствами аутистического спектра (вариант 8.4)"}, {"name": "Адаптированная основная общеобразовательная программа образования обучающихся с умственной отсталостью (интеллектуальными нарушениями) (Вариант 1)"}, {"name": "Адаптированная основная общеобразовательная программа образования обучающихся с умственной отсталостью (интеллектуальными нарушениями) (Вариант 2)"}, {"name": "Адаптированная основная общеобразовательная программа начального общего образования обучающихся с расстройствами аутистического спектра (вариант 8.3)"}], "conditionsAdmission": ["certificate"]}	2026-07-04 22:10:34.611146
-51	1	UPDATE	institutions	88	{"name": "Елецкий техникум железнодорожного транспорта — филиал Ростовского государственного университета путей сообщения.", "type": "vo", "range": {"max": null, "min": null}, "address": null, "website": null, "aoop_url": null, "director": {"name": "", "email": "", "phone": ""}, "conditions": [], "description": null, "district_id": 194, "aoop_programs": [], "conditionsAdmission": ["attestat"]}	{"id": 88, "name": "ЕТЖТ - филиал РГУПС", "type": "vo", "range": {"max": null, "min": null}, "address": "399774, Россия, ЦФО, Липецкая область, г. Елец, ул. Вермишева, д. 12", "website": "https://etgt.ru/index.php?option=com_content&task=view&id=35&Itemid=63", "aoop_url": null, "director": {"name": "Кузьмин Алексей Михайлович", "email": "elec@rgups.ru", "phone": "+74742272224"}, "conditions": [], "description": null, "district_id": 187, "aoop_programs": [], "conditionsAdmission": ["attestat"]}	2026-07-04 22:12:26.172071
-52	1	UPDATE	institutions	86	{"name": "Елецкий филиал Автономной некоммерческой организации высшего образования «Российский новый университет».", "type": "vo", "range": {"max": null, "min": null}, "address": null, "website": null, "aoop_url": null, "director": {"name": "", "email": "", "phone": ""}, "conditions": [], "description": null, "district_id": 194, "aoop_programs": [], "conditionsAdmission": ["attestat"]}	{"id": 86, "name": "Елецкий филиал АНО ВО «РосНОУ»", "type": "vo", "range": {"max": null, "min": null}, "address": "398050, г. Липецк, ул. Интернациональная, д. 3", "website": "https://eletsrosnou.ru/", "aoop_url": null, "director": {"name": "Гончарова Елена Александровна", "email": "lip@ranepa.ru", "phone": "+74742272224"}, "conditions": [], "description": null, "district_id": 186, "aoop_programs": [], "conditionsAdmission": ["attestat"]}	2026-07-04 22:15:16.753407
-53	1	UPDATE	institutions	51	{"name": "ГБОУ «Специальная школа-интернат г.Данков»", "type": "school_internat", "range": {"max": 11, "min": 1}, "address": "399852, Липецкая область, г.Данков, ул.Мира, д.42.", "website": "https://dvkorrsh.gosuslugi.ru", "aoop_url": "https://dvkorrsh.gosuslugi.ru/netcat_files/33/46/AOOP_var.1_2024_25.pdf", "director": {"name": "Аксенова Мария Васильевна", "email": "dvkorrsh@rambler.ru", "phone": "8 (47465)-6 -23-20 8"}, "conditions": ["autism", "mental_retardation", "multiple_disorders"], "description": null, "district_id": 190, "aoop_programs": [{"id": 49, "name": "Адаптированная основная общеобразовательная программа образования обучающихся с лёгкой умственной отсталостью (интеллектуальными нарушениями), (вариант 1), 1-12 классы"}, {"id": 50, "name": "Адаптированная основная общеобразовательная программа образования обучающихся с умеренной, тяжёлой, глубокой умственной отсталостью (интеллектуальными нарушениями), тяжёлыми и множественными нарушениями развития (вариант II) 1доп, 1-12 классы"}, {"id": 51, "name": "Адаптированная основная общеобразовательная программа начального общего образования обучающихся с расстройствами аутистического спектра (вариант 8.4)"}, {"id": 52, "name": "Адаптированная основная программа профессионального обучения –программа профессиональной подготовки по профессии «Швея»"}, {"id": 53, "name": "Адаптированная основная программа профессионального обучения – программа профессиональной подготовки по профессии «Рабочий по комплексному обслуживанию и ремонту зданий» 2-го разряда"}, {"id": 54, "name": "Адаптированная основная программа профессионального обучения – программа профессиональной подготовки по профессии рабочего «Овощевод»"}, {"id": 49, "name": "Адаптированная основная общеобразовательная программа образования обучающихся с лёгкой умственной отсталостью (интеллектуальными нарушениями), (вариант 1), 1-12 классы"}, {"id": 50, "name": "Адаптированная основная общеобразовательная программа образования обучающихся с умеренной, тяжёлой, глубокой умственной отсталостью (интеллектуальными нарушениями), тяжёлыми и множественными нарушениями развития (вариант II) 1доп, 1-12 классы"}, {"id": 51, "name": "Адаптированная основная общеобразовательная программа начального общего образования обучающихся с расстройствами аутистического спектра (вариант 8.4)"}, {"id": 52, "name": "Адаптированная основная программа профессионального обучения –программа профессиональной подготовки по профессии «Швея»"}, {"id": 53, "name": "Адаптированная основная программа профессионального обучения – программа профессиональной подготовки по профессии «Рабочий по комплексному обслуживанию и ремонту зданий» 2-го разряда"}, {"id": 54, "name": "Адаптированная основная программа профессионального обучения – программа профессиональной подготовки по профессии рабочего «Овощевод»"}, {"id": 49, "name": "Адаптированная основная общеобразовательная программа образования обучающихся с лёгкой умственной отсталостью (интеллектуальными нарушениями), (вариант 1), 1-12 классы"}, {"id": 50, "name": "Адаптированная основная общеобразовательная программа образования обучающихся с умеренной, тяжёлой, глубокой умственной отсталостью (интеллектуальными нарушениями), тяжёлыми и множественными нарушениями развития (вариант II) 1доп, 1-12 классы"}, {"id": 51, "name": "Адаптированная основная общеобразовательная программа начального общего образования обучающихся с расстройствами аутистического спектра (вариант 8.4)"}, {"id": 52, "name": "Адаптированная основная программа профессионального обучения –программа профессиональной подготовки по профессии «Швея»"}, {"id": 53, "name": "Адаптированная основная программа профессионального обучения – программа профессиональной подготовки по профессии «Рабочий по комплексному обслуживанию и ремонту зданий» 2-го разряда"}, {"id": 54, "name": "Адаптированная основная программа профессионального обучения – программа профессиональной подготовки по профессии рабочего «Овощевод»"}], "conditionsAdmission": ["certificate"]}	{"id": 51, "name": "ГБОУ «Специальная школа-интернат г. Данков»", "type": "school_internat", "range": {"max": 11, "min": 1}, "address": "399852, Липецкая область, г. Данков, ул. Мира, д. 42", "website": "https://dvkorrsh.gosuslugi.ru", "aoop_url": "https://dvkorrsh.gosuslugi.ru/netcat_files/33/46/AOOP_var.1_2024_25.pdf", "director": {"id": 50, "name": "Аксенова Мария Васильевна", "email": "dvkorrsh@rambler.ru", "phone": "+74746562320"}, "conditions": ["mental_retardation", "autism", "multiple_disorders"], "description": null, "district_id": 190, "aoop_programs": [{"name": "Адаптированная основная общеобразовательная программа образования обучающихся с лёгкой умственной отсталостью (интеллектуальными нарушениями), (вариант 1), 1-12 классы"}, {"name": "Адаптированная основная общеобразовательная программа образования обучающихся с умеренной, тяжёлой, глубокой умственной отсталостью (интеллектуальными нарушениями), тяжёлыми и множественными нарушениями развития (вариант II) 1доп, 1-12 классы"}, {"name": "Адаптированная основная общеобразовательная программа начального общего образования обучающихся с расстройствами аутистического спектра (вариант 8.4)"}, {"name": "Адаптированная основная программа профессионального обучения –программа профессиональной подготовки по профессии «Швея»"}, {"name": "Адаптированная основная программа профессионального обучения – программа профессиональной подготовки по профессии «Рабочий по комплексному обслуживанию и ремонту зданий» 2-го разряда"}, {"name": "Адаптированная основная программа профессионального обучения – программа профессиональной подготовки по профессии рабочего «Овощевод»"}], "conditionsAdmission": ["certificate"]}	2026-07-04 22:17:51.4907
-54	1	UPDATE	institutions	23	{"name": "ГОАПОУ ДАПТ", "type": "spo", "range": {"max": null, "min": null}, "address": "399850, Липецкая область, город Данков, улица Островского, дом 30", "website": "https://goapoudapt.gosuslugi.ru/", "aoop_url": null, "director": {"name": "Халдаров Сергей Сергеевич", "email": "goapoudapt@yandex.ru", "phone": "+7 (47465) 6-60-55"}, "conditions": [], "description": null, "district_id": 190, "aoop_programs": [], "conditionsAdmission": ["attestat"]}	{"id": 23, "name": "Государственное областное автономное профессиональное образовательное учреждение «Данковский агропромышленный техникум» (ГОАПОУ ДАПТ)", "type": "spo", "range": {"max": null, "min": null}, "address": "399850, Липецкая область, город Данков, улица Островского, дом 30", "website": "https://goapoudapt.gosuslugi.ru/", "aoop_url": null, "director": {"id": 22, "name": "Халдаров Сергей Сергеевич", "email": "goapoudapt@yandex.ru", "phone": "+74746566055"}, "conditions": [], "description": null, "district_id": 190, "aoop_programs": [], "conditionsAdmission": ["attestat"]}	2026-07-04 22:19:53.486818
-55	1	UPDATE	institutions	51	{"name": "ГБОУ «Специальная школа-интернат г. Данков»", "type": "school_internat", "range": {"max": 11, "min": 1}, "address": "399852, Липецкая область, г. Данков, ул. Мира, д. 42", "website": "https://dvkorrsh.gosuslugi.ru", "aoop_url": "https://dvkorrsh.gosuslugi.ru/netcat_files/33/46/AOOP_var.1_2024_25.pdf", "director": {"name": "Аксенова Мария Васильевна", "email": "dvkorrsh@rambler.ru", "phone": "+74746562320"}, "conditions": ["autism", "mental_retardation", "multiple_disorders"], "description": null, "district_id": 190, "aoop_programs": [{"id": 150, "name": "Адаптированная основная общеобразовательная программа образования обучающихся с лёгкой умственной отсталостью (интеллектуальными нарушениями), (вариант 1), 1-12 классы"}, {"id": 151, "name": "Адаптированная основная общеобразовательная программа образования обучающихся с умеренной, тяжёлой, глубокой умственной отсталостью (интеллектуальными нарушениями), тяжёлыми и множественными нарушениями развития (вариант II) 1доп, 1-12 классы"}, {"id": 152, "name": "Адаптированная основная общеобразовательная программа начального общего образования обучающихся с расстройствами аутистического спектра (вариант 8.4)"}, {"id": 153, "name": "Адаптированная основная программа профессионального обучения –программа профессиональной подготовки по профессии «Швея»"}, {"id": 154, "name": "Адаптированная основная программа профессионального обучения – программа профессиональной подготовки по профессии «Рабочий по комплексному обслуживанию и ремонту зданий» 2-го разряда"}, {"id": 155, "name": "Адаптированная основная программа профессионального обучения – программа профессиональной подготовки по профессии рабочего «Овощевод»"}, {"id": 150, "name": "Адаптированная основная общеобразовательная программа образования обучающихся с лёгкой умственной отсталостью (интеллектуальными нарушениями), (вариант 1), 1-12 классы"}, {"id": 151, "name": "Адаптированная основная общеобразовательная программа образования обучающихся с умеренной, тяжёлой, глубокой умственной отсталостью (интеллектуальными нарушениями), тяжёлыми и множественными нарушениями развития (вариант II) 1доп, 1-12 классы"}, {"id": 152, "name": "Адаптированная основная общеобразовательная программа начального общего образования обучающихся с расстройствами аутистического спектра (вариант 8.4)"}, {"id": 153, "name": "Адаптированная основная программа профессионального обучения –программа профессиональной подготовки по профессии «Швея»"}, {"id": 154, "name": "Адаптированная основная программа профессионального обучения – программа профессиональной подготовки по профессии «Рабочий по комплексному обслуживанию и ремонту зданий» 2-го разряда"}, {"id": 155, "name": "Адаптированная основная программа профессионального обучения – программа профессиональной подготовки по профессии рабочего «Овощевод»"}, {"id": 150, "name": "Адаптированная основная общеобразовательная программа образования обучающихся с лёгкой умственной отсталостью (интеллектуальными нарушениями), (вариант 1), 1-12 классы"}, {"id": 151, "name": "Адаптированная основная общеобразовательная программа образования обучающихся с умеренной, тяжёлой, глубокой умственной отсталостью (интеллектуальными нарушениями), тяжёлыми и множественными нарушениями развития (вариант II) 1доп, 1-12 классы"}, {"id": 152, "name": "Адаптированная основная общеобразовательная программа начального общего образования обучающихся с расстройствами аутистического спектра (вариант 8.4)"}, {"id": 153, "name": "Адаптированная основная программа профессионального обучения –программа профессиональной подготовки по профессии «Швея»"}, {"id": 154, "name": "Адаптированная основная программа профессионального обучения – программа профессиональной подготовки по профессии «Рабочий по комплексному обслуживанию и ремонту зданий» 2-го разряда"}, {"id": 155, "name": "Адаптированная основная программа профессионального обучения – программа профессиональной подготовки по профессии рабочего «Овощевод»"}], "conditionsAdmission": ["certificate"]}	{"id": 51, "name": "Государственное бюджетное общеобразовательное учреждение Липецкой области «Специальная школа-интернат г. Данкова» (ГБОУ «Специальная школа- интернат г. Данкова»)", "type": "school_internat", "range": {"max": 11, "min": 1}, "address": "399852, Липецкая область, г. Данков, ул. Мира, д. 42", "website": "https://dvkorrsh.gosuslugi.ru", "aoop_url": "https://dvkorrsh.gosuslugi.ru/netcat_files/33/46/AOOP_var.1_2024_25.pdf", "director": {"id": 50, "name": "Аксенова Мария Васильевна", "email": "dvkorrsh@rambler.ru", "phone": "+74746562320"}, "conditions": ["mental_retardation", "autism", "multiple_disorders"], "description": null, "district_id": 190, "aoop_programs": [{"name": "Адаптированная основная общеобразовательная программа образования обучающихся с лёгкой умственной отсталостью (интеллектуальными нарушениями), (вариант 1), 1-12 классы"}, {"name": "Адаптированная основная общеобразовательная программа образования обучающихся с умеренной, тяжёлой, глубокой умственной отсталостью (интеллектуальными нарушениями), тяжёлыми и множественными нарушениями развития (вариант II) 1доп, 1-12 классы"}, {"name": "Адаптированная основная общеобразовательная программа начального общего образования обучающихся с расстройствами аутистического спектра (вариант 8.4)"}, {"name": "Адаптированная основная программа профессионального обучения –программа профессиональной подготовки по профессии «Швея»"}, {"name": "Адаптированная основная программа профессионального обучения – программа профессиональной подготовки по профессии «Рабочий по комплексному обслуживанию и ремонту зданий» 2-го разряда"}, {"name": "Адаптированная основная программа профессионального обучения – программа профессиональной подготовки по профессии рабочего «Овощевод»"}], "conditionsAdmission": ["certificate"]}	2026-07-04 22:20:55.968538
-56	1	UPDATE	institutions	51	{"name": "Государственное бюджетное общеобразовательное учреждение Липецкой области «Специальная школа-интернат г. Данкова» (ГБОУ «Специальная школа- интернат г. Данкова»)", "type": "school_internat", "range": {"max": 11, "min": 1}, "address": "399852, Липецкая область, г. Данков, ул. Мира, д. 42", "website": "https://dvkorrsh.gosuslugi.ru", "aoop_url": "https://dvkorrsh.gosuslugi.ru/netcat_files/33/46/AOOP_var.1_2024_25.pdf", "director": {"name": "Аксенова Мария Васильевна", "email": "dvkorrsh@rambler.ru", "phone": "+74746562320"}, "conditions": ["autism", "mental_retardation", "multiple_disorders"], "description": null, "district_id": 190, "aoop_programs": [{"id": 156, "name": "Адаптированная основная общеобразовательная программа образования обучающихся с лёгкой умственной отсталостью (интеллектуальными нарушениями), (вариант 1), 1-12 классы"}, {"id": 157, "name": "Адаптированная основная общеобразовательная программа образования обучающихся с умеренной, тяжёлой, глубокой умственной отсталостью (интеллектуальными нарушениями), тяжёлыми и множественными нарушениями развития (вариант II) 1доп, 1-12 классы"}, {"id": 158, "name": "Адаптированная основная общеобразовательная программа начального общего образования обучающихся с расстройствами аутистического спектра (вариант 8.4)"}, {"id": 159, "name": "Адаптированная основная программа профессионального обучения –программа профессиональной подготовки по профессии «Швея»"}, {"id": 160, "name": "Адаптированная основная программа профессионального обучения – программа профессиональной подготовки по профессии «Рабочий по комплексному обслуживанию и ремонту зданий» 2-го разряда"}, {"id": 161, "name": "Адаптированная основная программа профессионального обучения – программа профессиональной подготовки по профессии рабочего «Овощевод»"}, {"id": 156, "name": "Адаптированная основная общеобразовательная программа образования обучающихся с лёгкой умственной отсталостью (интеллектуальными нарушениями), (вариант 1), 1-12 классы"}, {"id": 157, "name": "Адаптированная основная общеобразовательная программа образования обучающихся с умеренной, тяжёлой, глубокой умственной отсталостью (интеллектуальными нарушениями), тяжёлыми и множественными нарушениями развития (вариант II) 1доп, 1-12 классы"}, {"id": 158, "name": "Адаптированная основная общеобразовательная программа начального общего образования обучающихся с расстройствами аутистического спектра (вариант 8.4)"}, {"id": 159, "name": "Адаптированная основная программа профессионального обучения –программа профессиональной подготовки по профессии «Швея»"}, {"id": 160, "name": "Адаптированная основная программа профессионального обучения – программа профессиональной подготовки по профессии «Рабочий по комплексному обслуживанию и ремонту зданий» 2-го разряда"}, {"id": 161, "name": "Адаптированная основная программа профессионального обучения – программа профессиональной подготовки по профессии рабочего «Овощевод»"}, {"id": 156, "name": "Адаптированная основная общеобразовательная программа образования обучающихся с лёгкой умственной отсталостью (интеллектуальными нарушениями), (вариант 1), 1-12 классы"}, {"id": 157, "name": "Адаптированная основная общеобразовательная программа образования обучающихся с умеренной, тяжёлой, глубокой умственной отсталостью (интеллектуальными нарушениями), тяжёлыми и множественными нарушениями развития (вариант II) 1доп, 1-12 классы"}, {"id": 158, "name": "Адаптированная основная общеобразовательная программа начального общего образования обучающихся с расстройствами аутистического спектра (вариант 8.4)"}, {"id": 159, "name": "Адаптированная основная программа профессионального обучения –программа профессиональной подготовки по профессии «Швея»"}, {"id": 160, "name": "Адаптированная основная программа профессионального обучения – программа профессиональной подготовки по профессии «Рабочий по комплексному обслуживанию и ремонту зданий» 2-го разряда"}, {"id": 161, "name": "Адаптированная основная программа профессионального обучения – программа профессиональной подготовки по профессии рабочего «Овощевод»"}], "conditionsAdmission": ["certificate"]}	{"id": 51, "name": "Государственное бюджетное общеобразовательное учреждение Липецкой области «Специальная школа-интернат г. Данкова» (ГБОУ «Специальная школа-интернат г. Данкова»)", "type": "school_internat", "range": {"max": 11, "min": 1}, "address": "399852, Липецкая область, г. Данков, ул. Мира, д. 42", "website": "https://dvkorrsh.gosuslugi.ru", "aoop_url": "https://dvkorrsh.gosuslugi.ru/netcat_files/33/46/AOOP_var.1_2024_25.pdf", "director": {"id": 50, "name": "Аксенова Мария Васильевна", "email": "dvkorrsh@rambler.ru", "phone": "+74746562320"}, "conditions": ["mental_retardation", "autism", "multiple_disorders"], "description": null, "district_id": 190, "aoop_programs": [{"name": "Адаптированная основная общеобразовательная программа образования обучающихся с лёгкой умственной отсталостью (интеллектуальными нарушениями), (вариант 1), 1-12 классы"}, {"name": "Адаптированная основная общеобразовательная программа образования обучающихся с умеренной, тяжёлой, глубокой умственной отсталостью (интеллектуальными нарушениями), тяжёлыми и множественными нарушениями развития (вариант II) 1доп, 1-12 классы"}, {"name": "Адаптированная основная общеобразовательная программа начального общего образования обучающихся с расстройствами аутистического спектра (вариант 8.4)"}, {"name": "Адаптированная основная программа профессионального обучения –программа профессиональной подготовки по профессии «Швея»"}, {"name": "Адаптированная основная программа профессионального обучения – программа профессиональной подготовки по профессии «Рабочий по комплексному обслуживанию и ремонту зданий» 2-го разряда"}, {"name": "Адаптированная основная программа профессионального обучения – программа профессиональной подготовки по профессии рабочего «Овощевод»"}], "conditionsAdmission": ["certificate"]}	2026-07-04 22:21:12.685572
-57	1	UPDATE	institutions	39	{"name": "ГАПОУ «ЛМК»", "type": "spo", "range": {"max": null, "min": null}, "address": "398017, г. Липецк, ул. 9 Мая, 18", "website": "https://college-medicinskij-lipeck-r42.gosweb.gosuslugi.ru/", "aoop_url": null, "director": {"name": "Шуршуков Юрий Юрьевич", "email": "lmk@zdrav48.ru", "phone": "8 (4742) 43-35-44"}, "conditions": [], "description": null, "district_id": 186, "aoop_programs": [], "conditionsAdmission": ["attestat"]}	{"id": 39, "name": "Государственное автономное профессиональное образовательное учреждение «Липецкий медицинский колледж» (ГАПОУ «ЛМК»)", "type": "spo", "range": {"max": null, "min": null}, "address": "398017, г. Липецк, ул. 9 Мая, 18", "website": "https://college-medicinskij-lipeck-r42.gosweb.gosuslugi.ru/", "aoop_url": null, "director": {"id": 38, "name": "Шуршуков Юрий Юрьевич", "email": "lmk@zdrav48.ru", "phone": "+74742433544"}, "conditions": [], "description": null, "district_id": 186, "aoop_programs": [], "conditionsAdmission": ["attestat"]}	2026-07-04 22:22:28.017514
-58	1	UPDATE	institutions	53	{"name": "ГБОУ «Санаторная школа-интернат г. Липецка»", "type": "school_internat", "range": {"max": 11, "min": 1}, "address": "398029, Липецкая область, г. Липецк, ул. М. Светлова, 29", "website": "https://sh-san-int-lipeckaya-r42.gosweb.gosuslugi.ru/", "aoop_url": "https://sh-san-int-lipeckaya-r42.gosweb.gosuslugi.ru/svedeniya-ob-obrazovatelnoy-organizatsii/obrazovanie/", "director": {"name": "Краснобородько Наталья Евгеньевна", "email": "sanatorij@lipetsk.ru", "phone": "+7 (4742) 43-87-13"}, "conditions": ["mental_retardation"], "description": null, "district_id": 186, "aoop_programs": [{"id": 59, "name": "Адаптированная основная общеобразовательная программа начального общего образования для обучающихся с легкой умственной отсталостью (интеллектуальными нарушениями) (вариант 9.1)"}, {"id": 60, "name": "Адаптированная основная общеобразовательная программа начального общего образования для обучающихся с задержкой психического развития (вариант 7.1)"}, {"id": 61, "name": "Адаптированная основная общеобразовательная программа образования обучающихся с легкой умственной отсталостью (интеллектуальными нарушениями) (вариант 9.1)"}, {"id": 62, "name": "Адаптированная образовательная программа основного общего образования обучающихся с задержкой психического развития"}, {"id": 63, "name": "ДОУ"}], "conditionsAdmission": ["certificate"]}	{"id": 53, "name": "Государственное бюджетное общеобразовательное учреждение Липецкой области «Санаторная школа-интернат г. Липецка» (ГБОУ «Санаторная школа-интернат г. Липецка»)", "type": "school_internat", "range": {"max": 11, "min": 1}, "address": "398029, Липецкая область, г. Липецк, ул. М. Светлова, 29", "website": "https://sh-san-int-lipeckaya-r42.gosweb.gosuslugi.ru/", "aoop_url": "https://sh-san-int-lipeckaya-r42.gosweb.gosuslugi.ru/svedeniya-ob-obrazovatelnoy-organizatsii/obrazovanie/", "director": {"id": 52, "name": "Краснобородько Наталья Евгеньевна", "email": "sanatorij@lipetsk.ru", "phone": "+74742438713"}, "conditions": ["mental_retardation"], "description": null, "district_id": 186, "aoop_programs": [{"name": "Адаптированная основная общеобразовательная программа начального общего образования для обучающихся с легкой умственной отсталостью (интеллектуальными нарушениями) (вариант 9.1)"}, {"name": "Адаптированная основная общеобразовательная программа начального общего образования для обучающихся с задержкой психического развития (вариант 7.1)"}, {"name": "Адаптированная основная общеобразовательная программа образования обучающихся с легкой умственной отсталостью (интеллектуальными нарушениями) (вариант 9.1)"}, {"name": "Адаптированная образовательная программа основного общего образования обучающихся с задержкой психического развития"}], "conditionsAdmission": ["certificate"]}	2026-07-04 22:23:28.445128
-99	3	UPDATE	institutions	533	{"name": "TEST_CRUD_1787331908_8390", "type": "school", "range": {"max": "11.0", "min": "1.0"}, "address": "тест", "website": "https://example.com/", "aoop_url": null, "director": {"name": "Тестов Тест Тестович", "email": "test.director.1787331908@example.local", "phone": "+79001112233"}, "conditions": ["autism"], "description": "phpunit", "district_id": 188, "aoop_programs": [{"id": 556, "name": "TEST AOOP"}], "conditionsAdmission": ["certificate"]}	{"id": 533, "name": "TEST_CRUD_1787331908_8390_UPD", "type": "school", "range": {"max": 9, "min": 1}, "address": "тест 2", "website": "https://example.com/upd", "aoop_url": null, "director": {"id": 528, "name": "Тестов Тест Тестович", "email": "test.director.1787331908@example.local", "phone": "+79001112233"}, "conditions": [], "description": "phpunit-upd", "district_id": 188, "aoop_programs": [], "conditionsAdmission": ["certificate"]}	2026-08-21 17:05:08.911779
-59	1	UPDATE	institutions	47	{"name": "ГОАОУ \\"ЦОРиО\\"", "type": "school_internat", "range": {"max": 11, "min": 1}, "address": "Россия, 398024, г. Липецк, ул. Механизаторов, д. 9", "website": "https://co-corio-lipeck-r42.gosweb.gosuslugi.ru/", "aoop_url": "https://corio48.gosuslugi.ru/svedeniya-ob-obrazovatelnoy-organizatsii/dokumenty/dokumenty-all_398.html", "director": {"name": "Вишнякова Екатерина Анатольевна", "email": "sko34@mail.ru", "phone": "+7 4742 242-777"}, "conditions": ["mental_retardation", "vision_impairment"], "description": null, "district_id": 186, "aoop_programs": [{"id": 125, "name": "Государственное Бюджетное Общеобразовательное Учреждение «Специальная школа-интернат г. Ельца»"}, {"id": 112, "name": "Адаптированная основная образовательная программа дошкольного образования для слепых детей детского сада"}, {"id": 113, "name": "Адаптированная основная общеобразовательная программа начального общего образования для слепых обучающихся (вариант 3.2)"}, {"id": 114, "name": "Адаптированная основная общеобразовательная программа начального общего образования для слепых обучающихся с умеренной, тяжелой, глубокой умственной отсталостью (интеллектуальными нарушениями) (вариант 3.4)"}, {"id": 115, "name": "Адаптированная основная общеобразовательная программа начального общего образования для слабовидящих обучающихся (вариант 4.1)"}, {"id": 116, "name": "Адаптированная основная общеобразовательная программа начального общего образования для слабовидящих обучающихся (вариант 4.2)"}, {"id": 117, "name": "Адаптированная основная общеобразовательная программа начального общего образования для слабовидящих обучающихся с умственной отсталостью (интеллектуальными нарушениями) (вариант 4.3)"}, {"id": 118, "name": "Адаптированная основная общеобразовательная программа начального общего образования для слабовидящих обучающихся с интеллектуальными нарушениями"}, {"id": 119, "name": "ЦДО НОО"}, {"id": 120, "name": "Адаптированная основная общеобразовательная программа основного общего образования для слепых обучающихся (вариант 3.2)"}, {"id": 121, "name": "Адаптированная основная общеобразовательная программа основного общего образования для слабовидящих детей (вариант 4.2)"}, {"id": 122, "name": "Адаптированная основная общеобразовательная программа основного общего образования для слабовидящих обучающихся с умственной отсталостью (интеллектуальными нарушениями) (вариант 1)"}, {"id": 123, "name": "Адаптированная основная общеобразовательная программа основного общего образования для слабовидящих обучающихся с умственной отсталостью (интеллектуальными нарушениями) (вариант 2)"}, {"id": 124, "name": "Адаптированная основная общеобразовательная программа среднего общего образования для слепых и слабовидящих детей"}, {"id": 112, "name": "Адаптированная основная образовательная программа дошкольного образования для слепых детей детского сада"}, {"id": 113, "name": "Адаптированная основная общеобразовательная программа начального общего образования для слепых обучающихся (вариант 3.2)"}, {"id": 114, "name": "Адаптированная основная общеобразовательная программа начального общего образования для слепых обучающихся с умеренной, тяжелой, глубокой умственной отсталостью (интеллектуальными нарушениями) (вариант 3.4)"}, {"id": 115, "name": "Адаптированная основная общеобразовательная программа начального общего образования для слабовидящих обучающихся (вариант 4.1)"}, {"id": 116, "name": "Адаптированная основная общеобразовательная программа начального общего образования для слабовидящих обучающихся (вариант 4.2)"}, {"id": 117, "name": "Адаптированная основная общеобразовательная программа начального общего образования для слабовидящих обучающихся с умственной отсталостью (интеллектуальными нарушениями) (вариант 4.3)"}, {"id": 118, "name": "Адаптированная основная общеобразовательная программа начального общего образования для слабовидящих обучающихся с интеллектуальными нарушениями"}, {"id": 119, "name": "ЦДО НОО"}, {"id": 120, "name": "Адаптированная основная общеобразовательная программа основного общего образования для слепых обучающихся (вариант 3.2)"}, {"id": 121, "name": "Адаптированная основная общеобразовательная программа основного общего образования для слабовидящих детей (вариант 4.2)"}, {"id": 122, "name": "Адаптированная основная общеобразовательная программа основного общего образования для слабовидящих обучающихся с умственной отсталостью (интеллектуальными нарушениями) (вариант 1)"}, {"id": 123, "name": "Адаптированная основная общеобразовательная программа основного общего образования для слабовидящих обучающихся с умственной отсталостью (интеллектуальными нарушениями) (вариант 2)"}, {"id": 124, "name": "Адаптированная основная общеобразовательная программа среднего общего образования для слепых и слабовидящих детей"}, {"id": 125, "name": "Государственное Бюджетное Общеобразовательное Учреждение «Специальная школа-интернат г. Ельца»"}], "conditionsAdmission": ["certificate"]}	{"id": 47, "name": "Государственное областное автономное общеобразовательное учреждение «Центр образования» (ГОАОУ \\"ЦОРиО\\")", "type": "school_internat", "range": {"max": 11, "min": 1}, "address": "Россия, 398024, г. Липецк, ул. Механизаторов, д. 9", "website": "https://co-corio-lipeck-r42.gosweb.gosuslugi.ru/", "aoop_url": "https://corio48.gosuslugi.ru/svedeniya-ob-obrazovatelnoy-organizatsii/dokumenty/dokumenty-all_398.html", "director": {"id": 46, "name": "Вишнякова Екатерина Анатольевна", "email": "sko34@mail.ru", "phone": "+74742242777"}, "conditions": ["vision_impairment", "mental_retardation"], "description": null, "district_id": 186, "aoop_programs": [{"name": "Адаптированная основная образовательная программа дошкольного образования для слепых детей детского сада"}, {"name": "Адаптированная основная общеобразовательная программа начального общего образования для слепых обучающихся (вариант 3.2)"}, {"name": "Адаптированная основная общеобразовательная программа начального общего образования для слепых обучающихся с умеренной, тяжелой, глубокой умственной отсталостью (интеллектуальными нарушениями) (вариант 3.4)"}, {"name": "Адаптированная основная общеобразовательная программа начального общего образования для слабовидящих обучающихся (вариант 4.1)"}, {"name": "Адаптированная основная общеобразовательная программа начального общего образования для слабовидящих обучающихся (вариант 4.2)"}, {"name": "Адаптированная основная общеобразовательная программа начального общего образования для слабовидящих обучающихся с умственной отсталостью (интеллектуальными нарушениями) (вариант 4.3)"}, {"name": "Адаптированная основная общеобразовательная программа начального общего образования для слабовидящих обучающихся с интеллектуальными нарушениями"}, {"name": "Адаптированная основная общеобразовательная программа основного общего образования для слепых обучающихся (вариант 3.2)"}, {"name": "Адаптированная основная общеобразовательная программа основного общего образования для слабовидящих детей (вариант 4.2)"}, {"name": "Адаптированная основная общеобразовательная программа основного общего образования для слабовидящих обучающихся с умственной отсталостью (интеллектуальными нарушениями) (вариант 1)"}, {"name": "Адаптированная основная общеобразовательная программа основного общего образования для слабовидящих обучающихся с умственной отсталостью (интеллектуальными нарушениями) (вариант 2)"}, {"name": "Адаптированная основная общеобразовательная программа среднего общего образования для слепых и слабовидящих детей"}, {"name": "Государственное Бюджетное Общеобразовательное Учреждение «Специальная школа-интернат г. Ельца»"}], "conditionsAdmission": ["certificate"]}	2026-07-04 22:24:24.850928
-60	1	UPDATE	institutions	25	{"name": "ГОАПОУ \\"ЛКТиДХ\\"", "type": "spo", "range": {"max": null, "min": null}, "address": "Липецкая область, г.Липецк, ул.Механизаторов, д.10", "website": "https://lktdh48.gosuslugi.ru/", "aoop_url": "https://docs.yandex.ru/docs/view?url=ya-disk-public%3A%2F%2FC6zthJIu1xeuKN5xpsUv8REcDnbsGGziYskExvVu5XCI%2FzgsPc5WwrMMjofNfY9eq%2FJ6bpmRyOJonT3VoXnDag%3D%3D&name=%D0%9C%D0%A1-25.pdf&nosw=1", "director": {"name": "Подмарков Роман Валентинович", "email": "LKTDH@mail.ru", "phone": "+7 (4742) 40-37-54"}, "conditions": [], "description": null, "district_id": 186, "aoop_programs": [{"id": 4, "name": "Адаптированная основная образовательная программа профессионального обучения по профессии маляр строительный (для лиц с ограниченными возможностями здоровья)"}], "conditionsAdmission": ["attestat"]}	{"id": 25, "name": "Государственное областное автономное профессиональное образовательное учреждение «Липецкий колледж транспорта и дорожного хозяйства» (ГОАПОУ \\"ЛКТиДХ\\")", "type": "spo", "range": {"max": null, "min": null}, "address": "Липецкая область, г. Липецк, ул. Механизаторов, д. 10", "website": "https://lktdh48.gosuslugi.ru/", "aoop_url": "https://docs.yandex.ru/docs/view?url=ya-disk-public%3A%2F%2FC6zthJIu1xeuKN5xpsUv8REcDnbsGGziYskExvVu5XCI%2FzgsPc5WwrMMjofNfY9eq%2FJ6bpmRyOJonT3VoXnDag%3D%3D&name=%D0%9C%D0%A1-25.pdf&nosw=1", "director": {"id": 24, "name": "Подмарков Роман Валентинович", "email": "LKTDH@mail.ru", "phone": "+74742403754"}, "conditions": [], "description": null, "district_id": 186, "aoop_programs": [{"name": "Адаптированная основная образовательная программа профессионального обучения по профессии маляр строительный (для лиц с ограниченными возможностями здоровья)"}], "conditionsAdmission": ["attestat"]}	2026-07-04 22:25:16.71249
-61	1	UPDATE	institutions	40	{"name": "ГОАПОУ «ЛИСК»", "type": "spo", "range": {"max": null, "min": null}, "address": "Липецкая область, г. Липецк, ул. П.А. Папина, д.3", "website": "https://college-lisk-r42.gosweb.gosuslugi.ru/", "aoop_url": null, "director": {"name": "Грязева Наталья Юрьевна", "email": "lisk.lipetsk@mail.ru", "phone": "+7 (4742) 41-34-35"}, "conditions": [], "description": null, "district_id": 186, "aoop_programs": [], "conditionsAdmission": ["attestat"]}	{"id": 40, "name": "Государственное областное автономное профессиональное образовательное учреждение «Липецкий индустриально-строительный колледж» (ГОАПОУ «ЛИСК»)", "type": "spo", "range": {"max": null, "min": null}, "address": "Липецкая область, г. Липецк, ул. П.А. Папина, д. 3", "website": "https://college-lisk-r42.gosweb.gosuslugi.ru/", "aoop_url": null, "director": {"id": 39, "name": "Грязева Наталья Юрьевна", "email": "lisk.lipetsk@mail.ru", "phone": "+74742413435"}, "conditions": [], "description": null, "district_id": 186, "aoop_programs": [], "conditionsAdmission": ["attestat"]}	2026-07-04 22:26:05.556324
-62	1	UPDATE	institutions	41	{"name": "ГОАПОУ «ЛМК»", "type": "spo", "range": {"max": null, "min": null}, "address": "Липецкая область, г. Липецк, ул. Фрунзе ул. 91, г. Липецк 398008", "website": "https://lipmetcol.gosuslugi.ru/", "aoop_url": null, "director": {"name": "Красникова Любовь Николаевна", "email": "lmk@lmk-lipetsk.ru", "phone": "+7 (4742) 74-58-60"}, "conditions": [], "description": null, "district_id": 186, "aoop_programs": [], "conditionsAdmission": ["attestat"]}	{"id": 41, "name": "Государственное областное автономное профессиональное образовательное учреждение «Липецкий металлургический колледж» (ГОАПОУ «ЛМК»)", "type": "spo", "range": {"max": null, "min": null}, "address": "Липецкая область, г. Липецк, ул. Фрунзе ул. 91, г. Липецк 398008", "website": "https://lipmetcol.gosuslugi.ru/", "aoop_url": null, "director": {"id": 40, "name": "Красникова Любовь Николаевна", "email": "lmk@lmk-lipetsk.ru", "phone": "+74742745860"}, "conditions": [], "description": null, "district_id": 186, "aoop_programs": [], "conditionsAdmission": ["attestat"]}	2026-07-04 22:27:12.455145
-63	1	UPDATE	institutions	36	{"name": "ГОБПОУ «КИИМО»", "type": "spo", "range": {"max": null, "min": null}, "address": "398058, Липецкая область, город Липецк, городок Студенческий, дом 10", "website": "https://kiimo48.gosuslugi.ru/", "aoop_url": null, "director": {"name": "Сапронов Даниил Сергеевич", "email": "Kiimo@admlr.lipetsk.ru", "phone": "+7 (474) 241-33-07"}, "conditions": [], "description": null, "district_id": 186, "aoop_programs": [], "conditionsAdmission": ["attestat"]}	{"id": 36, "name": "Государственное областное бюджетное профессиональное образовательное учреждение «Колледж искусственного интеллекта в машиностроительной отрасли» (ГОБПОУ «КИИМО»)", "type": "spo", "range": {"max": null, "min": null}, "address": "398058, Липецкая область, город Липецк, городок Студенческий, дом 10", "website": "https://kiimo48.gosuslugi.ru/", "aoop_url": null, "director": {"id": 35, "name": "Сапронов Даниил Сергеевич", "email": "Kiimo@admlr.lipetsk.ru", "phone": "+74742413307"}, "conditions": [], "description": null, "district_id": 186, "aoop_programs": [], "conditionsAdmission": ["attestat"]}	2026-07-04 22:28:06.156683
-100	3	DELETE	institutions	533	{"id": 533, "name": "TEST_CRUD_1787331908_8390_UPD", "type": "school", "range": {"max": "9.0", "min": "1.0"}, "address": "тест 2", "website": "https://example.com/upd", "aoop_url": null, "director": {"name": "Тестов Тест Тестович", "email": "test.director.1787331908@example.local", "phone": "+79001112233"}, "conditions": [], "description": "phpunit-upd", "district_id": 188, "aoop_programs": [], "conditionsAdmission": ["certificate"]}	\N	2026-08-21 17:05:09.049682
-64	1	UPDATE	institutions	42	{"name": "ГОБПОУ «ЛКИС»", "type": "spo", "range": {"max": null, "min": null}, "address": "398058 Липецкая обл., г. Липецк, ул. Студенческий городок, дом 2", "website": "https://lkis48.gosuslugi.ru/", "aoop_url": null, "director": {"name": "Токарев Роман Александрович", "email": "ltsd48@yandex.ru", "phone": "+7 (4742) 57-70-42"}, "conditions": [], "description": null, "district_id": 186, "aoop_programs": [], "conditionsAdmission": ["attestat"]}	{"id": 42, "name": "Государственное областное бюджетное профессиональное образовательное учреждение «Липецкий колледж индустрии сервиса» (ГОБПОУ «ЛКИС»)", "type": "spo", "range": {"max": null, "min": null}, "address": "398058 Липецкая обл., г. Липецк, ул. Студенческий городок, дом 2", "website": "https://lkis48.gosuslugi.ru/", "aoop_url": null, "director": {"id": 41, "name": "Токарев Роман Александрович", "email": "ltsd48@yandex.ru", "phone": "+74742577042"}, "conditions": [], "description": null, "district_id": 186, "aoop_programs": [], "conditionsAdmission": ["attestat"]}	2026-07-04 22:28:42.266003
-65	1	UPDATE	institutions	44	{"name": "ГОБПОУ «ЛКСАиОТ»", "type": "spo", "range": {"max": null, "min": null}, "address": "398058, г. Липецк, городок Студенческий, д.1", "website": "https://lksaiot.gosuslugi.ru/", "aoop_url": "https://lksaiot.gosuslugi.ru/svedeniya-ob-organizatsii/obrazovanie/", "director": {"name": "Дворникова Мария Викторовна", "email": "icollege@mail.ru", "phone": "+7 (4742) 41-24-61"}, "conditions": [], "description": null, "district_id": 186, "aoop_programs": [{"id": 12, "name": "13450 Маляр"}, {"id": 13, "name": "17530 Рабочий зеленого хозяйства"}], "conditionsAdmission": ["attestat"]}	{"id": 44, "name": "Государственное областное бюджетное профессиональное образовательное учреждение «Липецкий колледж строительства, архитектуры и отраслевых технологий» (ГОБПОУ «ЛКСАиОТ»)", "type": "spo", "range": {"max": null, "min": null}, "address": "398058, г. Липецк, городок Студенческий, д.1", "website": "https://lksaiot.gosuslugi.ru/", "aoop_url": "https://lksaiot.gosuslugi.ru/svedeniya-ob-organizatsii/obrazovanie/", "director": {"id": 43, "name": "Дворникова Мария Викторовна", "email": "icollege@mail.ru", "phone": "+74742412461"}, "conditions": [], "description": null, "district_id": 186, "aoop_programs": [{"name": "13450 Маляр"}, {"name": "17530 Рабочий зеленого хозяйства"}], "conditionsAdmission": ["attestat"]}	2026-07-04 22:29:24.675455
-66	1	UPDATE	institutions	29	{"name": "ГОБПОУ «ЛПТ»", "type": "spo", "range": {"max": null, "min": null}, "address": "398017 г. Липецк, ул. 9-Мая, 20а", "website": "https://lpt-48.gosuslugi.ru/", "aoop_url": null, "director": {"name": "Волков Алексей Александрович", "email": "lpt-48@mail.ru", "phone": "+7(4742) 43-01-61"}, "conditions": [], "description": null, "district_id": 186, "aoop_programs": [], "conditionsAdmission": ["attestat"]}	{"id": 29, "name": "Государственное областное бюджетное профессиональное образовательное учреждение «Липецкий политехнический техникум» (ГОБПОУ «ЛПТ»)", "type": "spo", "range": {"max": null, "min": null}, "address": "398017 г. Липецк, ул. 9-Мая, 20а", "website": "https://lpt-48.gosuslugi.ru/", "aoop_url": null, "director": {"id": 28, "name": "Волков Алексей Александрович", "email": "lpt-48@mail.ru", "phone": "+74742430161"}, "conditions": [], "description": null, "district_id": 186, "aoop_programs": [], "conditionsAdmission": ["attestat"]}	2026-07-04 22:30:06.366775
-67	1	UPDATE	institutions	30	{"name": "ГОБПОУ «Липецкий областной колледж искусств им. К.Н. Игумнова»", "type": "spo", "range": {"max": null, "min": null}, "address": "398058, Липецкая область, г. Липецк, ул. городок Студенческий, дом 6", "website": "https://lokiigumnova.gosuslugi.ru/", "aoop_url": null, "director": {"name": "Веселова Ольга Владимировна", "email": "kolledgisskusstv@yandex.ru", "phone": "+7 (4742) 41-41-71"}, "conditions": [], "description": null, "district_id": 186, "aoop_programs": [], "conditionsAdmission": ["attestat"]}	{"id": 30, "name": "Государственное областное бюджетное профессиональное образовательное учреждение «Липецкий областной колледж искусств им. К.Н. Игумнова» (ГОБПОУ «Липецкий областной колледж искусств им. К.Н. Игумнова»)", "type": "spo", "range": {"max": null, "min": null}, "address": "398058, Липецкая область, г. Липецк, ул. городок Студенческий, дом 6", "website": "https://lokiigumnova.gosuslugi.ru/", "aoop_url": null, "director": {"id": 29, "name": "Веселова Ольга Владимировна", "email": "kolledgisskusstv@yandex.ru", "phone": "+74742414171"}, "conditions": [], "description": null, "district_id": 186, "aoop_programs": [], "conditionsAdmission": ["attestat"]}	2026-07-04 22:30:50.166059
-68	1	UPDATE	institutions	87	{"name": "Елецкий филиал АНО ВО «РосНОУ»", "type": "vo", "range": {"max": null, "min": null}, "address": "398050, г. Липецк, ул. Интернациональная, д. 3.", "website": "https://eletsrosnou.ru/", "aoop_url": null, "director": {"name": "Гончарова Елена Александровна", "email": "lip@ranepa.ru", "phone": "+7 (4742) 27-22-24"}, "conditions": [], "description": null, "district_id": 186, "aoop_programs": [], "conditionsAdmission": ["attestat"]}	{"id": 87, "name": "Елецкий филиал Автономной некоммерческой организации высшего образования «Российский новый университет» (Елецкий филиал АНО ВО «РосНОУ»)", "type": "vo", "range": {"max": null, "min": null}, "address": "398050, г. Липецк, ул. Интернациональная, д. 3.", "website": "https://eletsrosnou.ru/", "aoop_url": null, "director": {"id": 83, "name": "Гончарова Елена Александровна", "email": "lip@ranepa.ru", "phone": "+74742272224"}, "conditions": [], "description": null, "district_id": 186, "aoop_programs": [], "conditionsAdmission": ["attestat"]}	2026-07-04 22:31:48.427746
-70	1	UPDATE	institutions	77	{"name": "ЛГПУ имени П.П.Семенова-Тян-Шанского", "type": "vo", "range": {"max": null, "min": null}, "address": "398020, Липецкая область, город Липецк, ул. Ленина, д. 42", "website": "https://lspu-lipetsk.ru/", "aoop_url": null, "director": {"name": "Федина Нина Владимировна", "email": "priem@lspu-lipetsk.ru.Телефон", "phone": "4742) 32-83-03 (4742"}, "conditions": [], "description": null, "district_id": 186, "aoop_programs": [], "conditionsAdmission": ["attestat"]}	{"id": 77, "name": "Липецкий государственный педагогический университет имени П.П. Семенова-Тян-Шанского (ЛГПУ имени П.П. Семенова-Тян-Шанского)", "type": "vo", "range": {"max": null, "min": null}, "address": "398020, Липецкая область, город Липецк, ул. Ленина, д. 42", "website": "https://lspu-lipetsk.ru/", "aoop_url": null, "director": {"id": 76, "name": "Федина Нина Владимировна", "email": "priem@lspu-lipetsk.ru.Телефон", "phone": "+74742328303"}, "conditions": [], "description": null, "district_id": 186, "aoop_programs": [], "conditionsAdmission": ["attestat"]}	2026-07-04 22:33:55.983621
-71	1	UPDATE	institutions	81	{"name": "ЛГТУ", "type": "vo", "range": {"max": null, "min": null}, "address": "398055, Россия, г. Липецк, ул. Московская, д. 30", "website": "https://www.stu.lipetsk.ru/", "aoop_url": null, "director": {"name": "Загеева Лилия Александровна", "email": "mailbox@stu.lipetsk.ru", "phone": "+7 (4742) 319-069"}, "conditions": [], "description": null, "district_id": 186, "aoop_programs": [], "conditionsAdmission": ["attestat"]}	{"id": 81, "name": "Липецкий государственный технический университет (ЛГТУ)", "type": "vo", "range": {"max": null, "min": null}, "address": "398055, Россия, г. Липецк, ул. Московская, д. 30", "website": "https://www.stu.lipetsk.ru/", "aoop_url": null, "director": {"id": 79, "name": "Загеева Лилия Александровна", "email": "mailbox@stu.lipetsk.ru", "phone": "+74742319069"}, "conditions": [], "description": null, "district_id": 186, "aoop_programs": [], "conditionsAdmission": ["attestat"]}	2026-07-04 22:34:40.432669
-72	1	UPDATE	institutions	80	{"name": "ЛИК", "type": "vo", "range": {"max": null, "min": null}, "address": "398002, г. Липецк, ул. Зегеля, 25а", "website": "https://lki-lipetsk.ru/", "aoop_url": null, "director": {"name": "Бунеева Раиса Ильинична", "email": "director@lki-lipetsk.ru", "phone": "+7 (4742) 72-42-81"}, "conditions": [], "description": null, "district_id": 186, "aoop_programs": [], "conditionsAdmission": ["attestat"]}	{"id": 80, "name": "Липецкий институт кооперации (филиал) Белгородского университета кооперации, экономики и права (ЛИК)", "type": "vo", "range": {"max": null, "min": null}, "address": "398002, г. Липецк, ул. Зегеля, 25а", "website": "https://lki-lipetsk.ru/", "aoop_url": null, "director": {"id": 78, "name": "Бунеева Раиса Ильинична", "email": "director@lki-lipetsk.ru", "phone": "+74742724281"}, "conditions": [], "description": null, "district_id": 186, "aoop_programs": [], "conditionsAdmission": ["attestat"]}	2026-07-04 22:35:26.529018
-73	1	UPDATE	institutions	83	{"name": "ЛКИТиУ (филиал) ФГБОУ ВО «МГУТУ им. К.Г. Разумовского (ПКУ)»", "type": "vo", "range": {"max": null, "min": null}, "address": "398006, г. Липецк, ул. Краснознаменная, влд. 4.", "website": "https://www.mgutu48.ru/", "aoop_url": null, "director": {"name": "Миронов Арсений Станиславович", "email": "lipetsk@mgutm.ru", "phone": "+74742732201"}, "conditions": [], "description": null, "district_id": 186, "aoop_programs": [], "conditionsAdmission": ["attestat"]}	{"id": 83, "name": "ЛКИТиУ (филиал) ФГБОУ ВО «МГУТУ им. К.Г. Разумовского (ПКУ)»", "type": "vo", "range": {"max": null, "min": null}, "address": "398006, г. Липецк, ул. Краснознаменная, влд. 4.", "website": "https://www.mgutu48.ru/", "aoop_url": null, "director": {"id": 80, "name": "Миронов Арсений Станиславович", "email": "lipetsk@mgutm.ru", "phone": "+74742732201"}, "conditions": [], "description": null, "district_id": 186, "aoop_programs": [], "conditionsAdmission": ["attestat"]}	2026-07-04 22:37:24.477424
-74	1	UPDATE	institutions	84	{"name": "Липецкий филиал федерального государственного бюджетного образовательного учреждения высшего образования «Российская академия народного хозяйства и государственной службы при Президенте Российской Федерации»", "type": "vo", "range": {"max": null, "min": null}, "address": "398050, г. Липецк, ул. Интернациональная, д.3", "website": "https://lip.ranepa.ru/", "aoop_url": null, "director": {"name": "Гончарова Елена Александровна", "email": "lip@ranepa.ru", "phone": "+7(4742)279912"}, "conditions": [], "description": null, "district_id": 186, "aoop_programs": [], "conditionsAdmission": ["attestat"]}	{"id": 84, "name": "Липецкий филиал федерального государственного бюджетного образовательного учреждения высшего образования «Российская академия народного хозяйства и государственной службы при Президенте Российской Федерации» (Липецкий филиал РАНХиГС)", "type": "vo", "range": {"max": null, "min": null}, "address": "398050, г. Липецк, ул. Интернациональная, д.3", "website": "https://lip.ranepa.ru/", "aoop_url": null, "director": {"id": 81, "name": "Гончарова Елена Александровна", "email": "lip@ranepa.ru", "phone": "+74742279912"}, "conditions": [], "description": null, "district_id": 186, "aoop_programs": [], "conditionsAdmission": ["attestat"]}	2026-07-04 22:38:09.915101
-101	3	CREATE	institutions	534	\N	{"name": "TEST_CRUD_1787331987_3325", "type": "school", "range": {"max": 11, "min": 1}, "address": "тест", "website": "https://example.com/", "aoop_url": null, "director": {"id": null, "name": "Тестов Тест Тестович", "email": "test.director.1787331987@example.local", "phone": "+79001112233"}, "conditions": ["autism"], "description": "phpunit", "district_id": 188, "aoop_programs": [{"url": "https://example.com/aoop.pdf", "name": "TEST AOOP"}], "conditionsAdmission": ["certificate"]}	2026-08-21 17:06:28.035261
-75	1	UPDATE	institutions	82	{"name": "Липецкий филиал федерального государственного образовательного бюджетного учреждения высшего образования «Финансовый университет при Правительстве Российской Федерации»", "type": "vo", "range": {"max": null, "min": null}, "address": "398050, Липецкая область, г. Липецк, ул. Интернациональная, 12Б", "website": "https://lipetsk.fa.ru/", "aoop_url": null, "director": {"name": "", "email": "", "phone": ""}, "conditions": [], "description": null, "district_id": 186, "aoop_programs": [], "conditionsAdmission": ["attestat"]}	{"id": 82, "name": "Липецкий филиал федерального государственного образовательного бюджетного учреждения высшего образования «Финансовый университет при Правительстве Российской Федерации»", "type": "vo", "range": {"max": null, "min": null}, "address": "398050, Липецкая область, г. Липецк, ул. Интернациональная, 12Б", "website": "https://lipetsk.fa.ru/", "aoop_url": null, "director": {"name": "Нестерова Надежда Николаевна", "email": "lipetsk@fa.ru", "phone": "+74742270962"}, "conditions": [], "description": null, "district_id": 186, "aoop_programs": [], "conditionsAdmission": ["attestat"]}	2026-07-04 22:40:31.101652
-76	1	UPDATE	institutions	115	{"name": "МБДОУ детский сад № 71 г. Ельца «Румяные щёчки»", "type": "vo", "range": {"max": null, "min": null}, "address": "Корпус № 1: ул. Яна Фабрициуса, д.6-а. Корпус № 2: пос. Известкового завода, д. 14 а.", "website": "https://ds71-elec-r42.gosweb.gosuslugi.ru/", "aoop_url": "https://ds71-elec-r42.gosweb.gosuslugi.ru/netcat_files/19/8/AOP_TNR_1.pdf", "director": {"name": "Капитан Ольга Эдуардовна", "email": "kapitan71olga@mail.ru", "phone": "+74746775697"}, "conditions": ["speech_impairment"], "description": null, "district_id": 186, "aoop_programs": [{"id": 108, "name": "Адаптированная образовательная программа дошкольного образования МБДОУ детский сад № 71 г.Ельца обучающихся с тяжёлыми нарушениями речи"}], "conditionsAdmission": ["certificate"]}	{"id": 115, "name": "Муниципальное бюджетное дошкольное образовательное учреждение «Детский сад № 71 города Ельца «Румяные щёчки» (МБДОУ детский сад № 71 г. Ельца «Румяные щёчки»)", "type": "vo", "range": {"max": null, "min": null}, "address": "Адрес 1 - Корпус № 1: ул. Яна Фабрициуса, д.6-а. Адрес 2 - Корпус № 2: пос. Известкового завода, д. 14 а.", "website": "https://ds71-elec-r42.gosweb.gosuslugi.ru/", "aoop_url": "https://ds71-elec-r42.gosweb.gosuslugi.ru/netcat_files/19/8/AOP_TNR_1.pdf", "director": {"id": 110, "name": "Капитан Ольга Эдуардовна", "email": "kapitan71olga@mail.ru", "phone": "+74746775697"}, "conditions": ["speech_impairment"], "description": null, "district_id": 187, "aoop_programs": [{"name": "Адаптированная образовательная программа дошкольного образования МБДОУ детский сад № 71 г.Ельца обучающихся с тяжёлыми нарушениями речи"}], "conditionsAdmission": ["certificate"]}	2026-07-04 22:44:15.473019
-77	1	UPDATE	institutions	79	{"name": "Филиал ВЭПИ", "type": "vo", "range": {"max": null, "min": null}, "address": null, "website": "https://lipetsk.vepi.ru", "aoop_url": null, "director": {"name": "Дворников Вячеслав Анатольевич", "email": "Postlip@vilec.ru", "phone": "473) 202-73-35 (4742"}, "conditions": [], "description": null, "district_id": 186, "aoop_programs": [], "conditionsAdmission": ["attestat"]}	{"id": 79, "name": "Филиал Воронежского экономико-правового института в г. Липецк (Филиал ВЭПИ)", "type": "vo", "range": {"max": null, "min": null}, "address": "пр-д Сержанта Кувшинова, 5б, Липецк, Липецкая обл., 398000", "website": "https://lipetsk.vepi.ru", "aoop_url": null, "director": {"id": 77, "name": "Дворников Вячеслав Анатольевич", "email": "Postlip@vilec.ru", "phone": "+74732027335"}, "conditions": [], "description": null, "district_id": 186, "aoop_programs": [], "conditionsAdmission": ["attestat"]}	2026-07-04 22:45:56.116581
-78	1	DELETE	institutions	78	{"id": 78, "name": "Филиал Воронежского экономико-правового института в г. Липецк", "type": "vo", "range": {"max": null, "min": null}, "address": null, "website": null, "aoop_url": null, "director": {"name": "", "email": "", "phone": ""}, "conditions": [], "description": null, "district_id": 186, "aoop_programs": [], "conditionsAdmission": ["attestat"]}	\N	2026-07-04 22:46:18.564345
-79	1	UPDATE	institutions	85	{"name": "Филиал РУМ", "type": "vo", "range": {"max": null, "min": null}, "address": "г. Липецк Пл. Плеханова д. 5", "website": "https://med-skills.ru/postupit-v-medicinskij/%D0%BB%D0%B8%D0%BF%D0%B5%D1%86%D0%BA%D0%B8%D0%B9-%D1%80%D1%83%D0%BC/", "aoop_url": null, "director": {"name": "Яковенко Игорь Юрьевич", "email": "info@med-skills.ru", "phone": "7 (495) 609-67-00"}, "conditions": [], "description": null, "district_id": 186, "aoop_programs": [], "conditionsAdmission": ["attestat"]}	{"id": 85, "name": "Липецкий филиал Российского университета медицины (Филиал РУМ)", "type": "vo", "range": {"max": null, "min": null}, "address": "г. Липецк Пл. Плеханова д. 5", "website": "https://med-skills.ru/postupit-v-medicinskij/%D0%BB%D0%B8%D0%BF%D0%B5%D1%86%D0%BA%D0%B8%D0%B9-%D1%80%D1%83%D0%BC/", "aoop_url": null, "director": {"id": 82, "name": "Яковенко Игорь Юрьевич", "email": "info@med-skills.ru", "phone": "+774956096700"}, "conditions": [], "description": null, "district_id": 186, "aoop_programs": [], "conditionsAdmission": ["attestat"]}	2026-07-04 22:47:34.62446
-80	1	UPDATE	institutions	68	{"name": "БДОУ д/с \\"Теремок\\" г. Чаплыгина", "type": "preschool", "range": {"max": 7, "min": 2}, "address": null, "website": "https://ds-teremok-chaplygin-r42.gosweb.gosuslugi.ru/", "aoop_url": null, "director": {"name": "Подлесных Светлана Владимировна", "email": "Lana.podlesnyh.75@mail.ru", "phone": ""}, "conditions": [], "description": null, "district_id": 205, "aoop_programs": [], "conditionsAdmission": ["attestat"]}	{"id": 68, "name": "Муниципальное бюджетное дошкольное образовательное учреждение - детский сад «Теремок» города Чаплыгина Чаплыгинского муниципального района Липецкой области Российской Федерации (БДОУ д/с \\"Теремок\\" г. Чаплыгина)", "type": "preschool", "range": {"max": 7, "min": 2}, "address": null, "website": "https://ds-teremok-chaplygin-r42.gosweb.gosuslugi.ru/", "aoop_url": null, "director": {"id": 67, "name": "Подлесных Светлана Владимировна", "email": "Lana.podlesnyh.75@mail.ru"}, "conditions": [], "description": null, "district_id": 205, "aoop_programs": [], "conditionsAdmission": []}	2026-07-05 09:26:19.946763
-81	1	UPDATE	institutions	31	{"name": "ГОБПОУ «Чаплыгинский аграрный колледж»", "type": "spo", "range": {"max": null, "min": null}, "address": "399900, Липецкая обл., г. Чаплыгин, ул. Московская, д. 3", "website": "https://college-chak-r42.gosweb.gosuslugi.ru/", "aoop_url": null, "director": {"name": "Ермолов Юрий Алексеевич", "email": "cac@chaplygin.lipetsk.ru", "phone": "+74747521797"}, "conditions": [], "description": null, "district_id": 205, "aoop_programs": [], "conditionsAdmission": ["attestat"]}	{"id": 31, "name": "Государственное областное бюджетное профессиональное образовательное учреждение «Чаплыгинский аграрный колледж» (ГОБПОУ «Чаплыгинский аграрный колледж»)", "type": "spo", "range": {"max": null, "min": null}, "address": "399900, Липецкая обл., г. Чаплыгин, ул. Московская, д. 3", "website": "https://college-chak-r42.gosweb.gosuslugi.ru/", "aoop_url": null, "director": {"id": 30, "name": "Ермолов Юрий Алексеевич", "email": "cac@chaplygin.lipetsk.ru", "phone": "+74747521797"}, "conditions": [], "description": null, "district_id": 205, "aoop_programs": [], "conditionsAdmission": ["attestat"]}	2026-07-05 09:27:00.830262
-82	1	UPDATE	institutions	70	{"name": "МБДОУ д/с \\" Солнышко\\" с. Троекурово Чаплыгинского округа", "type": "preschool", "range": {"max": 7, "min": 2}, "address": "399910 Липецкая область, Чаплыгинский округ, село Троекурово, улица Новая, дом 8", "website": "https://ds-solnishko-troekurovo.gosuslugi.ru/", "aoop_url": null, "director": {"name": "Будакова Ирина Николаевна", "email": "i.budakova2013@yandex.ru", "phone": ""}, "conditions": [], "description": null, "district_id": 205, "aoop_programs": [], "conditionsAdmission": []}	{"id": 70, "name": "Муниципальное бюджетное дошкольное образовательное учреждение детский сад « Солнышко» села Троекурово Чаплыгинского округа Липецкой области (МБДОУ д/с \\" Солнышко\\" с. Троекурово Чаплыгинского округа)", "type": "preschool", "range": {"max": 7, "min": 2}, "address": "399910 Липецкая область, Чаплыгинский округ, село Троекурово, улица Новая, дом 8", "website": "https://ds-solnishko-troekurovo.gosuslugi.ru/", "aoop_url": null, "director": {"id": 69, "name": "Будакова Ирина Николаевна", "email": "i.budakova2013@yandex.ru"}, "conditions": [], "description": null, "district_id": 205, "aoop_programs": [], "conditionsAdmission": []}	2026-07-05 09:28:25.808265
-83	1	UPDATE	institutions	73	{"name": "МБДОУ д/с \\" Теремок\\" с. Конюшки Чаплыгинский округ Липецкая область", "type": "preschool", "range": {"max": 7, "min": 2}, "address": "Липецкая область Чаплыгинский округ село Конюшки улица Центральная дом 220 индекс 399911", "website": "https://ds-teremok-konyushki-r42.gosweb.gosuslugi.ru/", "aoop_url": null, "director": {"name": "Кудряшова Любовь Викторовна", "email": "", "phone": "+74747521733"}, "conditions": [], "description": null, "district_id": 205, "aoop_programs": [], "conditionsAdmission": []}	{"id": 73, "name": "Муниципальное бюджетное дошкольное образовательное учреждение детский сад \\"Теремок\\" село Конюшки Чаплыгинский округ Липецкая область (МБДОУ д/с \\" Теремок\\" с. Конюшки Чаплыгинский округ Липецкая область)", "type": "preschool", "range": {"max": 7, "min": 2}, "address": "Липецкая область Чаплыгинский округ село Конюшки улица Центральная дом 220 индекс 399911", "website": "https://ds-teremok-konyushki-r42.gosweb.gosuslugi.ru/", "aoop_url": null, "director": {"id": 72, "name": "Кудряшова Любовь Викторовна", "phone": "+74747521733"}, "conditions": [], "description": null, "district_id": 205, "aoop_programs": [], "conditionsAdmission": []}	2026-07-05 09:29:13.039619
-84	1	UPDATE	institutions	69	{"name": "МБДОУ д/с \\"Буратино\\" с. Братовка Чаплыгинского округа Липецкой области", "type": "preschool", "range": {"max": 7, "min": 2}, "address": "Липецкая область Чаплыгинский округ село Братовка улица Свинушки дом 5", "website": "https://ds-buratino-chaplygin-r42.gosweb.gosuslugi.ru/", "aoop_url": null, "director": {"name": "Седых Марина Михайловна", "email": "t.belikova2014@yandex.ru", "phone": ""}, "conditions": [], "description": null, "district_id": 205, "aoop_programs": [], "conditionsAdmission": []}	{"id": 69, "name": "Муниципальное бюджетное дошкольное общеобразовательное учреждение детский сад \\"Буратино\\" села Братовка Чаплыгинского муниципального района Липецкой области (МБДОУ д/с \\"Буратино\\" с. Братовка Чаплыгинского округа Липецкой области)", "type": "preschool", "range": {"max": 7, "min": 2}, "address": "Липецкая область Чаплыгинский округ село Братовка улица Свинушки дом 5", "website": "https://ds-buratino-chaplygin-r42.gosweb.gosuslugi.ru/", "aoop_url": null, "director": {"id": 68, "name": "Седых Марина Михайловна", "email": "t.belikova2014@yandex.ru"}, "conditions": [], "description": null, "district_id": 205, "aoop_programs": [], "conditionsAdmission": []}	2026-07-05 09:29:55.162893
-102	3	UPDATE	institutions	534	{"name": "TEST_CRUD_1787331987_3325", "type": "school", "range": {"max": "11.0", "min": "1.0"}, "address": "тест", "website": "https://example.com/", "aoop_url": null, "director": {"name": "Тестов Тест Тестович", "email": "test.director.1787331987@example.local", "phone": "+79001112233"}, "conditions": ["autism"], "description": "phpunit", "district_id": 188, "aoop_programs": [{"id": 557, "name": "TEST AOOP"}], "conditionsAdmission": ["certificate"]}	{"id": 534, "name": "TEST_CRUD_1787331987_3325_UPD", "type": "school", "range": {"max": 9, "min": 1}, "address": "тест 2", "website": "https://example.com/upd", "aoop_url": null, "director": {"id": 529, "name": "Тестов Тест Тестович", "email": "test.director.1787331987@example.local", "phone": "+79001112233"}, "conditions": [], "description": "phpunit-upd", "district_id": 188, "aoop_programs": [], "conditionsAdmission": ["certificate"]}	2026-08-21 17:06:28.198544
-85	1	UPDATE	institutions	72	{"name": "МБДОУ д/с \\"Ивушка\\"", "type": "preschool", "range": {"max": 7, "min": 2}, "address": "Липецкая область Чаплыгинский округ поселок Рощинский улица Молодежная 1", "website": "https://ds-ivushka-roshhinskij-r42.gosweb.gosuslugi.ru/", "aoop_url": null, "director": {"name": "Кривоносова Ольга Сергеевна", "email": "olgakrivonosova@inbox.ru", "phone": ""}, "conditions": [], "description": null, "district_id": 205, "aoop_programs": [], "conditionsAdmission": []}	{"id": 72, "name": "Муниципальное бюджетное дошкольное образовательное учреждение детский сад \\"Ивушка\\" поселок Рощинский Чаплыгинского округа Липецкой области (МБДОУ д/с \\"Ивушка\\")", "type": "preschool", "range": {"max": 7, "min": 2}, "address": "Липецкая область Чаплыгинский округ поселок Рощинский улица Молодежная 1", "website": "https://ds-ivushka-roshhinskij-r42.gosweb.gosuslugi.ru/", "aoop_url": null, "director": {"id": 71, "name": "Кривоносова Ольга Сергеевна", "email": "olgakrivonosova@inbox.ru"}, "conditions": [], "description": null, "district_id": 205, "aoop_programs": [], "conditionsAdmission": []}	2026-07-05 09:30:39.825226
-86	1	UPDATE	institutions	66	{"name": "МБДОУ д/с \\"Колокольчик\\" г. Чаплыгина Липецкой области", "type": "preschool", "range": {"max": 7, "min": 2}, "address": "399902, Липецкая область, город Чаплыгин, улица Мира, дом 10А", "website": "https://ds-kolokolchik-chaplygin-r42.gosweb.gosuslugi.ru/", "aoop_url": "https://ds-kolokolchik-chaplygin-r42.gosweb.gosuslugi.ru/", "director": {"name": "Джавадова Оксана Алексеевна", "email": "dskolokolchik2013@yandex.ru", "phone": ""}, "conditions": [], "description": null, "district_id": 205, "aoop_programs": [], "conditionsAdmission": ["attestat"]}	{"id": 66, "name": "Муниципальное бюджетное дошкольное образовательное учреждение детский сад \\"Колокольчик\\" г. Чаплыгина Липецкой области (МБДОУ д/с \\"Колокольчик\\" г. Чаплыгина Липецкой области)", "type": "preschool", "range": {"max": 7, "min": 2}, "address": "399902, Липецкая область, город Чаплыгин, улица Мира, дом 10А", "website": "https://ds-kolokolchik-chaplygin-r42.gosweb.gosuslugi.ru/", "aoop_url": "https://ds-kolokolchik-chaplygin-r42.gosweb.gosuslugi.ru/", "director": {"id": 65, "name": "Джавадова Оксана Алексеевна", "email": "dskolokolchik2013@yandex.ru"}, "conditions": [], "description": null, "district_id": 205, "aoop_programs": [], "conditionsAdmission": []}	2026-07-05 09:31:14.865231
-87	1	UPDATE	institutions	74	{"name": "МБДОУ д/с \\"Малыш\\" с. Ломовое Чаплыгинский округ Липецкая область", "type": "preschool", "range": {"max": 7, "min": 2}, "address": "399931, Липецкая область Чаплыгинский округ село Ломовое улица Советская д.21", "website": "https://ds-malysh-lomovoe-r42.gosweb.gosuslugi.ru/", "aoop_url": null, "director": {"name": "Григорьева Марина Владимировна", "email": "malish-ds@yandex.ru", "phone": ""}, "conditions": [], "description": null, "district_id": 205, "aoop_programs": [], "conditionsAdmission": []}	{"id": 74, "name": "Муниципальное бюджетное дошкольное образовательное учреждение детский сад \\"Малыш\\" села Ломовое Чаплыгинский округа Липецкая область (МБДОУ д/с \\"Малыш\\" с. Ломовое Чаплыгинский округ Липецкая область)", "type": "preschool", "range": {"max": 7, "min": 2}, "address": "399931, Липецкая область Чаплыгинский округ село Ломовое улица Советская д.21", "website": "https://ds-malysh-lomovoe-r42.gosweb.gosuslugi.ru/", "aoop_url": null, "director": {"id": 73, "name": "Григорьева Марина Владимировна", "email": "malish-ds@yandex.ru"}, "conditions": [], "description": null, "district_id": 205, "aoop_programs": [], "conditionsAdmission": []}	2026-07-05 09:32:59.658397
-88	1	UPDATE	institutions	75	{"name": "МБДОУ д/с \\"Полянка\\" с. Новополянье Чаплыгинского округа", "type": "preschool", "range": {"max": 7, "min": 2}, "address": "399941, Липецкая обл., Чаплыгинский округ, с. Новополянье, ул. Школьная д.6", "website": "https://ds-polyanka-novopolyane-r42.gosweb.gosuslugi.ru/", "aoop_url": null, "director": {"name": "Ступа Елена Викторовна", "email": "novopolanieds@yandex.ru", "phone": ""}, "conditions": [], "description": null, "district_id": 205, "aoop_programs": [], "conditionsAdmission": []}	{"id": 75, "name": "Муниципальное бюджетное дошкольное образовательное учреждение детский сад \\"Полянка\\" села Новополянье Чаплыгинского округа Липецкой области (МБДОУ д/с \\"Полянка\\" с. Новополянье Чаплыгинского округа)", "type": "preschool", "range": {"max": 7, "min": 2}, "address": "399941, Липецкая обл., Чаплыгинский округ, с. Новополянье, ул. Школьная д.6", "website": "https://ds-polyanka-novopolyane-r42.gosweb.gosuslugi.ru/", "aoop_url": null, "director": {"id": 74, "name": "Ступа Елена Викторовна", "email": "novopolanieds@yandex.ru"}, "conditions": [], "description": null, "district_id": 205, "aoop_programs": [], "conditionsAdmission": []}	2026-07-05 09:34:32.145559
-103	3	DELETE	institutions	534	{"id": 534, "name": "TEST_CRUD_1787331987_3325_UPD", "type": "school", "range": {"max": "9.0", "min": "1.0"}, "address": "тест 2", "website": "https://example.com/upd", "aoop_url": null, "director": {"name": "Тестов Тест Тестович", "email": "test.director.1787331987@example.local", "phone": "+79001112233"}, "conditions": [], "description": "phpunit-upd", "district_id": 188, "aoop_programs": [], "conditionsAdmission": ["certificate"]}	\N	2026-08-21 17:06:28.293926
-89	1	UPDATE	institutions	67	{"name": "МБДОУ д/с \\"Светлячок\\" г. Чаплыгина", "type": "preschool", "range": {"max": 7, "min": 2}, "address": "399900, Липецкая область, Чаплыгинский округ, город Чаплыгин, улица Ломоносова, д. 46А", "website": "https://ds-svetlyachok-chaplygin-r42.gosweb.gosuslugi.ru/", "aoop_url": null, "director": {"name": "Некрасова Людмила Викторовна", "email": "svetlyachek-ds@yandex.ru", "phone": ""}, "conditions": [], "description": null, "district_id": 205, "aoop_programs": [], "conditionsAdmission": []}	{"id": 67, "name": "Муниципальное бюджетное дошкольное образовательное учреждение детский сад \\"Светлячок\\" города Чаплыгина Чаплыгинского округа Липецкой области Российской Федерации (МБДОУ д/с \\"Светлячок\\" г. Чаплыгина)", "type": "preschool", "range": {"max": 7, "min": 2}, "address": "399900, Липецкая область, Чаплыгинский округ, город Чаплыгин, улица Ломоносова, д. 46А", "website": "https://ds-svetlyachok-chaplygin-r42.gosweb.gosuslugi.ru/", "aoop_url": null, "director": {"id": 66, "name": "Некрасова Людмила Викторовна", "email": "svetlyachek-ds@yandex.ru"}, "conditions": [], "description": null, "district_id": 205, "aoop_programs": [], "conditionsAdmission": []}	2026-07-05 09:35:36.796258
-90	1	UPDATE	institutions	64	{"name": "МБДОУ д/с \\"Сказка\\" г. Чаплыгин", "type": "preschool", "range": {"max": 7, "min": 2}, "address": "399902 Российская Федерация, Липецкая область, город Чаплыгин, улица Советская, дом 2 \\"г\\"", "website": "https://ds-skazka-chaplygin-r42.gosweb.gosuslugi.ru/", "aoop_url": null, "director": {"name": "Грушихина Ольга Алексеевна", "email": "madou-skazka@yandex.ru", "phone": ""}, "conditions": [], "description": null, "district_id": 205, "aoop_programs": [], "conditionsAdmission": []}	{"id": 64, "name": "Муниципальное бюджетное дошкольное образовательное учреждение детский сад \\"Сказка\\" г. Чаплыгина Липецкой области (МБДОУ д/с \\"Сказка\\" г. Чаплыгин)", "type": "preschool", "range": {"max": 7, "min": 2}, "address": "399902 Российская Федерация, Липецкая область, город Чаплыгин, улица Советская, дом 2 \\"г\\"", "website": "https://ds-skazka-chaplygin-r42.gosweb.gosuslugi.ru/", "aoop_url": null, "director": {"id": 63, "name": "Грушихина Ольга Алексеевна", "email": "madou-skazka@yandex.ru"}, "conditions": [], "description": null, "district_id": 205, "aoop_programs": [], "conditionsAdmission": []}	2026-07-05 09:36:13.353396
-91	1	DELETE	institutions	88	{"id": 88, "name": "ЕТЖТ - филиал РГУПС", "type": "vo", "range": {"max": null, "min": null}, "address": "399774, Россия, ЦФО, Липецкая область, г. Елец, ул. Вермишева, д. 12", "website": "https://etgt.ru/index.php?option=com_content&task=view&id=35&Itemid=63", "aoop_url": null, "director": {"name": "Кузьмин Алексей Михайлович", "email": "elec@rgups.ru", "phone": "+74742272224"}, "conditions": [], "description": null, "district_id": 187, "aoop_programs": [], "conditionsAdmission": ["attestat"]}	\N	2026-07-05 12:47:31.316358
-92	1	UPDATE	institutions	59	{"name": "МБДОУ д/с № 10 г. Грязи", "type": "preschool", "range": {"max": 7, "min": 2}, "address": "399057, Российская Федерация, Липецкая область, Грязинский район, город Грязи, улица Бурденко, дом 10б Муниципальное бюджетное дошкольное образовательное учреждение детский сад №11 «Рябинка» г. Грязи Грязинского муниципального округа Липецкой области", "website": "https://ds-10dubravushka-gryazi-r42.gosweb.gosuslugi.ru/", "aoop_url": null, "director": {"name": "Субботина Ирина Васильевна", "email": "dubravushka10@mail.ru", "phone": ""}, "conditions": [], "description": null, "district_id": 189, "aoop_programs": [], "conditionsAdmission": ["attestat"]}	{"id": 59, "name": "МБДОУ д/с № 10 г. Грязи", "type": "preschool", "range": {"max": 7, "min": 2}, "address": "399057, Российская Федерация, Липецкая область, Грязинский район, город Грязи, улица Бурденко, дом 10б", "website": "https://ds-10dubravushka-gryazi-r42.gosweb.gosuslugi.ru/", "aoop_url": null, "director": {"id": 58, "name": "Субботина Ирина Васильевна", "email": "dubravushka10@mail.ru", "phone": null}, "conditions": [], "description": null, "district_id": 189, "aoop_programs": [], "conditionsAdmission": []}	2026-07-05 14:31:28.532107
-93	1	UPDATE	institutions	57	{"name": "МАДОУ д/с № 8 \\"Родничок\\" г. Грязи", "type": "preschool", "range": {"max": 7, "min": 2}, "address": "399059, Липецкая область, г. Грязи, ул. Гастелло, д. 5 Муниципальное автономное дошкольное образовательное учреждение детский сад общеразвивающего вида № 9 «Василек» г.Грязи Грязинского муниципального района Липецкой области", "website": "https://rod8gryazi.gosuslugi.ru/", "aoop_url": "https://rod8gryazi.gosuslugi.ru/svedeniya-ob-obrazovatelnoy-organizatsii/dokumenty/dokumenty_114.html", "director": {"name": "Фалькович Татьяна Николаевна", "email": "detsad-rodnichek@yandex.ru", "phone": ""}, "conditions": [], "description": null, "district_id": 189, "aoop_programs": [], "conditionsAdmission": ["attestat"]}	{"id": 57, "name": "МАДОУ д/с № 8 \\"Родничок\\" г. Грязи", "type": "preschool", "range": {"max": 7, "min": 2}, "address": "399059, Липецкая область, г. Грязи, ул. Гастелло, д. 5", "website": "https://rod8gryazi.gosuslugi.ru/", "aoop_url": "https://rod8gryazi.gosuslugi.ru/svedeniya-ob-obrazovatelnoy-organizatsii/dokumenty/dokumenty_114.html", "director": {"id": 56, "name": "Фалькович Татьяна Николаевна", "email": "detsad-rodnichek@yandex.ru", "phone": null}, "conditions": [], "description": null, "district_id": 189, "aoop_programs": [], "conditionsAdmission": []}	2026-07-05 14:33:31.492804
-94	1	UPDATE	institutions	61	{"name": "МБДОУ д/с \\"Радуга\\" с.Б.Самовец", "type": "preschool", "range": {"max": 7, "min": 2}, "address": "399082, Липецкая область, Грязинский район, с.Б.Самовец, ул.Октябрьская, д.19 а Муниципальное бюджетное дошкольное образовательное учреждение детский сад \\"Росточек\\" с. Синявка Грязинского муниципального округа Липецкой области", "website": "https://dssamovets.gosuslugi.ru/", "aoop_url": "https://dssamovets.gosuslugi.ru/netcat_files/19/8/AOP_Samovets.pdf", "director": {"name": "Суринова Елена Константиновна", "email": "syrinova79@mail.ru", "phone": ""}, "conditions": [], "description": null, "district_id": 189, "aoop_programs": [], "conditionsAdmission": ["attestat"]}	{"id": 61, "name": "МБДОУ д/с \\"Радуга\\" с.Б.Самовец", "type": "preschool", "range": {"max": 7, "min": 2}, "address": "399082, Липецкая область, Грязинский район, с.Б.Самовец, ул.Октябрьская, д.19 а", "website": "https://dssamovets.gosuslugi.ru/", "aoop_url": "https://dssamovets.gosuslugi.ru/netcat_files/19/8/AOP_Samovets.pdf", "director": {"id": 60, "name": "Суринова Елена Константиновна", "email": "syrinova79@mail.ru", "phone": null}, "conditions": [], "description": null, "district_id": 189, "aoop_programs": [], "conditionsAdmission": []}	2026-07-05 14:33:43.435118
-95	1	UPDATE	institutions	58	{"name": "МАДОУ д/с № 9 г. Грязи", "type": "preschool", "range": {"max": 7, "min": 2}, "address": "399059, Липецкая область, г. Грязи, улица Гризодубовой, дом 31а Муниципальное бюджетное дошкольное образовательное учреждение детский сад № 10 г. Грязи Грязинского муниципального района Липецкой области", "website": "https://ds-9vasilek-gryazi-r42.gosweb.gosuslugi.ru/", "aoop_url": "https://ds-9vasilek-gryazi-r42.gosweb.gosuslugi.ru/svedeniya-ob-obrazovatelnoy-organizatsii/dokumenty/adaptirovannaya-obrazovatelnaya-programma.html", "director": {"name": "Чурилова Татьяна Александровна", "email": "ds9gr48.tchurilowa@yandex.ru", "phone": ""}, "conditions": [], "description": null, "district_id": 189, "aoop_programs": [], "conditionsAdmission": ["attestat"]}	{"id": 58, "name": "МАДОУ д/с № 9 г. Грязи", "type": "preschool", "range": {"max": 7, "min": 2}, "address": "399059, Липецкая область, г. Грязи, улица Гризодубовой, дом 31а", "website": "https://ds-9vasilek-gryazi-r42.gosweb.gosuslugi.ru/", "aoop_url": "https://ds-9vasilek-gryazi-r42.gosweb.gosuslugi.ru/svedeniya-ob-obrazovatelnoy-organizatsii/dokumenty/adaptirovannaya-obrazovatelnaya-programma.html", "director": {"id": 57, "name": "Чурилова Татьяна Александровна", "email": "ds9gr48.tchurilowa@yandex.ru", "phone": null}, "conditions": [], "description": null, "district_id": 189, "aoop_programs": [], "conditionsAdmission": []}	2026-07-05 14:33:52.586229
-96	1	UPDATE	institutions	62	{"name": "МБДОУ д/с \\"Росточек\\" с. Синявка", "type": "preschool", "range": {"max": 7, "min": 2}, "address": "Липецкая область, Грязинский район, с. Синявка, ул. Центральная площадь д.6 Муниципальное бюджетное дошкольное образовательное учреждение детский сад \\"Светлячок\\" с.Ярлуково Грязинского муниципального района Липецкой области", "website": "https://ds-rostochek48.gosuslugi.ru/", "aoop_url": null, "director": {"name": "Беззубцева Светлана Анатольевна", "email": "rodsenyavka@yandex.ru", "phone": ""}, "conditions": [], "description": null, "district_id": 189, "aoop_programs": [], "conditionsAdmission": ["attestat"]}	{"id": 62, "name": "МБДОУ д/с \\"Росточек\\" с. Синявка", "type": "preschool", "range": {"max": 7, "min": 2}, "address": "Липецкая область, Грязинский район, с. Синявка, ул. Центральная площадь д.6", "website": "https://ds-rostochek48.gosuslugi.ru/", "aoop_url": null, "director": {"id": 61, "name": "Беззубцева Светлана Анатольевна", "email": "rodsenyavka@yandex.ru", "phone": null}, "conditions": [], "description": null, "district_id": 189, "aoop_programs": [], "conditionsAdmission": []}	2026-07-05 14:34:19.414062
-97	1	UPDATE	institutions	54	{"name": "МБДОУ д/с № 1 г. Грязи", "type": "preschool", "range": {"max": 7, "min": 2}, "address": "399055, Российская Федерация, Липецкая область, г. Грязи, ул. Станционная, д. 1 Муниципальное бюджетное дошкольное образовательное учреждение детский сад №2 \\"Малышок\\" г. Грязи Грязинского муниципального района Липецкой области", "website": "https://ds1-gryazi-r42.gosweb.gosuslugi.ru/", "aoop_url": "https://ds1-gryazi-r42.gosweb.gosuslugi.ru/svedeniya-ob-obrazovatelnoy-organizatsii/dokumenty/adaptirovannaya-obrazovatelnaya-programma-doshkolnogo-obrazovaniya-dlya-detey-s-tyazhelymi-narusheniyami-rechi-mbdou-ds-1-g-gryazi.html", "director": {"name": "Кочкина Виктория Владимировна", "email": "1detskii.sad@mail.ru", "phone": ""}, "conditions": [], "description": null, "district_id": 189, "aoop_programs": [], "conditionsAdmission": ["attestat"]}	{"id": 54, "name": "МБДОУ д/с № 1 г. Грязи", "type": "preschool", "range": {"max": 7, "min": 2}, "address": "399055, Российская Федерация, Липецкая область, г. Грязи, ул. Станционная, д. 1", "website": "https://ds1-gryazi-r42.gosweb.gosuslugi.ru/", "aoop_url": "https://ds1-gryazi-r42.gosweb.gosuslugi.ru/svedeniya-ob-obrazovatelnoy-organizatsii/dokumenty/adaptirovannaya-obrazovatelnaya-programma-doshkolnogo-obrazovaniya-dlya-detey-s-tyazhelymi-narusheniyami-rechi-mbdou-ds-1-g-gryazi.html", "director": {"id": 53, "name": "Кочкина Виктория Владимировна", "email": "1detskii.sad@mail.ru", "phone": null}, "conditions": [], "description": null, "district_id": 189, "aoop_programs": [], "conditionsAdmission": []}	2026-07-05 14:34:30.9455
 \.
 
 
 --
--- Data for Name: administrators; Type: TABLE DATA; Schema: public; Owner: -
+-- Data for Name: administrators; Type: TABLE DATA; Schema: public; Owner: user
 --
 
-COPY public.administrators (id, login, email, password_hash, full_name, created_at, last_login, updated_at) FROM stdin;
-2	admin123	admin123@example.com	$2y$10$/h9WfFn/x0LnaaOjPEuwzuDV1pK6z00M16Pl9PvPjacq5v0TgHrem	Администратор	2026-07-28 16:22:30.734533	\N	2026-07-28 16:22:30.734533
-3	test_admin	test_admin@example.local	$2y$10$cwR5vQM21UrGZIBOns3eFewx7i1oZ73KvdTGCu8lzgUTEVZ8VIygG	Test Admin	2026-08-21 17:04:49.03242	2026-08-21 17:06:27.942508	2026-08-21 17:06:27.942508
-1	admin	admin@admin.ru	$2y$10$Tu44vp/OaCrl/t4eetGiKO2m6nAN6ro50s9T3rKULn4dmwphXP.KK	Иванов Иван Иванович	2025-12-02 17:40:07.247459	2026-08-21 18:10:32.929464	2026-08-21 18:10:32.929464
+COPY public.administrators (id, login, password_hash, full_name, created_at, last_login, updated_at) FROM stdin;
+6	map_admin	$2y$10$ADkj26YEbzSq.81fE8t/eeSM9szZqb8WSWmhWK8EDtNpQJY1gm20m	Map Administrator	2026-11-14 10:54:59.457582	\N	2026-11-14 10:54:59.457582
 \.
 
 
 --
--- Data for Name: admission_types; Type: TABLE DATA; Schema: public; Owner: -
+-- Data for Name: admission_types; Type: TABLE DATA; Schema: public; Owner: user
 --
 
 COPY public.admission_types (code, name_ru, description, created_at) FROM stdin;
@@ -679,7 +551,7 @@ attestat	Аттестат	Для детей, получающих аттеста
 
 
 --
--- Data for Name: aoop_programs; Type: TABLE DATA; Schema: public; Owner: -
+-- Data for Name: aoop_programs; Type: TABLE DATA; Schema: public; Owner: user
 --
 
 COPY public.aoop_programs (id, institution_id, name, created_at, url) FROM stdin;
@@ -877,7 +749,6 @@ COPY public.aoop_programs (id, institution_id, name, created_at, url) FROM stdin
 271	186	Адаптированная основная общеобразовательная программа с нарушением интеллекта (1-4 класс)	2026-08-21 15:51:15.108635	https://sh46-lipeck-r42.gosweb.gosuslugi.ru/netcat_files/68/3083/AOOP_s_narusheniem_intellekta_1_4.pdf
 272	188	Адаптированная образовательная программа дошкольного образования коррекционно-развивающей работы в логопедической группе для детей с ТНР 5 – 7 (8) лет	2026-08-21 15:51:15.108635	https://sc48lipetsk.gosuslugi.ru/netcat_files/33/46/p_AOP_DO_010925.pdf
 273	191	Адаптированная образовательная программа дошкольного образования коррекционно-развивающей работы для детей с нарушениями речи 5-8 лет Муниципального автономного общеобразовательного учреждения средней школы №51 г. Липецка	2026-08-21 15:51:15.108635	https://51lipetsk.gosuslugi.ru/netcat_files/33/46/aop_doo_25_26_uch_god.pdf
-274	196	Адаптированная образовательная программа дошкольного образования для воспитанников с нарушением речи (ТНР) муниципального автономного общеобразовательного учреждения средняя школа № 59 «Перспектива» г. Липецка	2026-08-21 15:51:15.108635	https://progymnasium59.gosuslugi.ru/netcat_files/33/46/AOP_DO.pdf
 275	200	Адаптированная основная общеобразовательная программа обучающихся с умственной отсталостью (интеллектуальными нарушениями) (вариант 1) 2023-2027 гг. (в редакции 2025 года)	2026-08-21 15:51:15.108635	https://s63lip.gosuslugi.ru/netcat_files/33/46/AOOP_UO_IN_.pdf
 276	200	Адаптированная основная общеобразовательная программа начального общего образования для обучающихся с нарушениями опорно-двигательного аппарата (вариант 6.1.) (в редакции 2025 года)	2026-08-21 15:51:15.108635	https://s63lip.gosuslugi.ru/netcat_files/33/46/AOOP_NODA_NOO_s_podpis_yu.pdf
 277	200	Адаптированная основная образовательная программа начального общего образования обучающихся с ЗПР (вариант 7.1) на 2025-2029 гг.	2026-08-21 15:51:15.108635	https://s63lip.gosuslugi.ru/netcat_files/33/46/AOOP_NOO_ZPR_7.1_s_podpis_yu.pdf
@@ -893,8 +764,6 @@ COPY public.aoop_programs (id, institution_id, name, created_at, url) FROM stdin
 287	207	Адаптированная основная общеобразовательная программа начального общего образования муниципального бюджетного общеобразовательного учреждения средней школы №72 имени героя Российской Федерации Гануса Феодосия Григорьевича для обучающихся с задержкой…	2026-08-21 15:51:15.108635	https://sc72lip.gosuslugi.ru/netcat_files/33/46/AOOP_NOO_variant_7.1.pdf
 288	207	Адаптированная основная общеобразовательная программа образования обучающихся с умственной отсталостью интеллектуальными нарушениями) МБОУ СШ №72 г. Липецка. Липецка	2026-08-21 15:51:15.108635	https://sc72lip.gosuslugi.ru/netcat_files/33/46/Adaptirovannaya_osnovnaya_obscheobrazovatel_naya_programma_obrazovaniya.pdf
 289	211	Адаптированная образовательная программа дошкольного образования для обучающихся с тяжелыми нарушениями речи	2026-08-21 15:51:15.108635	https://ds1lip.gosuslugi.ru/svedeniya-ob-obrazovatelnoy-organizatsii/dokumenty/dokumenty_105.html
-290	212	Адаптированная основная образовательная программа для детей с ТНР муниципального автономного дошкольного образовательного учреждения № 2 города Липецка	2026-08-21 15:51:15.108635	https://oblachnyikit.gosuslugi.ru/svedeniya-ob-obrazovatelnoy-organizatsii/dokumenty/adaptirovannaya-oop-tnr.html
-291	212	Адаптированная основная образовательная программа для детей с ЗПР муниципального автономного дошкольного образовательного учреждения № 2 города Липецка	2026-08-21 15:51:15.108635	https://oblachnyikit.gosuslugi.ru/svedeniya-ob-obrazovatelnoy-organizatsii/dokumenty/adaptirovannaya-oop-zpr.html
 292	213	Адаптированная основная образовательная программа для дошкольников с тяжелыми нарушениями речи (ТНР)	2026-08-21 15:51:15.108635	https://dou3lipetsk.gosuslugi.ru/svedeniya-ob-obrazovatelnoy-organizatsii/dokumenty/adaptirovannaya-obrazovatelnaya-programma-doshkolnogo-obrazovaniya-dlya-obuchayuschihsya-s-tyazhelymi-narusheniyami-rechi-tnr.html
 293	213	Адаптированная образовательная программа для дошкольников с задержкой психического развития (ЗПР)	2026-08-21 15:51:15.108635	https://dou3lipetsk.gosuslugi.ru/svedeniya-ob-obrazovatelnoy-organizatsii/dokumenty/adaptirovannaya-rabochaya-obrazovatelnaya-programma-dlya-detey-s-zaderzhkoy-psihicheskogo-razvitiya-zpr-uchitelya-defektologa.html
 294	214	Адаптированная образовательная программа для детей с тяжелыми нарушениями речи (ТНР)	2026-08-21 15:51:15.108635	https://dou4lipetsk.gosuslugi.ru/svedeniya-ob-obrazovatelnoy-organizatsii/dokumenty/adaptirovannaya-obrazovatelnaya-programma-do-dou-4-glipetska.html
@@ -911,8 +780,6 @@ COPY public.aoop_programs (id, institution_id, name, created_at, url) FROM stdin
 305	220	Адаптированная образовательная программа дошкольного образования коррекционно-развивающей работы для детей с ОВЗ (ТНР) 5-8 лет ДОУ № 12 г. Липецка	2026-08-21 15:51:15.108635	https://dou12-lip.gosuslugi.ru/svedeniya-ob-obrazovatelnoy-organizatsii/dokumenty/osnovnaya-adaptirovannaya-obrazovatelnaya-programma-na-2024-2025-uchebnyy-god.html
 417	293	Адаптированная образовательная программа дошкольного образования для обучающихся с тяжелыми нарушениями речи	2026-08-21 15:51:15.108635	https://dou4yagodka.gosuslugi.ru/svedeniya-ob-obrazovatelnoy-organizatsii/obrazovanie/
 306	220	Адаптированная образовательная программа дошкольного образования коррекционно-развивающей работы для детей с ОВЗ (ЗПР) ДОУ № 12 г. Липецка	2026-08-21 15:51:15.108635	https://dou12-lip.gosuslugi.ru/svedeniya-ob-obrazovatelnoy-organizatsii/dokumenty/dokumenty_148.html
-307	221	Адаптированная образовательная программа дошкольного образования коррекционно-развивающей работы для детей с нарушениями речи 4-8 лет Муниципального автономного дошкольного образовательного учреждения детского сада № 14 г. Липецка	2026-08-21 15:51:15.108635	https://dou14lip.gosuslugi.ru/svedeniya-ob-obrazovatelnoy-organizatsii/dokumenty/adaptirovannaya-obrazovatelnaya-programma-doshkolnogo-obrazovaniya-korrektsionno-razvivayuschey-raboty-dlya-detey-s-narusheniem-rechi-obschim-nedorazvitiem-rechi-4-8-let-dou-14-g-lipetska.html
-308	221	Адаптированная образовательная программа дошкольного образования коррекционно-развивающей работы для детей с задержкой психического развития 5-8 лет Муниципального автономного дошкольного образовательного учреждения детского сада № 14 г. Липецка	2026-08-21 15:51:15.108635	https://dou14lip.gosuslugi.ru/svedeniya-ob-obrazovatelnoy-organizatsii/dokumenty/adaptirovannaya-obrazovatelnaya-programma-doshkolnogo-obrazovaniya-korrektsionno-razvivayuschey-raboty-v-kompensiruyuschey-gruppe-dlya-detey-s-zaderzhkoy-psihicheskogo-razvitiya-5-8-let-dou-14-g-lipetska.html
 309	222	Адаптированная образовательная программа 2025-2026 учебный год (группа комбинированной направленности)	2026-08-21 15:51:15.108635	https://dou15lipetsk.gosuslugi.ru/svedeniya-ob-obrazovatelnoy-organizatsii/dokumenty/adaptirovannaya-obrazovatelnaya-programma-2025-2026-uchebnyy-god-proekt.html
 310	222	Адаптированная образовательная программа 2025-2026 учебный год. Логопедическая группа (для обучающихся с тяжелыми нарушениями речи (ТНР))	2026-08-21 15:51:15.108635	https://dou15lipetsk.gosuslugi.ru/svedeniya-ob-obrazovatelnoy-organizatsii/dokumenty/adaptirovannaya-obrazovatelnaya-programma-2025-2026-uchebnyy-god-proekt.html
 311	223	Адаптированная образовательная программа дошкольного образования для обучающихся дошкольного возраста с умственной отсталостью легкой степени Муниципального бюджетного дошкольного образовательного учреждения №18 города Липецка	2026-08-21 15:51:15.108635	https://mdou18lip.gosuslugi.ru/svedeniya-ob-obrazovatelnoy-organizatsii/dokumenty/aop-do-dlya-detey-doshkolnogo-vozrasta-s-umstvennoy-otstalostyu-legkoy-stepeni-munitsipalnogo-byudzhetnogo-doshkolnogo-obrazovatelnogo-uchrezhdeniya-18-g-lipetska-na-2024-2025-uchebnyy-god.html
@@ -934,7 +801,6 @@ COPY public.aoop_programs (id, institution_id, name, created_at, url) FROM stdin
 327	229	Адаптированная программа ТНР	2026-08-21 15:51:15.108635	https://25doulip.gosuslugi.ru/svedeniya-ob-obrazovatelnoy-organizatsii/dokumenty/adaptirovannaya-programma-tnr.html
 328	230	Адаптированной образовательной программе дошкольного ДОУ № 29 г. Липецка для детей с тяжелыми нарушениями речи (ТНР) общим недоразвитием речи (ОНР))	2026-08-21 15:51:15.108635	https://mdou29lip.gosuslugi.ru/svedeniya-ob-obrazovatelnoy-organizatsii/dokumenty/obrazovatelnaya-programma-2.html
 329	230	Адаптированная образовательная программа дошкольного образования ДОУ № 29 г. Липецка для детей с задержкой психического развития (ЗПР)	2026-08-21 15:51:15.108635	https://mdou29lip.gosuslugi.ru/svedeniya-ob-obrazovatelnoy-organizatsii/dokumenty/obrazovatelnaya-programma-1.html
-330	231	Адаптированная образовательная программа дошкольного образования коррекционно - развивающей направленности для детей с тяжелыми нарушениями речи Муниципального автономного дошкольного образовательного учреждения детский сад №30 г. Липецка	2026-08-21 15:51:15.108635	https://dou30lip.gosuslugi.ru/svedeniya-ob-obrazovatelnoy-organizatsii/obrazovanie/
 331	232	Адаптированная образовательная программа дошкольного образования для обучающихся с задержкой психического развития (ЗПР)	2026-08-21 15:51:15.108635	https://dou32lipetsk.gosuslugi.ru/svedeniya-ob-obrazovatelnoy-organizatsii/dokumenty/adaptirovannaya-obrazovatelnaya-programma-dlya-detey-s-zaderzhkoy-psihicheskogo-razvitiya.html
 332	232	Адаптированная образовательная программа дошкольного образования для обучающихся с расстройствами аутистического спектра (РАС)	2026-08-21 15:51:15.108635	https://dou32lipetsk.gosuslugi.ru/svedeniya-ob-obrazovatelnoy-organizatsii/dokumenty/adaptirovannaya-obrazovatelnaya-programma-dlya-detey-s-rasstroystvami-autisticheskogo-spektra.html
 333	232	Адаптированная образовательная программа дошкольного образования для обучающихся с тяжелыми нарушениями речи (ТНР)	2026-08-21 15:51:15.108635	https://dou32lipetsk.gosuslugi.ru/svedeniya-ob-obrazovatelnoy-organizatsii/dokumenty/adaptirovannaya-obrazovatelnaya-programma-doshkolnogo-obrazovaniya-dlya-obuchayuschihsya-s-tyazhelymi-narusheniyami-rechi.html
@@ -1086,8 +952,6 @@ COPY public.aoop_programs (id, institution_id, name, created_at, url) FROM stdin
 482	405	Адаптированная образовательная программа дошкольного образования для детей с ТНР МБДОУ д/с «Колосок» п. Лев Толстой	2026-08-21 15:51:15.108635	https://ltkolosok.gosuslugi.ru/svedeniya-ob-obrazovatelnoy-organizatsii/obrazovanie/
 483	405	Адаптированная образовательная программа дошкольного образования для детей с ЗПР МБДОУ д/с «Колосок» п. Лев Толстой	2026-08-21 15:51:15.108635	https://ltkolosok.gosuslugi.ru/svedeniya-ob-obrazovatelnoy-organizatsii/obrazovanie/
 484	405	Адаптированная образовательная программа дошкольного образования для детей с НИ МБДОУ д/с «Колосок» п. Лев Толстой	2026-08-21 15:51:15.108635	https://ltkolosok.gosuslugi.ru/svedeniya-ob-obrazovatelnoy-organizatsii/obrazovanie/
-485	407	Адаптированная образовательная программа дошкольного образования для детей с ТНР МБДОУ «Радуга»	2026-08-21 15:51:15.108635	https://ds-raduga.gosuslugi.ru/svedeniya-ob-obrazovatelnoy-organizatsii/obrazovanie/
-486	407	Адаптированная образовательная программа дошкольного образования для детей с ЗПР МБДОУ «Радуга»	2026-08-21 15:51:15.108635	https://ds-raduga.gosuslugi.ru/svedeniya-ob-obrazovatelnoy-organizatsii/obrazovanie/
 487	409	Адаптированная основная общеобразовательная программа начального общего образования для обучающихся с расстройствами аутистического спектра с легкой умственной отсталостью (интеллектуальными нарушениями) (вариант 8.3)	2026-08-21 15:51:15.108635	https://schoolilyino.gosuslugi.ru/svedeniya-ob-obrazovatelnoy-organizatsii/obrazovanie/
 488	409	Адаптированная основная общеобразовательная программа начального общего образования для слабовидящих обучающихся (вариант 4.2)	2026-08-21 15:51:15.108635	https://schoolilyino.gosuslugi.ru/svedeniya-ob-obrazovatelnoy-organizatsii/obrazovanie/
 489	409	Адаптированная основная общеобразовательная программа начального общего образования для обучающихся с расстройствами аутистического спектра с легкой умственной отсталостью (интеллектуальными нарушениями) (вариант 8.2)	2026-08-21 15:51:15.108635	https://schoolilyino.gosuslugi.ru/svedeniya-ob-obrazovatelnoy-organizatsii/obrazovanie/
@@ -1129,7 +993,6 @@ COPY public.aoop_programs (id, institution_id, name, created_at, url) FROM stdin
 525	480	Адаптированная основная общеобразовательная программа образования обучающихся с легкой умственной отсталостью (интеллектуальными нарушениями) (вариант 1)	2026-08-21 15:51:15.108635	https://sh-dmitryashevka-r42.gosweb.gosuslugi.ru/svedeniya-ob-obrazovatelnoy-organizatsii/obrazovanie/
 526	483	Адаптированная основная общеобразовательная программа начального общего образования обучающихся с ОВЗ (вариант 7.2.)	2026-08-21 15:51:15.108635	https://sh-eleckaya-lozovka-r42.gosweb.gosuslugi.ru/svedeniya-ob-obrazovatelnoy-organizatsii/obrazovanie/
 527	483	Адаптированная основная общеобразовательная программа основного общего образования обучающихся с легкой умственной отсталостью (вариант 1)	2026-08-21 15:51:15.108635	https://sh-eleckaya-lozovka-r42.gosweb.gosuslugi.ru/svedeniya-ob-obrazovatelnoy-organizatsii/obrazovanie/
-528	485	Федеральна адаптированная образовательная программа дошкольного образования для обучающихся с ограниченными возможностями здоровья	2026-08-21 15:51:15.108635	https://ds-rodnichok-konkolodez-r42.gosweb.gosuslugi.ru/svedeniya-ob-obrazovatelnoy-organizatsii/dokumenty/dokumenty_97.html
 529	492	Адаптированная образовательная программа начального общего образования (для 1-4 классов)	2026-08-21 15:51:15.108635	https://scolshanets.gosuslugi.ru/netcat_files/33/46/AOOP_UO_IN_kopiya.pdf
 530	493	Адаптированная основная общеобразовательная программа для обучающихся с интеллектуальными нарушениями	2026-08-21 15:51:15.108635	https://panikovets.gosuslugi.ru/netcat_files/68/2854/Adaptirovannaya_programma_.pdf
 531	499	Адаптированная ОП 2025-2026 уч.год	2026-08-21 15:51:15.108635	https://ds6zadonsk.gosuslugi.ru/svedeniya-ob-obrazovatelnoy-organizatsii/dokumenty/adaptirovannaya-op-2025-2026-uchgod.html
@@ -1157,26 +1020,37 @@ COPY public.aoop_programs (id, institution_id, name, created_at, url) FROM stdin
 553	523	Адаптированная образовательная программа дошкольного образования для детей детей с задержкой психического развития	2026-08-21 15:51:15.108635	https://cheremushki-lebedyan.gosuslugi.ru/svedeniya-ob-obrazovatelnoy-organizatsii/obrazovanie/
 554	524	Компенсирующая образовательная адаптированная программа	2026-08-21 15:51:15.108635	https://elochkatroekyrovo.gosuslugi.ru/svedeniya-ob-obrazovatelnoy-organizatsii/dokumenty/dokumenty_91.html
 555	524	Коррекционная образовательная адаптированная программа	2026-08-21 15:51:15.108635	https://elochkatroekyrovo.gosuslugi.ru/svedeniya-ob-obrazovatelnoy-organizatsii/dokumenty/dokumenty_93.html
+560	196	Адаптированная образовательная программа дошкольного образования для воспитанников с нарушением речи (ТНР) муниципального автономного общеобразовательного учреждения средняя школа № 59 «Перспектива» г. Липецка	2026-08-23 21:22:08.397237	\N
+561	221	Адаптированная образовательная программа дошкольного образования коррекционно-развивающей работы для детей с нарушениями речи 4-8 лет Муниципального автономного дошкольного образовательного учреждения детского сада № 14 г. Липецка	2026-08-23 21:50:53.68253	\N
+562	221	Адаптированная образовательная программа дошкольного образования коррекционно-развивающей работы для детей с задержкой психического развития 5-8 лет Муниципального автономного дошкольного образовательного учреждения детского сада № 14 г. Липецка	2026-08-23 21:50:53.68253	\N
+563	212	Адаптированная основная образовательная программа для детей с ТНР муниципального автономного дошкольного образовательного учреждения № 2 города Липецка	2026-08-23 21:51:25.765832	\N
+564	212	Адаптированная основная образовательная программа для детей с ЗПР муниципального автономного дошкольного образовательного учреждения № 2 города Липецка	2026-08-23 21:51:25.765832	\N
+565	231	Адаптированная образовательная программа дошкольного образования коррекционно - развивающей направленности для детей с тяжелыми нарушениями речи Муниципального автономного дошкольного образовательного учреждения детский сад №30 г. Липецка	2026-08-23 21:52:06.872532	\N
+566	485	Федеральна адаптированная образовательная программа дошкольного образования для обучающихся с ограниченными возможностями здоровья	2026-08-23 21:55:02.852063	\N
+569	407	Адаптированная образовательная программа дошкольного образования для детей с ТНР МБДОУ «Радуга»	2026-08-23 21:59:41.427333	\N
+570	407	Адаптированная образовательная программа дошкольного образования для детей с ЗПР МБДОУ «Радуга»	2026-08-23 21:59:41.427333	\N
 \.
 
 
 --
--- Data for Name: condition_types; Type: TABLE DATA; Schema: public; Owner: -
+-- Data for Name: condition_types; Type: TABLE DATA; Schema: public; Owner: user
 --
 
 COPY public.condition_types (code, name_ru, description, created_at) FROM stdin;
 hearing_impairment	Нарушения слуха	Для детей с нарушениями слуха	2025-12-02 16:47:37.828466
 vision_impairment	Нарушения зрения	Для детей с нарушениями зрения	2025-12-02 16:47:37.828466
-musculoskeletal_impairment	Нарушения опорно-двигательного аппарата	Для детей с НОДА	2025-12-02 16:47:37.828466
 speech_impairment	Нарушения речи	Для детей с тяжелыми нарушениями речи	2025-12-02 16:47:37.828466
-mental_retardation	Умственная отсталость	Для детей с интеллектуальными нарушениями	2025-12-02 16:47:37.828466
-autism	Расстройства аутистического спектра	Для детей с РАС	2025-12-02 16:47:37.828466
-multiple_disorders	Множественные нарушения развития	Для детей со сложными дефектами	2025-12-02 16:47:37.828466
+intellectual_impairment	Нарушение интеллекта	Для детей с интеллектуальными нарушениями	2026-08-23 19:34:35.918237
+musculoskeletal_impairment	Нарушения опорно-двигательного аппарата	Для детей с НОДА	2025-12-02 16:47:37.828466
+psychic_development_delay	Задержка психического развития	Для детей с задержкой психического развития	2026-08-23 19:59:17.338578
+mental_retardation	Умственная отсталость	Для детей с умственной отсталостью	2025-12-02 16:47:37.828466
+autism	Расстройство аутистического спектра	Для детей с расстройством аутистического спектра	2025-12-02 16:47:37.828466
+multiple_disorders	Множественные нарушения	Для детей с тяжёлыми и множественными нарушениями развития	2025-12-02 16:47:37.828466
 \.
 
 
 --
--- Data for Name: directors; Type: TABLE DATA; Schema: public; Owner: -
+-- Data for Name: directors; Type: TABLE DATA; Schema: public; Owner: user
 --
 
 COPY public.directors (id, full_name, phone, email, created_at, updated_at) FROM stdin;
@@ -1354,19 +1228,18 @@ COPY public.directors (id, full_name, phone, email, created_at, updated_at) FROM
 174	Найденова Надежда Владимировна	+78686439020	sc37lip@schools48.ru	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635
 175	Макарова Светлана Валентиновна	+71686432810	sc38lip@schools48.ru	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635
 178	Малько Сергей Васильевич	+74742416278	sc42lip@schools48.ru	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635
-179	Шишкина Ольга Сергеевна	+74653270463	sc44lip@schools48.ru	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635
 180	Королева Наталья Серафимовна	+71802283540	sc45lip@schools48.ru	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635
 181	Сай Пётр Игоревич	+74742346354	sc46lip@schools48.ru	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635
 182	Катасонов Игорь Александрович	+78147340572	sc47lip@schools48.ru	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635
 183	Шумов Анатолий Ильич	+74742317869	sc48lip@schools48.ru	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635
 184	Плешков Владимир Викторович	+73781333549	sc49lip@schools48.ru	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635
+179	Шишкина Ольга Сергеевна	+74653270463	sc44lip@schools48.ru	2026-08-21 15:51:15.108635	2026-08-23 20:11:39.942706
 185	Чудин Владимир Геннадьевич	+72206334492	sc50lip@schools48.ru	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635
 186	Ленкова Татьяна Анатольевна	+77735317634	sc51lip@schools48.ru	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635
 187	Крапивина Светлана Николаевна	+70216340107	sc52lip@schools48.ru	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635
 188	Волков Владимир Николаевич	+79366476754	sc54lip@schools48.ru	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635
 189	Семенов Иван Андреевич	+74742355202	sc55lip@schools48.ru	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635
 190	Бедрова Светлана Валерьевна	+74742200758	sc58lip@schools48.ru	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635
-191	Гладышев Дмитрий Анатольевич	+74407316798	sc59lip@schools48.ru	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635
 192	Борискина Светлана Александровна	+74742727475	sc60lip@schools48.ru	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635
 193	Беляев Евгений Владимирович	+75501250484	sc61lip@schools48.ru	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635
 194	Жбанова Ольга Алексеевна	+74742731403	sc62lip@schools48.ru	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635
@@ -1380,9 +1253,7 @@ COPY public.directors (id, full_name, phone, email, created_at, updated_at) FROM
 202	Андреева Елена Вячеславовна	+73564479523	sc72lip@schools48.ru	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635
 203	Гончарова Елена Николаевна	+73929473949	sc77lip@schools48.ru	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635
 204	Соболева Ирина Александровна	+74742730429	sc2vlip@schools48.ru	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635
-205	Лидия Григорьевна Куцак	+74742343863	integral@inbox.ru	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635
 206	Гулевская Елена Михайловна	+72994274419	lipetsksadik-1@mail.ru	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635
-207	Чернышов Иван Владимирович	+74742261901	ok2it@yandex.ru	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635
 208	Зайцева Наталия Викторовна	+70797773950	mdoulip.3@yandex.ru	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635
 209	Грибкова Наталья Юрьевна	+71005261028	startum04@yandex.ru	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635
 210	Не указан	+77182437284	lipetsksadik-5@mail.ru	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635
@@ -1391,7 +1262,6 @@ COPY public.directors (id, full_name, phone, email, created_at, updated_at) FROM
 213	Попова Анна Андреевна	+70291335566	mdoulip9@yandex.ru	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635
 214	Мазаева Елена Валентиновна	+74742732602	lipetsksadik-10@mail.ru	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635
 215	Волкова Тамара Александровна	+74742438753	mdoulip12@yandex.ru	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635
-216	Дубовых Надежда Егоровна	+72509480680	sokolsad14@mail.ru	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635
 217	Лазарева Галина Валентиновна	+75353385377	dou15lipetsk@yandex.ru	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635
 218	Найденкова Анна Евгеньевна	+70150349396	mdoulip18@yandex.ru	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635
 219	Страхова Ирина Владимировна	+77930438007	sadik19lipetsk@mail.ru	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635
@@ -1401,7 +1271,6 @@ COPY public.directors (id, full_name, phone, email, created_at, updated_at) FROM
 223	Паршикова Тамара Васильевна	+73583453683	detsadskazka23@yandex.ru	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635
 224	Ворфоломеева Нелли Борисовна	+76479427983	mdoulip25@yandex.ru	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635
 225	Золотухина Раиса Дмитриевна	+74307224847	mdoulip29@yandex.ru	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635
-226	Терехова Наталия Александровна	+77389370302	mdoulip30@yandex.ru	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635
 227	Стрельникова Наталья Владиславовна	+75865575866	mdoulip32@yandex.ru	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635
 228	Денисова Светлана Валентиновна	+75036455028	mdoulip35@yandex.ru	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635
 229	Не указан	+74742370392	mdoulip37@yandex.ru	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635
@@ -1420,6 +1289,10 @@ COPY public.directors (id, full_name, phone, email, created_at, updated_at) FROM
 242	Горяинова Ирина Васильевна	+71806261206	mdoulip79@yandex.ru	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635
 243	Парфенова Ольга Сергеевна	+74742349459	mdoulip83@yandex.ru	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635
 244	Дымова Юлия Алексеевна	+74742733321	mdoulip85@yandex.ru	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635
+191	Гладышев Дмитрий Анатольевич	+74407316798	sc59lip@schools48.ru	2026-08-21 15:51:15.108635	2026-08-23 21:22:08.397237
+216	Дубовых Надежда Егоровна	+72509480680	sokolsad14@mail.ru	2026-08-21 15:51:15.108635	2026-08-23 21:50:53.68253
+207	Чернышов Иван Владимирович	+74742261901	ok2it@yandex.ru	2026-08-21 15:51:15.108635	2026-08-23 21:51:25.765832
+226	Терехова Наталия Александровна	+77389370302	mdoulip30@yandex.ru	2026-08-21 15:51:15.108635	2026-08-23 21:52:06.872532
 245	Коростелева Елена Валерьевна	+74737276209	mdoulip91@yandex.ru	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635
 246	Брылева Елена Алексеевна	+70277334030	tatiana.bryleva@yandex.ru	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635
 247	Побежимова Ирина Викторовна	+75803354700	dou-96@mail.ru	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635
@@ -1452,8 +1325,6 @@ COPY public.directors (id, full_name, phone, email, created_at, updated_at) FROM
 274	Митрохина Наталья Александровна	+74747323425	sc-zakharovka@schools48.ru	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635
 275	Пикалов Сергей Александрович	+74747324197	bolhoe123@mail.ru	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635
 276	Сомова Ольга Павловна	+74747325413	\N	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635
-277	Семкина Ольга Александровна	+74747321143	iskorka_48@mail.ru	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635
-278	Митрохина Наталья Александровна	+74747323425	antipov4862@mail.ru	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635
 279	Блинова Наталья Александровна	+77465662341	mousosh01@yandex.ru	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635
 280	Карих Татьяна Ивановна	+74746561011	dankov.liceum6@yandex.ru	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635
 281	Никонов Сергей Александрович	+74746553249	dvschoolbal@yandex.ru	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635
@@ -1479,6 +1350,7 @@ COPY public.directors (id, full_name, phone, email, created_at, updated_at) FROM
 301	Яров Виктор Владимирович	+74746242431	sc-pushkino@schools48.ru	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635
 302	Насонова Маргарита Игоревна	+74746257395	mouxvorostanka@mail.ru	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635
 303	Нестерова Наталия Николаевна	+74746246346	shcolatalica@yandex.ru	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635
+278	Митрохина Наталья Александровна	+74747323425	antipov4862@mail.ru	2026-08-21 15:51:15.108635	2026-08-23 21:49:27.053088
 304	Зимина Оксана Юрьевна	+74746221275	detskiy_sad2@bk.ru	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635
 305	Орлова Екатерина Сергеевна	+74746221242	dbrkdetsad4@yandex.ru	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635
 306	Дорофеева Елена Николаевна	+79205135768	ds-demshinka@mail.ru	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635
@@ -1577,7 +1449,6 @@ COPY public.directors (id, full_name, phone, email, created_at, updated_at) FROM
 399	Пронина Ирина Викторовна	+74746424554	ltschool42@mail.ru	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635
 400	Мурыгина Светлана Михайловна	+74746421543	lt-kolosok@yandex.ru	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635
 401	Суховерова Виктория Владимировна	+74746422226	lt-teremok@yandex.ru	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635
-402	Болотова Ирина Сергеевна	+74746423024	lt-ds-1@yandex.ru	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635
 403	Кудаева Юлия Павловна	+74742761250	sch.borino@yandex.ru	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635
 404	Ларшин Виктор Викторович	+74742756189	shkolailjno@mail.ru	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635
 405	Шишин Иван Игоревич	+74742766549	koschool@mail.ru	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635
@@ -1654,11 +1525,6 @@ COPY public.directors (id, full_name, phone, email, created_at, updated_at) FROM
 476	Тамбовцев Вячеслав Владимирович	+74747735124	sc-kkolodez@schools48.ru	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635
 477	Болотов Сергей Анатольевич	+74747730210	sc-ndubovoe@schools48.ru	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635
 478	Воронина Светлана Ивановна	+74747731187	sc-ellozovka@schools48.ru	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635
-479	Плотникова Наталья Николаевна	+74747722072	sadhlevnoe@yandex.ru	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635
-480	Татаринцева Елена Владимировна	+74747735192	sadik.kon@yandex.ru	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635
-481	Щербатых Татьяна Георгиевна	+74747741284	mbdoudetsade-malanino@mail.ru	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635
-482	Светлана Васильевна Кохан	+74747733276	vobsad@yandex.ru	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635
-483	Каменева Елена Александровна	+74747740141	sadverhn@yandex.ru	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635
 484	Красненкова Светлана Алексеевна	+74747125830	2zadonsk@mail.ru	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635
 485	Первеева Лариса Николаевна	+74747126499	schkool1@yandex.ru	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635
 486	Селищева Людмила Анатольевна	+74747133453	sc-donskoe@schools48.ru	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635
@@ -1705,11 +1571,19 @@ COPY public.directors (id, full_name, phone, email, created_at, updated_at) FROM
 527	Не указан	\N	kultura.lebedyan@no-contact.local	2026-08-21 15:52:53.651883	2026-08-21 15:52:53.651883
 176	Зенкова Ольга Юрьевна	+74742344061	sc40lip@schools48.ru	2026-08-21 15:51:15.108635	2026-08-21 16:19:53.473421
 177	Сошкина Оксана Валентиновна	+74742480407	sc41lip@schools48.ru	2026-08-21 15:51:15.108635	2026-08-21 16:19:53.473421
+277	Семкина Ольга Александровна	+74747321143	iskorka_48@mail.ru	2026-08-21 15:51:15.108635	2026-08-23 21:48:25.689411
+479	Плотникова Наталья Николаевна	+74747722072	sadhlevnoe@yandex.ru	2026-08-21 15:51:15.108635	2026-08-23 21:53:01.371453
+205	Лидия Григорьевна Куцак	+74742343863	integral@inbox.ru	2026-08-21 15:51:15.108635	2026-08-23 20:08:42.79151
+481	Щербатых Татьяна Георгиевна	+74747741284	mbdoudetsade-malanino@mail.ru	2026-08-21 15:51:15.108635	2026-08-23 21:53:18.417417
+483	Каменева Елена Александровна	+74747740141	sadverhn@yandex.ru	2026-08-21 15:51:15.108635	2026-08-23 21:54:36.583378
+480	Татаринцева Елена Владимировна	+74747735192	sadik.kon@yandex.ru	2026-08-21 15:51:15.108635	2026-08-23 21:55:02.852063
+482	Светлана Васильевна Кохан	+74747733276	vobsad@yandex.ru	2026-08-21 15:51:15.108635	2026-08-23 21:55:26.568387
+402	Болотова Ирина Сергеевна	+74746423024	lt-ds-1@yandex.ru	2026-08-21 15:51:15.108635	2026-08-23 21:59:41.427333
 \.
 
 
 --
--- Data for Name: districts; Type: TABLE DATA; Schema: public; Owner: -
+-- Data for Name: districts; Type: TABLE DATA; Schema: public; Owner: user
 --
 
 COPY public.districts (id, name, created_at) FROM stdin;
@@ -1737,7 +1611,7 @@ COPY public.districts (id, name, created_at) FROM stdin;
 
 
 --
--- Data for Name: institution_admission; Type: TABLE DATA; Schema: public; Owner: -
+-- Data for Name: institution_admission; Type: TABLE DATA; Schema: public; Owner: user
 --
 
 COPY public.institution_admission (institution_id, admission_code, created_at) FROM stdin;
@@ -1858,26 +1732,22 @@ COPY public.institution_admission (institution_id, admission_code, created_at) F
 
 
 --
--- Data for Name: institution_conditions; Type: TABLE DATA; Schema: public; Owner: -
+-- Data for Name: institution_conditions; Type: TABLE DATA; Schema: public; Owner: user
 --
 
 COPY public.institution_conditions (institution_id, condition_code, created_at) FROM stdin;
 10	mental_retardation	2026-07-04 20:50:37.25445
 21	speech_impairment	2026-07-04 20:50:37.25445
-21	mental_retardation	2026-07-04 20:50:37.25445
 49	mental_retardation	2026-07-04 20:50:37.25445
 91	speech_impairment	2026-07-04 20:50:37.25445
 92	speech_impairment	2026-07-04 20:50:37.25445
 92	autism	2026-07-04 20:50:37.25445
-92	mental_retardation	2026-07-04 20:50:37.25445
 93	vision_impairment	2026-07-04 20:50:37.25445
 93	speech_impairment	2026-07-04 20:50:37.25445
 93	autism	2026-07-04 20:50:37.25445
-93	mental_retardation	2026-07-04 20:50:37.25445
 95	speech_impairment	2026-07-04 20:50:37.25445
 96	speech_impairment	2026-07-04 20:50:37.25445
 96	autism	2026-07-04 20:50:37.25445
-96	mental_retardation	2026-07-04 20:50:37.25445
 97	speech_impairment	2026-07-04 20:50:37.25445
 98	speech_impairment	2026-07-04 20:50:37.25445
 98	autism	2026-07-04 20:50:37.25445
@@ -1893,12 +1763,10 @@ COPY public.institution_conditions (institution_id, condition_code, created_at) 
 107	speech_impairment	2026-07-04 20:50:37.25445
 108	speech_impairment	2026-07-04 20:50:37.25445
 108	autism	2026-07-04 20:50:37.25445
-108	mental_retardation	2026-07-04 20:50:37.25445
 109	speech_impairment	2026-07-04 20:50:37.25445
 109	mental_retardation	2026-07-04 20:50:37.25445
 110	speech_impairment	2026-07-04 20:50:37.25445
 110	autism	2026-07-04 20:50:37.25445
-110	mental_retardation	2026-07-04 20:50:37.25445
 111	speech_impairment	2026-07-04 20:50:37.25445
 113	speech_impairment	2026-07-04 20:50:37.25445
 114	speech_impairment	2026-07-04 20:50:37.25445
@@ -1907,7 +1775,6 @@ COPY public.institution_conditions (institution_id, condition_code, created_at) 
 114	musculoskeletal_impairment	2026-07-04 20:50:37.25445
 116	speech_impairment	2026-07-04 20:50:37.25445
 116	autism	2026-07-04 20:50:37.25445
-116	mental_retardation	2026-07-04 20:50:37.25445
 130	speech_impairment	2026-07-04 20:50:37.25445
 52	musculoskeletal_impairment	2026-07-04 21:47:59.764429
 52	mental_retardation	2026-07-04 21:47:59.768053
@@ -1927,11 +1794,363 @@ COPY public.institution_conditions (institution_id, condition_code, created_at) 
 47	vision_impairment	2026-07-04 22:24:24.80216
 47	mental_retardation	2026-07-04 22:24:24.805042
 115	speech_impairment	2026-07-04 22:44:15.4645
+434	autism	2026-08-23 19:46:04.65577
+387	intellectual_impairment	2026-08-23 19:46:04.65577
+255	speech_impairment	2026-08-23 19:46:04.65577
+455	autism	2026-08-23 19:46:04.65577
+316	intellectual_impairment	2026-08-23 19:46:04.65577
+188	speech_impairment	2026-08-23 19:46:04.65577
+300	vision_impairment	2026-08-23 19:46:04.65577
+149	intellectual_impairment	2026-08-23 19:46:04.65577
+181	speech_impairment	2026-08-23 19:46:04.65577
+245	speech_impairment	2026-08-23 19:46:04.65577
+178	musculoskeletal_impairment	2026-08-23 19:46:04.65577
+509	intellectual_impairment	2026-08-23 19:46:04.65577
+159	intellectual_impairment	2026-08-23 19:46:04.65577
+219	speech_impairment	2026-08-23 19:46:04.65577
+207	speech_impairment	2026-08-23 19:46:04.65577
+513	intellectual_impairment	2026-08-23 19:46:04.65577
+418	mental_retardation	2026-08-23 19:46:04.65577
+160	musculoskeletal_impairment	2026-08-23 19:46:04.65577
+214	speech_impairment	2026-08-23 19:46:04.65577
+292	speech_impairment	2026-08-23 19:46:04.65577
+229	speech_impairment	2026-08-23 19:46:04.65577
+304	mental_retardation	2026-08-23 19:46:04.65577
+409	vision_impairment	2026-08-23 19:46:04.65577
+404	intellectual_impairment	2026-08-23 19:46:04.65577
+182	hearing_impairment	2026-08-23 19:46:04.65577
+230	speech_impairment	2026-08-23 19:46:04.65577
+177	intellectual_impairment	2026-08-23 19:46:04.65577
+460	speech_impairment	2026-08-23 19:46:04.65577
+47	intellectual_impairment	2026-08-23 19:46:04.65577
+223	mental_retardation	2026-08-23 19:46:04.65577
+202	intellectual_impairment	2026-08-23 19:46:04.65577
+169	autism	2026-08-23 19:46:04.65577
+152	intellectual_impairment	2026-08-23 19:46:04.65577
+149	speech_impairment	2026-08-23 19:46:04.65577
+158	speech_impairment	2026-08-23 19:46:04.65577
+328	speech_impairment	2026-08-23 19:46:04.65577
+520	speech_impairment	2026-08-23 19:46:04.65577
+168	intellectual_impairment	2026-08-23 19:46:04.65577
+252	speech_impairment	2026-08-23 19:46:04.65577
+182	mental_retardation	2026-08-23 19:46:04.65577
+405	speech_impairment	2026-08-23 19:46:04.65577
+305	musculoskeletal_impairment	2026-08-23 19:46:04.65577
+409	musculoskeletal_impairment	2026-08-23 19:46:04.65577
+248	speech_impairment	2026-08-23 19:46:04.65577
+418	autism	2026-08-23 19:46:04.65577
+249	speech_impairment	2026-08-23 19:46:04.65577
+368	musculoskeletal_impairment	2026-08-23 19:46:04.65577
+223	autism	2026-08-23 19:46:04.65577
+258	vision_impairment	2026-08-23 19:46:04.65577
+454	speech_impairment	2026-08-23 19:46:04.65577
+246	speech_impairment	2026-08-23 19:46:04.65577
+309	autism	2026-08-23 19:46:04.65577
+416	mental_retardation	2026-08-23 19:46:04.65577
+178	intellectual_impairment	2026-08-23 19:46:04.65577
+157	multiple_disorders	2026-08-23 19:46:04.65577
+358	speech_impairment	2026-08-23 19:46:04.65577
+256	speech_impairment	2026-08-23 19:46:04.65577
+157	intellectual_impairment	2026-08-23 19:46:04.65577
+218	speech_impairment	2026-08-23 19:46:04.65577
+233	speech_impairment	2026-08-23 19:46:04.65577
+452	intellectual_impairment	2026-08-23 19:46:04.65577
+46	intellectual_impairment	2026-08-23 19:46:04.65577
+325	intellectual_impairment	2026-08-23 19:46:04.65577
+202	mental_retardation	2026-08-23 19:46:04.65577
+519	speech_impairment	2026-08-23 19:46:04.65577
+174	autism	2026-08-23 19:46:04.65577
+291	speech_impairment	2026-08-23 19:46:04.65577
+153	intellectual_impairment	2026-08-23 19:46:04.65577
+207	intellectual_impairment	2026-08-23 19:46:04.65577
+253	speech_impairment	2026-08-23 19:46:04.65577
+232	autism	2026-08-23 19:46:04.65577
+516	intellectual_impairment	2026-08-23 19:46:04.65577
+227	speech_impairment	2026-08-23 19:46:04.65577
+430	multiple_disorders	2026-08-23 19:46:04.65577
+518	speech_impairment	2026-08-23 19:46:04.65577
+303	intellectual_impairment	2026-08-23 19:46:04.65577
+225	autism	2026-08-23 19:46:04.65577
+211	speech_impairment	2026-08-23 19:46:04.65577
+160	autism	2026-08-23 19:46:04.65577
+326	speech_impairment	2026-08-23 19:46:04.65577
+191	speech_impairment	2026-08-23 19:46:04.65577
+479	intellectual_impairment	2026-08-23 19:46:04.65577
+276	speech_impairment	2026-08-23 19:46:04.65577
+225	speech_impairment	2026-08-23 19:46:04.65577
+454	intellectual_impairment	2026-08-23 19:46:04.65577
+243	speech_impairment	2026-08-23 19:46:04.65577
+285	intellectual_impairment	2026-08-23 19:46:04.65577
+278	intellectual_impairment	2026-08-23 19:46:04.65577
+339	intellectual_impairment	2026-08-23 19:46:04.65577
+182	speech_impairment	2026-08-23 19:46:04.65577
+451	autism	2026-08-23 19:46:04.65577
+285	multiple_disorders	2026-08-23 19:46:04.65577
+215	speech_impairment	2026-08-23 19:46:04.65577
+303	multiple_disorders	2026-08-23 19:46:04.65577
+459	speech_impairment	2026-08-23 19:46:04.65577
+153	mental_retardation	2026-08-23 19:46:04.65577
+493	intellectual_impairment	2026-08-23 19:46:04.65577
+182	intellectual_impairment	2026-08-23 19:46:04.65577
+49	intellectual_impairment	2026-08-23 19:46:04.65577
+159	mental_retardation	2026-08-23 19:46:04.65577
+404	autism	2026-08-23 19:46:04.65577
+182	autism	2026-08-23 19:46:04.65577
+101	intellectual_impairment	2026-08-23 19:46:04.65577
+182	multiple_disorders	2026-08-23 19:46:04.65577
+174	multiple_disorders	2026-08-23 19:46:04.65577
+353	multiple_disorders	2026-08-23 19:46:04.65577
+217	speech_impairment	2026-08-23 19:46:04.65577
+237	speech_impairment	2026-08-23 19:46:04.65577
+158	intellectual_impairment	2026-08-23 19:46:04.65577
+394	speech_impairment	2026-08-23 19:46:04.65577
+515	intellectual_impairment	2026-08-23 19:46:04.65577
+480	intellectual_impairment	2026-08-23 19:46:04.65577
+213	speech_impairment	2026-08-23 19:46:04.65577
+418	intellectual_impairment	2026-08-23 19:46:04.65577
+274	autism	2026-08-23 19:46:04.65577
+313	intellectual_impairment	2026-08-23 19:46:04.65577
+293	speech_impairment	2026-08-23 19:46:04.65577
+304	intellectual_impairment	2026-08-23 19:46:04.65577
+251	speech_impairment	2026-08-23 19:46:04.65577
+416	intellectual_impairment	2026-08-23 19:46:04.65577
+169	intellectual_impairment	2026-08-23 19:46:04.65577
+250	speech_impairment	2026-08-23 19:46:04.65577
+402	intellectual_impairment	2026-08-23 19:46:04.65577
+235	speech_impairment	2026-08-23 19:46:04.65577
+451	vision_impairment	2026-08-23 19:46:04.65577
+261	speech_impairment	2026-08-23 19:46:04.65577
+158	autism	2026-08-23 19:46:04.65577
+522	speech_impairment	2026-08-23 19:46:04.65577
+248	musculoskeletal_impairment	2026-08-23 19:46:04.65577
+330	speech_impairment	2026-08-23 19:46:04.65577
+159	multiple_disorders	2026-08-23 19:46:04.65577
+416	multiple_disorders	2026-08-23 19:46:04.65577
+514	mental_retardation	2026-08-23 19:46:04.65577
+267	speech_impairment	2026-08-23 19:46:04.65577
+362	speech_impairment	2026-08-23 19:46:04.65577
+177	speech_impairment	2026-08-23 19:46:04.65577
+258	speech_impairment	2026-08-23 19:46:04.65577
+150	musculoskeletal_impairment	2026-08-23 19:46:04.65577
+295	speech_impairment	2026-08-23 19:46:04.65577
+414	intellectual_impairment	2026-08-23 19:46:04.65577
+455	intellectual_impairment	2026-08-23 19:46:04.65577
+275	speech_impairment	2026-08-23 19:46:04.65577
+200	intellectual_impairment	2026-08-23 19:46:04.65577
+222	speech_impairment	2026-08-23 19:46:04.65577
+523	speech_impairment	2026-08-23 19:46:04.65577
+202	autism	2026-08-23 19:46:04.65577
+150	mental_retardation	2026-08-23 19:46:04.65577
+353	intellectual_impairment	2026-08-23 19:46:04.65577
+335	autism	2026-08-23 19:46:04.65577
+262	speech_impairment	2026-08-23 19:46:04.65577
+259	speech_impairment	2026-08-23 19:46:04.65577
+149	mental_retardation	2026-08-23 19:46:04.65577
+174	intellectual_impairment	2026-08-23 19:46:04.65577
+430	intellectual_impairment	2026-08-23 19:46:04.65577
+51	intellectual_impairment	2026-08-23 19:46:04.65577
+200	mental_retardation	2026-08-23 19:46:04.65577
+273	speech_impairment	2026-08-23 19:46:04.65577
+177	vision_impairment	2026-08-23 19:46:04.65577
+409	autism	2026-08-23 19:46:04.65577
+232	speech_impairment	2026-08-23 19:46:04.65577
+114	intellectual_impairment	2026-08-23 19:46:04.65577
+206	speech_impairment	2026-08-23 19:46:04.65577
+171	speech_impairment	2026-08-23 19:46:04.65577
+300	autism	2026-08-23 19:46:04.65577
+274	speech_impairment	2026-08-23 19:46:04.65577
+427	speech_impairment	2026-08-23 19:46:04.65577
+220	speech_impairment	2026-08-23 19:46:04.65577
+418	multiple_disorders	2026-08-23 19:46:04.65577
+344	musculoskeletal_impairment	2026-08-23 19:46:04.65577
+417	intellectual_impairment	2026-08-23 19:46:04.65577
+451	intellectual_impairment	2026-08-23 19:46:04.65577
+180	intellectual_impairment	2026-08-23 19:46:04.65577
+299	speech_impairment	2026-08-23 19:46:04.65577
+177	mental_retardation	2026-08-23 19:46:04.65577
+359	speech_impairment	2026-08-23 19:46:04.65577
+52	intellectual_impairment	2026-08-23 19:46:04.65577
+257	speech_impairment	2026-08-23 19:46:04.65577
+257	autism	2026-08-23 19:46:04.65577
+299	intellectual_impairment	2026-08-23 19:46:04.65577
+53	intellectual_impairment	2026-08-23 19:46:04.65577
+160	speech_impairment	2026-08-23 19:46:04.65577
+409	intellectual_impairment	2026-08-23 19:46:04.65577
+242	speech_impairment	2026-08-23 19:46:04.65577
+387	mental_retardation	2026-08-23 19:46:04.65577
+313	mental_retardation	2026-08-23 19:46:04.65577
+470	intellectual_impairment	2026-08-23 19:46:04.65577
+201	speech_impairment	2026-08-23 19:46:04.65577
+404	mental_retardation	2026-08-23 19:46:04.65577
+299	mental_retardation	2026-08-23 19:46:04.65577
+238	speech_impairment	2026-08-23 19:46:04.65577
+461	speech_impairment	2026-08-23 19:46:04.65577
+299	multiple_disorders	2026-08-23 19:46:04.65577
+181	vision_impairment	2026-08-23 19:46:04.65577
+272	speech_impairment	2026-08-23 19:46:04.65577
+360	speech_impairment	2026-08-23 19:46:04.65577
+244	speech_impairment	2026-08-23 19:46:04.65577
+415	intellectual_impairment	2026-08-23 19:46:04.65577
+368	vision_impairment	2026-08-23 19:46:04.65577
+264	speech_impairment	2026-08-23 19:46:04.65577
+345	musculoskeletal_impairment	2026-08-23 19:46:04.65577
+50	intellectual_impairment	2026-08-23 19:46:04.65577
+157	mental_retardation	2026-08-23 19:46:04.65577
+265	speech_impairment	2026-08-23 19:46:04.65577
+509	mental_retardation	2026-08-23 19:46:04.65577
+200	musculoskeletal_impairment	2026-08-23 19:46:04.65577
+364	speech_impairment	2026-08-23 19:46:04.65577
+152	mental_retardation	2026-08-23 19:46:04.65577
+456	intellectual_impairment	2026-08-23 19:46:04.65577
+234	speech_impairment	2026-08-23 19:46:04.65577
+217	vision_impairment	2026-08-23 19:46:04.65577
+236	speech_impairment	2026-08-23 19:46:04.65577
+445	intellectual_impairment	2026-08-23 19:46:04.65577
+240	speech_impairment	2026-08-23 19:46:04.65577
+357	speech_impairment	2026-08-23 19:46:04.65577
+202	multiple_disorders	2026-08-23 19:46:04.65577
+228	speech_impairment	2026-08-23 19:46:04.65577
+239	speech_impairment	2026-08-23 19:46:04.65577
+224	speech_impairment	2026-08-23 19:46:34.976932
+254	speech_impairment	2026-08-23 19:46:34.976932
+247	speech_impairment	2026-08-23 19:46:34.976932
+300	intellectual_impairment	2026-08-23 19:46:34.976932
+521	speech_impairment	2026-08-23 19:46:34.976932
+258	intellectual_impairment	2026-08-23 19:46:34.976932
+269	speech_impairment	2026-08-23 19:46:34.976932
+368	intellectual_impairment	2026-08-23 19:46:34.976932
+45	intellectual_impairment	2026-08-23 19:46:34.976932
+160	intellectual_impairment	2026-08-23 19:46:34.976932
+186	intellectual_impairment	2026-08-23 19:46:34.976932
+182	psychic_development_delay	2026-08-23 19:59:17.338578
+300	psychic_development_delay	2026-08-23 19:59:17.338578
+292	psychic_development_delay	2026-08-23 19:59:17.338578
+451	mental_retardation	2026-08-23 19:59:17.338578
+202	psychic_development_delay	2026-08-23 19:59:17.338578
+261	psychic_development_delay	2026-08-23 19:59:17.338578
+353	mental_retardation	2026-08-23 19:59:17.338578
+519	psychic_development_delay	2026-08-23 19:59:17.338578
+459	psychic_development_delay	2026-08-23 19:59:17.338578
+21	psychic_development_delay	2026-08-23 19:59:17.338578
+509	psychic_development_delay	2026-08-23 19:59:17.338578
+368	psychic_development_delay	2026-08-23 19:59:17.338578
+304	psychic_development_delay	2026-08-23 19:59:17.338578
+233	psychic_development_delay	2026-08-23 19:59:17.338578
+318	psychic_development_delay	2026-08-23 19:59:17.338578
+153	psychic_development_delay	2026-08-23 19:59:17.338578
+316	mental_retardation	2026-08-23 19:59:17.338578
+515	mental_retardation	2026-08-23 19:59:17.338578
+53	psychic_development_delay	2026-08-23 19:59:17.338578
+274	psychic_development_delay	2026-08-23 19:59:17.338578
+409	mental_retardation	2026-08-23 19:59:17.338578
+214	psychic_development_delay	2026-08-23 19:59:17.338578
+387	psychic_development_delay	2026-08-23 19:59:17.338578
+215	psychic_development_delay	2026-08-23 19:59:17.338578
+213	psychic_development_delay	2026-08-23 19:59:17.338578
+483	psychic_development_delay	2026-08-23 19:59:17.338578
+430	mental_retardation	2026-08-23 19:59:17.338578
+116	psychic_development_delay	2026-08-23 19:59:17.338578
+284	psychic_development_delay	2026-08-23 19:59:17.338578
+96	psychic_development_delay	2026-08-23 19:59:17.338578
+158	psychic_development_delay	2026-08-23 19:59:17.338578
+479	mental_retardation	2026-08-23 19:59:17.338578
+160	psychic_development_delay	2026-08-23 19:59:17.338578
+114	psychic_development_delay	2026-08-23 19:59:17.338578
+152	psychic_development_delay	2026-08-23 19:59:17.338578
+232	psychic_development_delay	2026-08-23 19:59:17.338578
+417	mental_retardation	2026-08-23 19:59:17.338578
+483	mental_retardation	2026-08-23 19:59:17.338578
+109	psychic_development_delay	2026-08-23 19:59:17.338578
+230	psychic_development_delay	2026-08-23 19:59:17.338578
+165	psychic_development_delay	2026-08-23 19:59:17.338578
+416	psychic_development_delay	2026-08-23 19:59:17.338578
+263	psychic_development_delay	2026-08-23 19:59:17.338578
+259	psychic_development_delay	2026-08-23 19:59:17.338578
+291	psychic_development_delay	2026-08-23 19:59:17.338578
+102	psychic_development_delay	2026-08-23 19:59:17.338578
+180	mental_retardation	2026-08-23 19:59:17.338578
+257	psychic_development_delay	2026-08-23 19:59:17.338578
+49	psychic_development_delay	2026-08-23 19:59:17.338578
+265	psychic_development_delay	2026-08-23 19:59:17.338578
+470	mental_retardation	2026-08-23 19:59:17.338578
+219	psychic_development_delay	2026-08-23 19:59:17.338578
+181	psychic_development_delay	2026-08-23 19:59:17.338578
+521	psychic_development_delay	2026-08-23 19:59:17.338578
+223	psychic_development_delay	2026-08-23 19:59:17.338578
+220	psychic_development_delay	2026-08-23 19:59:17.338578
+313	psychic_development_delay	2026-08-23 19:59:17.338578
+339	mental_retardation	2026-08-23 19:59:17.338578
+402	mental_retardation	2026-08-23 19:59:17.338578
+269	psychic_development_delay	2026-08-23 19:59:17.338578
+276	psychic_development_delay	2026-08-23 19:59:17.338578
+150	psychic_development_delay	2026-08-23 19:59:17.338578
+303	mental_retardation	2026-08-23 19:59:17.338578
+342	mental_retardation	2026-08-23 19:59:17.338578
+92	psychic_development_delay	2026-08-23 19:59:17.338578
+110	psychic_development_delay	2026-08-23 19:59:17.338578
+520	psychic_development_delay	2026-08-23 19:59:17.338578
+244	psychic_development_delay	2026-08-23 19:59:17.338578
+452	mental_retardation	2026-08-23 19:59:17.338578
+480	mental_retardation	2026-08-23 19:59:17.338578
+169	mental_retardation	2026-08-23 19:59:17.338578
+149	psychic_development_delay	2026-08-23 19:59:17.338578
+207	mental_retardation	2026-08-23 19:59:17.338578
+174	mental_retardation	2026-08-23 19:59:17.338578
+312	psychic_development_delay	2026-08-23 19:59:17.338578
+305	psychic_development_delay	2026-08-23 19:59:17.338578
+364	psychic_development_delay	2026-08-23 19:59:17.338578
+258	psychic_development_delay	2026-08-23 19:59:17.338578
+177	psychic_development_delay	2026-08-23 19:59:17.338578
+252	psychic_development_delay	2026-08-23 19:59:17.338578
+235	psychic_development_delay	2026-08-23 19:59:17.338578
+234	psychic_development_delay	2026-08-23 19:59:17.338578
+518	psychic_development_delay	2026-08-23 19:59:17.338578
+256	psychic_development_delay	2026-08-23 19:59:17.338578
+418	psychic_development_delay	2026-08-23 19:59:17.338578
+285	mental_retardation	2026-08-23 19:59:17.338578
+224	psychic_development_delay	2026-08-23 19:59:17.338578
+218	psychic_development_delay	2026-08-23 19:59:17.338578
+414	mental_retardation	2026-08-23 19:59:17.338578
+101	psychic_development_delay	2026-08-23 19:59:17.338578
+264	psychic_development_delay	2026-08-23 19:59:17.338578
+245	psychic_development_delay	2026-08-23 19:59:17.338578
+344	mental_retardation	2026-08-23 19:59:17.338578
+178	mental_retardation	2026-08-23 19:59:17.338578
+93	psychic_development_delay	2026-08-23 19:59:17.338578
+237	psychic_development_delay	2026-08-23 19:59:17.338578
+513	mental_retardation	2026-08-23 19:59:17.338578
+404	psychic_development_delay	2026-08-23 19:59:17.338578
+405	psychic_development_delay	2026-08-23 19:59:17.338578
+415	mental_retardation	2026-08-23 19:59:17.338578
+523	psychic_development_delay	2026-08-23 19:59:17.338578
+516	mental_retardation	2026-08-23 19:59:17.338578
+325	mental_retardation	2026-08-23 19:59:17.338578
+159	psychic_development_delay	2026-08-23 19:59:17.338578
+289	mental_retardation	2026-08-23 19:59:17.338578
+229	psychic_development_delay	2026-08-23 19:59:17.338578
+445	mental_retardation	2026-08-23 19:59:17.338578
+262	psychic_development_delay	2026-08-23 19:59:17.338578
+157	psychic_development_delay	2026-08-23 19:59:17.338578
+108	psychic_development_delay	2026-08-23 19:59:17.338578
+272	psychic_development_delay	2026-08-23 19:59:17.338578
+200	psychic_development_delay	2026-08-23 19:59:17.338578
+299	psychic_development_delay	2026-08-23 19:59:17.338578
+454	mental_retardation	2026-08-23 19:59:17.338578
+514	psychic_development_delay	2026-08-23 19:59:17.338578
+284	mental_retardation	2026-08-23 19:59:17.338578
+196	speech_impairment	2026-08-23 21:22:08.397237
+221	speech_impairment	2026-08-23 21:50:53.68253
+221	psychic_development_delay	2026-08-23 21:50:53.68253
+212	speech_impairment	2026-08-23 21:51:25.765832
+212	psychic_development_delay	2026-08-23 21:51:25.765832
+231	speech_impairment	2026-08-23 21:52:06.872532
+407	speech_impairment	2026-08-23 21:59:41.427333
+407	psychic_development_delay	2026-08-23 21:59:41.427333
 \.
 
 
 --
--- Data for Name: institution_types; Type: TABLE DATA; Schema: public; Owner: -
+-- Data for Name: institution_types; Type: TABLE DATA; Schema: public; Owner: user
 --
 
 COPY public.institution_types (code, name_ru, description, created_at) FROM stdin;
@@ -1944,7 +2163,7 @@ vo	Высшее образование	Университеты, институ�
 
 
 --
--- Data for Name: institutions; Type: TABLE DATA; Schema: public; Owner: -
+-- Data for Name: institutions; Type: TABLE DATA; Schema: public; Owner: user
 --
 
 COPY public.institutions (id, name, district_id, type_code, director_id, description, range_min, range_max, website, aoop_url, created_at, updated_at, address) FROM stdin;
@@ -2127,7 +2346,6 @@ COPY public.institutions (id, name, district_id, type_code, director_id, descrip
 181	МБОУ СОШ №40 г.Липецка	186	school	176	\N	\N	\N	https://sc40lipschools48.gosuslugi.ru/	\N	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635	\N
 182	МБОУ СШ №41 города Липецка	186	school	177	\N	\N	\N	https://sc41lip.gosuslugi.ru/	\N	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635	\N
 183	МБОУ СШ №42 г.Липецка	186	school	178	\N	\N	\N	https://sc42lip.gosuslugi.ru/	\N	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635	398046, г. Липецк, ул. Стаханова, д.15
-184	МАОУ "Лицей 44" г.Липецка	186	school	179	\N	\N	\N	https://liceum44.gosuslugi.ru/	\N	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635	398050 г. Липецк, ул. Плеханова, д.51а, д.49
 185	МБОУ СШ №45 г.Липецка	186	school	180	\N	\N	\N	https://school45lip.gosuslugi.ru/	\N	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635	398024, г. Липецк, ул. Папина 4
 186	МБОУ СОШ №46 г.Липецка	186	school	181	\N	\N	\N	https://school46lipetsk-reg48.gosuslugi.ru/	\N	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635	398032, г.Липецк, ул.Титова, д.8
 187	МБОУ СОШ №47 г.Липецка	186	school	182	\N	\N	\N	https://sc47lip.gosuslugi.ru/	\N	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635	398043, г. Липецк, ул. Космонавтов, д.11Б
@@ -2139,7 +2357,6 @@ COPY public.institutions (id, name, district_id, type_code, director_id, descrip
 193	МБОУ СШ №54 г.Липецка	186	school	188	\N	\N	\N	https://sc54lipetsk.gosuslugi.ru/	\N	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635	398908, г. Липецк, ул. Моршанская, д.22
 194	МАОУ СШ №55 г.Липецка «Лингвист»	186	school	189	\N	\N	\N	https://sc55lip.gosuslugi.ru/	\N	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635	398016, г.Липецк, ул.Космонавтов, д.16А
 195	МАОУ СШ №58 города Липецка	186	school	190	\N	\N	\N	https://sh58-lipeck-r42.gosweb.gosuslugi.ru/	\N	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635	398001, г. Липецк, ул. Артемова, д.4, Липецк
-196	МАОУ СШ №59 «Перспектива» г.Липецка	186	school	191	\N	\N	\N	https://progymnasium59.gosuslugi.ru/	\N	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635	398055 г. Липецк, проезд Сержанта Кувшинова, д. 8 - детский сад; 398020 г. Липецк, улица Шкатова, д.23 – детский сад; 398055 г. Липецк, улица Московская, д. 95 – детский сад; 398055 г. Липецк, проезд Сержанта Кувшинова, д.5 – школа
 197	МАОУ СШ №60 г.Липецка	186	school	192	\N	\N	\N	https://maoush60.gosuslugi.ru/	\N	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635	398027, г. Липецк, ул. Осканова, д.4
 198	МБОУ многопрофильный лицей г.Липецка	186	school	193	\N	\N	\N	https://sosch61.gosuslugi.ru/	\N	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635	\N
 199	МБОУ СШ №62 г.Липецка	186	school	194	\N	\N	\N	https://school62lip.gosuslugi.ru/	\N	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635	398006 г. Липецк, ул. Ибаррури, 1
@@ -2153,19 +2370,17 @@ COPY public.institutions (id, name, district_id, type_code, director_id, descrip
 207	МБОУ СШ №72 г.Липецка	186	school	202	\N	\N	\N	\N	\N	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635	398024, г.Липецк, ул. Юных Натуралистов, д.12а
 208	МБОУ СОШ №77 г.Липецка	186	school	203	\N	\N	\N	\N	\N	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635	398036, г. Липецк, ул. Хорошавина, д.14
 209	МБОУ СШ ОО ЗЗ №2 г.Липецка	186	school	204	\N	\N	\N	https://mbou-ssch-oozz2-lipetsk.gosuslugi.ru/	\N	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635	398006, г. Липецк, ул. Коммунистическая, д.17
-210	Государственное бюджетное общеобразовательное учреждение Липецкой области «Кадетская школа имени майора милиции Коврижных А.П.Кадетской школы Липецкой области имени А.П.Коврижных	186	school	205	\N	\N	\N	https://xn--80aaihokhfog2av5e.xn--p1ai/site_av/	\N	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635	. 398043, Липецкая обл., г. Липецк, ул. Космонавтов, 36/3; г. Липецк, ул.Прокатная, д.10; 398059 г.Липецк, Торговая пл. д.14
 211	Муниципальное бюджетное дошкольное образовательное учреждение №1 г.Липецка ДОУ №1 г.Липецка	186	preschool	206	\N	\N	\N	https://ds1lip.gosuslugi.ru/	\N	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635	398050, г.Липецк, ул.Желябова, 19 ул. Желябова, 9 ул. Интернациональная, 26
-212	Муниципальное автономное дошкольное образовательное учреждение детский сад №2 г.Липецка ДОУ №2 г.Липецка	186	preschool	207	\N	\N	\N	https://oblachnyikit.gosuslugi.ru/	\N	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635	398004, г.Липецк, ул.Стаханова, 71 А
 213	Муниципальное бюджетное дошкольное образовательное учреждение №3 г.Липецка ДОУ №3 г.Липецка	186	preschool	208	\N	\N	\N	https://dou3lipetsk.gosuslugi.ru/	\N	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635	398001, г. Липецк, ул. Советская, 39, 398059 ул. Пушкина, 7а
 214	Муниципальное автономное дошкольное образовательное учреждение детский сад №4 г.Липецка ДОУ №4 г.Липецка	186	preschool	209	\N	\N	\N	https://dou4lipetsk.gosuslugi.ru/	\N	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635	398037, г. Липецк, ул. Дмитрия Фурсова, д.1; ул. Дмитрия Фурсова, д.3
 215	Муниципальное бюджетное дошкольное образовательное учреждение №5 г.Липецка ДОУ №5 г.Липецка	186	preschool	210	\N	\N	\N	https://dou5lipetsk.gosuslugi.ru/	\N	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635	Корпус 1: 398908, г.Липецк, ул. Сельскохозяйственная, 12
 328	МБДОУ «Малышок» с.Доброе	192	preschool	323	\N	\N	\N	https://ds-malyshok-dobroe-r42.gosweb.gosuslugi.ru/	\N	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635	399140, Россия, Липецкая область, с.Доброе, ул. Победы, д.12а
+212	Муниципальное автономное дошкольное образовательное учреждение детский сад №2 г.Липецка ДОУ №2 г.Липецка	186	preschool	207	\N	3.0	8.0	https://oblachnyikit.gosuslugi.ru/	\N	2026-08-21 15:51:15.108635	2026-08-23 21:51:25.765832	398004, г.Липецк, ул.Стаханова, 71 А
 216	Муниципальное бюджетное дошкольное образовательное учреждение №6 г.Липецка ДОУ №6 г.Липецка	186	preschool	211	\N	\N	\N	https://dou6-lip.gosuslugi.ru/	\N	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635	398036, г. Липецк, бульвар Шубина, 16 (основное здание); 398036, г. Липецк, бульвар Шубина, 20 (дополнительное здание)
 217	Муниципальное бюджетное дошкольное образовательное учреждение №8 г.Липецка ДОУ №8 г.Липецка	186	preschool	212	\N	\N	\N	https://dou8lip.gosuslugi.ru/	\N	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635	398024, г. Липецк, проспект Победы, 92 корп. б
 218	Муниципальное бюджетное дошкольное образовательное учреждение №9 г.Липецка ДОУ №9 г.Липецка	186	preschool	213	\N	\N	\N	https://ds9lipetsk.gosuslugi.ru/	\N	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635	398035, г. Липецк, ул. Вермишева, 10, ул. Вермишева, 7а
 219	Муниципальное бюджетное дошкольное образовательное учреждение №10 г.Липецка ДОУ №10 г.Липецка	186	preschool	214	\N	\N	\N	https://doulip10.gosuslugi.ru/	\N	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635	398006, г. Липецк, ул. Краснознаменная, д.8а
 220	Муниципальное бюджетное дошкольное образовательное учреждение №12 г.Липецка ДОУ №12 г.Липецка	186	preschool	215	\N	\N	\N	https://dou12-lip.gosuslugi.ru/	\N	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635	398029, г. Липецк, ул. Центральная, 21, ул. Ярославская, 13.
-221	Муниципальное автономное дошкольное образовательное учреждение детский сад №14 г.Липецка ДОУ №14 г.Липецка	186	preschool	216	\N	\N	\N	https://dou14lip.gosuslugi.ru/	\N	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635	398007, г. Липецк, ул. Кутузова, строение 5
 222	Муниципальное бюджетное дошкольное образовательное учреждение №15 г.Липецка ДОУ №15 г.Липецка	186	preschool	217	\N	\N	\N	https://dou15lipetsk.gosuslugi.ru/	\N	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635	398004, г.Липецк, ул.Шуминского, 19
 223	Муниципальное бюджетное дошкольное образовательное учреждение №18 г.Липецка ДОУ №18 г.Липецка	186	preschool	218	\N	\N	\N	https://mdou18lip.gosuslugi.ru/	\N	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635	398016, г. Липецк, ул. Гагарина, д. 93/2
 224	Муниципальное бюджетное дошкольное образовательное учреждение №19 г.Липецка ДОУ №19 г.Липецка	186	preschool	219	\N	\N	\N	https://dou19lipetsk.gosuslugi.ru/	\N	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635	Основное здание - 398011, г.Липецк, ул.Астраханская, д.15
@@ -2175,13 +2390,13 @@ COPY public.institutions (id, name, district_id, type_code, director_id, descrip
 228	Муниципальное бюджетное дошкольное образовательное учреждение №23 г.Липецка ДОУ №23 г.Липецка	186	preschool	223	\N	\N	\N	https://dou23lipetsk.gosuslugi.ru/	\N	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635	398046, г. Липецк, ул. Смургиса, д. 3а
 229	Муниципальное бюджетное дошкольное образовательное учреждение №25 г.Липецка ДОУ №25 г.Липецка	186	preschool	224	\N	\N	\N	https://25doulip.gosuslugi.ru/	\N	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635	398037, г. Липецк, Боевой проезд, 39а
 230	Муниципальное бюджетное дошкольное образовательное учреждение №29 г.Липецка ДОУ №29 г.Липецка	186	preschool	225	\N	\N	\N	https://mdou29lip.gosuslugi.ru/	\N	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635	398006, г. Липецк, ул. 50 лет НЛМК, 15а
-231	Муниципальное автономное дошкольное образовательное учреждение детский сад №30 г.Липецка ДОУ №30 г.Липецка	186	preschool	226	\N	\N	\N	https://dou30lip.gosuslugi.ru/	\N	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635	398036, г. Липецк, ул. Мистюкова А.П. д.1
 232	Муниципальное автономное дошкольное образовательное учреждение детский сад №32 г.Липецка ДОУ №32 г.Липецка	186	preschool	227	\N	\N	\N	https://dou32lipetsk.gosuslugi.ru/	\N	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635	398027 ул. Свиридова И.В., д. 8а
 233	Муниципальное бюджетное дошкольное образовательное учреждение №35 г.Липецка ДОУ №35 г.Липецка	186	preschool	228	\N	\N	\N	https://dou35-lip.gosuslugi.ru/	\N	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635	398006, г. Липецк, ул. Ибаррури, 6а
 234	Муниципальное бюджетное дошкольное образовательное учреждение №37 г.Липецка ДОУ №37 г.Липецка	186	preschool	229	\N	\N	\N	https://dou37lip.gosuslugi.ru/	\N	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635	398914, г. Липецк, ул. 300-летия Флота России, владение, 2
 235	Муниципальное бюджетное дошкольное образовательное учреждение №38 г.Липецка ДОУ №38 г.Липецка	186	preschool	230	\N	\N	\N	https://dou38-lipetsk.gosuslugi.ru/	\N	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635	398007, г. Липецк, ул. Ушинского 15/1
 236	Муниципальное автономное дошкольное образовательное учреждение детский сад №40 г.Липецка ДОУ №40 г.Липецка	186	preschool	231	\N	\N	\N	https://dou40lipetsk.gosuslugi.ru/	\N	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635	398036, г. Липецк, бульвар Есенина, д.7
 355	МБОУ НОШ д.Ивановка	194	school	350	\N	\N	\N	https://schoolivanovka.gosuslugi.ru/	\N	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635	399760, Липецкая область, Елецкий район, деревня Ивановка, улица Рабочая, дом 45
+231	Муниципальное автономное дошкольное образовательное учреждение детский сад №30 г.Липецка ДОУ №30 г.Липецка	186	preschool	226	\N	1.5	8.0	https://dou30lip.gosuslugi.ru/	\N	2026-08-21 15:51:15.108635	2026-08-23 21:52:06.872532	398036, г. Липецк, ул. Мистюкова А.П. д.1
 237	Муниципальное бюджетное дошкольное образовательное учреждение №42 г.Липецка ДОУ №42 г.Липецка	186	preschool	232	\N	\N	\N	https://dou42lipetsk.gosuslugi.ru/	\N	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635	398005, г. Липецк, пр. Осенний, д.6а
 238	Муниципальное бюджетное дошкольное образовательное учреждение №44 г.Липецка ДОУ №44 г.Липецка	186	preschool	233	\N	\N	\N	https://dou44-lipetsk.gosuslugi.ru/	\N	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635	398006, г. Липецк, ул. Юбилейная, 6а
 239	Муниципальное автономное дошкольное образовательное учреждение №50 г.Липецка ДОУ №50 г.Липецка	186	preschool	234	\N	\N	\N	https://mirdetstva50.gosuslugi.ru/	\N	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635	398055 г.Липецк, ул. Хренникова, д.2
@@ -2227,8 +2442,6 @@ COPY public.institutions (id, name, district_id, type_code, director_id, descrip
 279	МБОУ СОШ с.Захаровка	188	school	274	\N	\N	\N	https://sh-zaxarovskaya-r42.gosweb.gosuslugi.ru/	\N	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635	399591, Липецкая область, Воловский район, село Захаровка, улица Школьная, дом 1
 280	МБОУ СОШ им. И. А. Солдатова с.Нижнее Большое	188	school	275	\N	\N	\N	https://sh-bolshovskaya-r42.gosweb.gosuslugi.ru/	\N	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635	Липецкая область Воловский район с. Нижнее Большое ул. Школьная д.91
 281	МБОУ СОШ им. В.Т. Чернова д.Верхнее Чесночное	188	school	276	\N	\N	\N	https://sh-vchesnochnoe.gosuslugi.ru/	\N	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635	399573, Липецкая область, Воловский район, д. Верхнее Чесночное, ул. В. Чернова, д. 24
-282	МБДОУ детский сад «Искорка»	188	preschool	277	\N	\N	\N	https://iskorka48.gosuslugi.ru/	\N	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635	399580 Липецкая область, Воловский район, с. Волово, ул. Почтовая, д.2;; 399580 Липецкая область, Воловский район, с. Волово, ул. Советская, д.97
-283	МБОУ СОШ с.Захаровка	188	preschool	278	\N	\N	\N	https://sh-zaxarovskaya-r42.gosweb.gosuslugi.ru/	\N	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635	399581 Липецкая область, Воловский район, с.Захаровка, ул. Школьная, д.1
 284	МБОУ СОШ №1 г.Данкова	190	school	279	\N	\N	\N	https://mousosh01-dankov.gosuslugi.ru/	\N	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635	399850, Липецкая область, г. Данков, ул. Энгельса, д.7
 285	МБОУ лицей №6 г.Данкова	190	school	280	\N	\N	\N	https://sh6-dankov-r42.gosweb.gosuslugi.ru/	\N	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635	399852, РФ, Липецкая область, г. Данков, ул. Мичурина, д. 7/1.; Липецкая область, Данковский район, с. Спешнево-Ивановское, ул. Куйбышева, д.6., ; Липецкая область, Данковский район, с. Березовка, ул. Парковая, д. 3/1, ; Липецкая область, Данковский район, с. Барятино, ул. Школьная, д. 12, ; Липецкая область, Данковский район, с. Воскресенское (Октябрьский с/с), ул. Мира, д. 12
 286	МБОУ СОШ с.Баловнево	190	school	281	\N	\N	\N	https://balschl.gosuslugi.ru/	\N	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635	399830 Липецкая область Данковский район с. Баловнево ул. Школьная д.43
@@ -2248,6 +2461,7 @@ COPY public.institutions (id, name, district_id, type_code, director_id, descrip
 300	МБОУ «Гимназия им. И.М.Макаренкова» с.Ольговка	191	school	295	\N	\N	\N	https://olggimnaziya.gosuslugi.ru/nasha-shkola/o-shkole/	\N	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635	399420, Липецкая область, Добринский район, ж.-д. ст. Плавица, ул. Школьная, 1
 301	МБОУ СОШ с.Дубовое	191	school	296	\N	\N	\N	https://dubovoe-dobrinka.gosuslugi.ru/	\N	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635	399418, Липецкая область, Добринский район, с. Дубовое, ул. Лермонтова, 2 "А"
 302	МБОУ СОШ с.Мазейка	191	school	297	\N	\N	\N	https://sc-mazeyka.gosuslugi.ru/	\N	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635	399434, Липецкая обл., Добринский р-н, с. Мазейка, ул. Центральная, д.79
+283	МБОУ СОШ с.Захаровка	188	school	278	\N	1.0	11.0	https://sh-zaxarovskaya-r42.gosweb.gosuslugi.ru/	\N	2026-08-21 15:51:15.108635	2026-08-23 21:49:27.053088	399581 Липецкая область, Воловский район, с.Захаровка, ул. Школьная, д.1
 303	МБОУ СШ с.Нижняя Матренка	191	school	298	\N	\N	\N	https://nmatrenka.gosuslugi.ru/	\N	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635	399412, Липецкая область, Добринский район, с. Нижняя Матренка, ул. Центральная, д.50
 304	МБОУ СОШ с.Верхняя Матренка	191	school	299	\N	\N	\N	https://v-matrenka.gosuslugi.ru/	\N	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635	399455 Липецкая обл., Добринский район, с. Верхняя Матренка, ул. Центральная д.32.
 305	МБОУ СШ п.Петровский	191	school	300	\N	\N	\N	https://petrowskiyschool.gosuslugi.ru/	\N	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635	399446 Липецкая область Добринский район п. совхоза Петровский ул. Победы дом 3
@@ -2349,7 +2563,6 @@ COPY public.institutions (id, name, district_id, type_code, director_id, descrip
 403	МБОУ им. Героя Советского Союза Аулова В.И. с.Первомайское	199	school	398	\N	\N	\N	https://school-imaulovavi.gosuslugi.ru/	\N	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635	399884, Липецкая обл., Лев-Толстовский р-он, с. Первомайское, ул. Центральная, д. 12
 404	МБОУ им. Л.Н. Толстого	199	school	399	\N	\N	\N	https://ltschool.gosuslugi.ru/	\N	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635	399870 Липецкая обл., Лев-Толстовский р-н, п. Лев Толстой, ул. Молодежная, д. 6
 406	МБДОУ д/с «Теремок» п.Лев Толстой	199	preschool	401	\N	\N	\N	https://ds-teremok-lt.gosuslugi.ru/	\N	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635	399870, Липецкая область п. Лев Толстой ул. Коммунистическая, д.30
-407	МБДОУ «Радуга»	199	preschool	402	\N	\N	\N	\N	\N	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635	Место нахождения: 399870, Липецкая область, п. Лев Толстой, ул. Володарского д. 47а
 408	МБОУ гимназия с.Боринское	200	school	403	\N	\N	\N	https://gimn-borinskoe.gosuslugi.ru/	\N	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635	398510, Липецкая область, Липецкий округ, село Боринское, улица П. Смородина, д.11
 409	МБОУ СШ с.Ильино	200	school	404	\N	\N	\N	https://schoolilyino.gosuslugi.ru/	\N	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635	398507, Липецкая область, Липецкий район, с. Ильино, ул. Административная д .2
 410	МБОУ СОШ с.Кузьминские Отвержки	200	school	405	\N	\N	\N	https://koschool.gosuslugi.ru/	\N	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635	\N
@@ -2427,11 +2640,6 @@ COPY public.institutions (id, name, district_id, type_code, director_id, descrip
 480	МБОУ СОШ с.Дмитряшевка (МБОУ СОШ С.Дмитряшевка Хлевенского Муниципального района Липецкой области	204	school	475	\N	\N	\N	\N	\N	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635	399250, Липецкая область, Хлевенский район, с.Дмитряшевка, ул.Октябрьская, д.64
 482	МБОУ «СОШ с.Новое Дубовое»	204	school	477	\N	\N	\N	https://sh-novoe-dubovoe-r42.gosweb.gosuslugi.ru/	\N	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635	Липецкая область, Хлевенский район, село Новое Дубовое, улица Советская, дом 80.
 483	МБОУ СОШ с.Елецкая Лозовка	204	school	478	\N	\N	\N	https://sh-eleckaya-lozovka-r42.gosweb.gosuslugi.ru/	\N	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635	399263, Липецкая область, Хлевенский район, с. Елецкая Лозовка, ул. Выгонскя-Буторина, д. 20
-484	МАДОУ д/с с.Хлевное	204	preschool	479	\N	\N	\N	https://dshlevnoe48.gosuslugi.ru/	\N	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635	399260, Липецкая область, Хлевенский район, с. Хлевное, ул. Ленинская д. 10а
-485	МБДОУ д/с «Родничок» с.Конь-Колодезь	204	preschool	480	\N	\N	\N	https://ds-rodnichok-konkolodez-r42.gosweb.gosuslugi.ru/	\N	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635	399281 Российская Федерация, Липецкая область, Хлевенский район, село Конь-Колодезь, улица Берёзовая аллея, дом 30
-486	МБДОУ д/с «Аистёнок» с.Елец-Маланино	204	preschool	481	\N	\N	\N	https://ds-aistyonok-elecmalanino-r42.gosweb.gosuslugi.ru/	\N	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635	399265 Липецкая область Хлевенский район село Елец-Маланино улица Дорожная дом 1
-487	МБДОУ детский сад «Солнышко» села Воробьевка	204	preschool	482	\N	\N	\N	https://ds-solnyshko-vorobevka-r42.gosweb.gosuslugi.ru/	\N	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635	399270 Липецкая область Хлевенский район с. Воробьевка ул. Мира дом 4
-488	МБДОУ д/с «Подрастай-ка!» с.Верхняя Колыбелька	204	preschool	483	\N	\N	\N	https://ds-podrastajka-verxnyaya-kolybelka-r42.gosweb.gosuslugi.ru/	\N	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635	399268 Липецкая область Хлевенский район с. Верхняя Колыбелька ул. Молодежная д.46
 489	МБОУ гимназия «Новое поколение» города Задонска	195	school	484	\N	\N	\N	https://novoepokolenie.gosuslugi.ru/	\N	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635	Липецкая область, Задонский район, город Задонск, улица В.Севастьянова, дом 3
 490	МБОУ гимназия №1 г.Задонска	195	school	485	\N	\N	\N	https://gymnasium1zd.gosuslugi.ru/	\N	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635	399200 Липецкая область, город Задонск, ул.Свободы 57а
 491	МБОУ СОШ с.Донское	195	school	486	\N	\N	\N	https://doschool.gosuslugi.ru/	\N	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635	399240, Липецкая область, Задонский район, с. Донское, ул. Новая, д. 1
@@ -2452,6 +2660,9 @@ COPY public.institutions (id, name, district_id, type_code, director_id, descrip
 506	МБДОУ детский сад с.Репец Задонского муниципального района	195	preschool	501	\N	\N	\N	https://ds-repets.gosuslugi.ru/	\N	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635	Липецкая область, Задонский район, с.Репец, ул.Павлова, д.4
 507	МБДОУ детский сад с.Паниковец	195	preschool	502	\N	\N	\N	https://dspanikowets.gosuslugi.ru/	\N	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635	399205, Липецкая область, Задонский район, с.Паниковец, ул.Запрудная, д.4
 532	МБДОУ детский сад поселка Культура	198	preschool	527	\N	\N	\N	\N	\N	2026-08-21 15:52:53.651883	2026-08-21 15:52:53.651883	\N
+486	МБДОУ д/с «Аистёнок» с.Елец-Маланино	204	preschool	481	\N	2.0	8.0	https://ds-aistyonok-elecmalanino-r42.gosweb.gosuslugi.ru/	\N	2026-08-21 15:51:15.108635	2026-08-23 21:53:18.417417	399265 Липецкая область Хлевенский район село Елец-Маланино улица Дорожная дом 1
+485	МБДОУ д/с «Родничок» с.Конь-Колодезь	204	preschool	480	\N	3.0	7.0	https://ds-rodnichok-konkolodez-r42.gosweb.gosuslugi.ru/	\N	2026-08-21 15:51:15.108635	2026-08-23 21:55:02.852063	399281 Российская Федерация, Липецкая область, Хлевенский район, село Конь-Колодезь, улица Берёзовая аллея, дом 30
+487	МБДОУ детский сад «Солнышко» села Воробьевка	204	preschool	482	\N	1.5	8.0	https://ds-solnyshko-vorobevka-r42.gosweb.gosuslugi.ru/	\N	2026-08-21 15:51:15.108635	2026-08-23 21:55:26.568387	399270 Липецкая область Хлевенский район с. Воробьевка ул. Мира дом 4
 508	МБДОУ детский сад с.Скорняково	195	preschool	503	\N	\N	\N	https://dsskornyakovo.gosuslugi.ru/	\N	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635	399231, Липецкая обл, р-н Задонский, с Скорняково, ул. Центральная, д.11
 509	МБОУ «Гимназия №1 имени Н.И. Борцова» г.Лебедянь	198	school	504	\N	\N	\N	https://gimn1lebedyan.gosuslugi.ru/	\N	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635	399610 Липецкая область, г.Лебедянь, ул. Антонова, дом 14
 510	МБОУ СШ №2 г.Лебедяни	198	school	505	\N	\N	\N	https://sh2-lebedyan.gosuslugi.ru/	\N	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635	399610, Липецкая область, Лебедянский район, город Лебедянь, улица Средняя, здание 29
@@ -2477,64 +2688,77 @@ COPY public.institutions (id, name, district_id, type_code, director_id, descrip
 530	МБДОУ детский сад п.Сахзавода	198	preschool	525	\N	\N	\N	https://dssahzavod.gosuslugi.ru/	\N	2026-08-21 15:51:15.108635	2026-08-21 15:51:15.108635	399645, Липецкая область, Лебедянский район, поселок Сахарного Завода, ул.Октябрьская, д.1а; д.2а
 399	МБОУ п. Свх. им. Льва Толстого	199	school	394	\N	\N	\N	https://ltsvh.gosuslugi.ru/	\N	2026-08-21 15:51:15.108635	2026-08-21 16:22:25.651709	399888, Липецкая область, Лев-Толстовский район, п. Свх. им. Льва Толстого, ул. Лесная, д. 3.
 133	Средняя общеобразовательная школа с. Карамышево	189	school	126	Муниципальное бюджетное общеобразовательное учреждение	1.0	11.0	https://sckaramyshevo48.gosuslugi.ru/glavnoe/kontakty/	\N	2026-07-04 20:50:37.25445	2026-08-21 16:22:59.930908	399077 Липецкая область, Грязинский район, с. Карамышево, ул.Ленина
+210	Кадетская школа Липецкой области имени А.П. Коврижных	186	school	205	Государственное бюджетное общеобразовательное учреждение Липецкой области "Кадетская школа имени майора милиции Коврижных А.П."	5.0	11.0	https://lipcadet.gosuslugi.ru/	\N	2026-08-21 15:51:15.108635	2026-08-23 20:08:42.79151	398043, Липецкая обл., г. Липецк, ул. Космонавтов, 36/3; г. Липецк, ул.Прокатная, д.10; 398059 г.Липецк, Торговая пл. д.14
+184	МАОУ "Лицей 44" г. Липецка	186	school	179	Муниципальное автономное общеобразовательное учреждение «Лицей 44»	1.0	11.0	https://liceum44.gosuslugi.ru/	\N	2026-08-21 15:51:15.108635	2026-08-23 20:11:39.942706	398050 г. Липецк, ул. Плеханова, д.51а, д.49
+196	МАОУ СШ №59 «Перспектива» г.Липецка	186	school	191	\N	\N	\N	https://progymnasium59.gosuslugi.ru/	\N	2026-08-21 15:51:15.108635	2026-08-23 21:22:08.397237	398055 г. Липецк, проезд Сержанта Кувшинова, д. 8 - детский сад; 398020 г. Липецк, улица Шкатова, д.23 – детский сад; 398055 г. Липецк, улица Московская, д. 95 – детский сад; 398055 г. Липецк, проезд Сержанта Кувшинова, д.5 – школа
+282	МБДОУ детский сад «Искорка»	188	preschool	277	\N	1.5	7.0	https://iskorka48.gosuslugi.ru/	\N	2026-08-21 15:51:15.108635	2026-08-23 21:48:25.689411	399580 Липецкая область, Воловский район, с. Волово, ул. Почтовая, д.2;; 399580 Липецкая область, Воловский район, с. Волово, ул. Советская, д.97
+221	Муниципальное автономное дошкольное образовательное учреждение детский сад №14 г.Липецка ДОУ №14 г.Липецка	186	preschool	216	\N	1.5	6.0	https://dou14lip.gosuslugi.ru/	\N	2026-08-21 15:51:15.108635	2026-08-23 21:50:53.68253	398007, г. Липецк, ул. Кутузова, строение 5
+484	МАДОУ д/с с.Хлевное	204	preschool	479	\N	2.0	8.0	https://dshlevnoe48.gosuslugi.ru/	\N	2026-08-21 15:51:15.108635	2026-08-23 21:53:01.371453	399260, Липецкая область, Хлевенский район, с. Хлевное, ул. Ленинская д. 10а
+488	МБДОУ д/с «Подрастай-ка!» с.Верхняя Колыбелька	204	preschool	483	Муниципальное бюджетное дошкольное образовательное учреждение детский сад "Подрастай-ка" села Верхняя Колыбелька Хлевенского муниципального округа Липецкой области	1.5	8.0	https://ds-podrastajka-verxnyaya-kolybelka-r42.gosweb.gosuslugi.ru/	\N	2026-08-21 15:51:15.108635	2026-08-23 21:54:36.583378	399268 Липецкая область Хлевенский район с. Верхняя Колыбелька ул. Молодежная д.46
+407	МБДОУ «Радуга»	199	preschool	402	Муниципальное бюджетное дошкольное образовательное учреждение «Радуга» Лев Толстовского муниципального района	1.5	6.0	https://ds-raduga.gosuslugi.ru	https://ds-raduga.gosuslugi.ru/svedeniya-ob-obrazovatelnoy-organizatsii/obrazovanie/	2026-08-21 15:51:15.108635	2026-08-23 21:59:41.427333	Место нахождения: 399870, Липецкая область, п. Лев Толстой, ул. Володарского д. 47а
 \.
 
 
 --
--- Data for Name: schema_migrations; Type: TABLE DATA; Schema: public; Owner: -
+-- Data for Name: schema_migrations; Type: TABLE DATA; Schema: public; Owner: user
 --
 
 COPY public.schema_migrations (filename, applied_at) FROM stdin;
 000_schema_migrations.sql	2026-08-21 16:45:08.261545
 001_drop_links.sql	2026-08-21 16:45:08.274242
 002_aoop_unique_name.sql	2026-08-21 16:45:08.285951
+003_intellectual_impairment.sql	2026-08-23 19:34:35.918237
+004_institution_conditions_from_aoop.sql	2026-08-23 19:46:04.65577
+005_institution_conditions_from_aoop_fix.sql	2026-08-23 19:46:34.976932
+006_three_intellect_conditions.sql	2026-08-23 19:59:17.338578
+007_drop_admin_email.sql	2026-11-14 08:38:43.651556
 \.
 
 
 --
--- Name: action_log_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+-- Name: action_log_id_seq; Type: SEQUENCE SET; Schema: public; Owner: user
 --
 
-SELECT pg_catalog.setval('public.action_log_id_seq', 103, true);
-
-
---
--- Name: administrators_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
---
-
-SELECT pg_catalog.setval('public.administrators_id_seq', 3, true);
+SELECT pg_catalog.setval('public.action_log_id_seq', 123, true);
 
 
 --
--- Name: aoop_programs_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+-- Name: administrators_id_seq; Type: SEQUENCE SET; Schema: public; Owner: user
 --
 
-SELECT pg_catalog.setval('public.aoop_programs_id_seq', 557, true);
-
-
---
--- Name: directors_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
---
-
-SELECT pg_catalog.setval('public.directors_id_seq', 529, true);
+SELECT pg_catalog.setval('public.administrators_id_seq', 6, true);
 
 
 --
--- Name: districts_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+-- Name: aoop_programs_id_seq; Type: SEQUENCE SET; Schema: public; Owner: user
+--
+
+SELECT pg_catalog.setval('public.aoop_programs_id_seq', 571, true);
+
+
+--
+-- Name: directors_id_seq; Type: SEQUENCE SET; Schema: public; Owner: user
+--
+
+SELECT pg_catalog.setval('public.directors_id_seq', 530, true);
+
+
+--
+-- Name: districts_id_seq; Type: SEQUENCE SET; Schema: public; Owner: user
 --
 
 SELECT pg_catalog.setval('public.districts_id_seq', 205, true);
 
 
 --
--- Name: institutions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+-- Name: institutions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: user
 --
 
-SELECT pg_catalog.setval('public.institutions_id_seq', 534, true);
+SELECT pg_catalog.setval('public.institutions_id_seq', 535, true);
 
 
 --
--- Name: action_log action_log_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: action_log action_log_pkey; Type: CONSTRAINT; Schema: public; Owner: user
 --
 
 ALTER TABLE ONLY public.action_log
@@ -2542,15 +2766,7 @@ ALTER TABLE ONLY public.action_log
 
 
 --
--- Name: administrators administrators_email_key; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.administrators
-    ADD CONSTRAINT administrators_email_key UNIQUE (email);
-
-
---
--- Name: administrators administrators_login_key; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: administrators administrators_login_key; Type: CONSTRAINT; Schema: public; Owner: user
 --
 
 ALTER TABLE ONLY public.administrators
@@ -2558,7 +2774,7 @@ ALTER TABLE ONLY public.administrators
 
 
 --
--- Name: administrators administrators_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: administrators administrators_pkey; Type: CONSTRAINT; Schema: public; Owner: user
 --
 
 ALTER TABLE ONLY public.administrators
@@ -2566,7 +2782,7 @@ ALTER TABLE ONLY public.administrators
 
 
 --
--- Name: admission_types admission_types_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: admission_types admission_types_pkey; Type: CONSTRAINT; Schema: public; Owner: user
 --
 
 ALTER TABLE ONLY public.admission_types
@@ -2574,7 +2790,7 @@ ALTER TABLE ONLY public.admission_types
 
 
 --
--- Name: aoop_programs aoop_programs_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: aoop_programs aoop_programs_pkey; Type: CONSTRAINT; Schema: public; Owner: user
 --
 
 ALTER TABLE ONLY public.aoop_programs
@@ -2582,7 +2798,7 @@ ALTER TABLE ONLY public.aoop_programs
 
 
 --
--- Name: condition_types condition_types_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: condition_types condition_types_pkey; Type: CONSTRAINT; Schema: public; Owner: user
 --
 
 ALTER TABLE ONLY public.condition_types
@@ -2590,7 +2806,7 @@ ALTER TABLE ONLY public.condition_types
 
 
 --
--- Name: directors directors_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: directors directors_pkey; Type: CONSTRAINT; Schema: public; Owner: user
 --
 
 ALTER TABLE ONLY public.directors
@@ -2598,7 +2814,7 @@ ALTER TABLE ONLY public.directors
 
 
 --
--- Name: districts districts_name_key; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: districts districts_name_key; Type: CONSTRAINT; Schema: public; Owner: user
 --
 
 ALTER TABLE ONLY public.districts
@@ -2606,7 +2822,7 @@ ALTER TABLE ONLY public.districts
 
 
 --
--- Name: districts districts_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: districts districts_pkey; Type: CONSTRAINT; Schema: public; Owner: user
 --
 
 ALTER TABLE ONLY public.districts
@@ -2614,7 +2830,7 @@ ALTER TABLE ONLY public.districts
 
 
 --
--- Name: institution_admission institution_admission_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: institution_admission institution_admission_pkey; Type: CONSTRAINT; Schema: public; Owner: user
 --
 
 ALTER TABLE ONLY public.institution_admission
@@ -2622,7 +2838,7 @@ ALTER TABLE ONLY public.institution_admission
 
 
 --
--- Name: institution_conditions institution_conditions_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: institution_conditions institution_conditions_pkey; Type: CONSTRAINT; Schema: public; Owner: user
 --
 
 ALTER TABLE ONLY public.institution_conditions
@@ -2630,7 +2846,7 @@ ALTER TABLE ONLY public.institution_conditions
 
 
 --
--- Name: institution_types institution_types_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: institution_types institution_types_pkey; Type: CONSTRAINT; Schema: public; Owner: user
 --
 
 ALTER TABLE ONLY public.institution_types
@@ -2638,7 +2854,7 @@ ALTER TABLE ONLY public.institution_types
 
 
 --
--- Name: institutions institutions_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: institutions institutions_pkey; Type: CONSTRAINT; Schema: public; Owner: user
 --
 
 ALTER TABLE ONLY public.institutions
@@ -2646,7 +2862,7 @@ ALTER TABLE ONLY public.institutions
 
 
 --
--- Name: schema_migrations schema_migrations_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: schema_migrations schema_migrations_pkey; Type: CONSTRAINT; Schema: public; Owner: user
 --
 
 ALTER TABLE ONLY public.schema_migrations
@@ -2654,98 +2870,98 @@ ALTER TABLE ONLY public.schema_migrations
 
 
 --
--- Name: idx_aoop_institution; Type: INDEX; Schema: public; Owner: -
+-- Name: idx_aoop_institution; Type: INDEX; Schema: public; Owner: user
 --
 
 CREATE INDEX idx_aoop_institution ON public.aoop_programs USING btree (institution_id);
 
 
 --
--- Name: idx_directors_email; Type: INDEX; Schema: public; Owner: -
+-- Name: idx_directors_email; Type: INDEX; Schema: public; Owner: user
 --
 
 CREATE INDEX idx_directors_email ON public.directors USING btree (email);
 
 
 --
--- Name: idx_directors_name; Type: INDEX; Schema: public; Owner: -
+-- Name: idx_directors_name; Type: INDEX; Schema: public; Owner: user
 --
 
 CREATE INDEX idx_directors_name ON public.directors USING btree (full_name);
 
 
 --
--- Name: idx_districts_name; Type: INDEX; Schema: public; Owner: -
+-- Name: idx_districts_name; Type: INDEX; Schema: public; Owner: user
 --
 
 CREATE INDEX idx_districts_name ON public.districts USING btree (name);
 
 
 --
--- Name: idx_inst_admission_type; Type: INDEX; Schema: public; Owner: -
+-- Name: idx_inst_admission_type; Type: INDEX; Schema: public; Owner: user
 --
 
 CREATE INDEX idx_inst_admission_type ON public.institution_admission USING btree (admission_code);
 
 
 --
--- Name: idx_inst_conditions_type; Type: INDEX; Schema: public; Owner: -
+-- Name: idx_inst_conditions_type; Type: INDEX; Schema: public; Owner: user
 --
 
 CREATE INDEX idx_inst_conditions_type ON public.institution_conditions USING btree (condition_code);
 
 
 --
--- Name: idx_institutions_director; Type: INDEX; Schema: public; Owner: -
+-- Name: idx_institutions_director; Type: INDEX; Schema: public; Owner: user
 --
 
 CREATE INDEX idx_institutions_director ON public.institutions USING btree (director_id);
 
 
 --
--- Name: idx_institutions_district; Type: INDEX; Schema: public; Owner: -
+-- Name: idx_institutions_district; Type: INDEX; Schema: public; Owner: user
 --
 
 CREATE INDEX idx_institutions_district ON public.institutions USING btree (district_id);
 
 
 --
--- Name: idx_institutions_range; Type: INDEX; Schema: public; Owner: -
+-- Name: idx_institutions_range; Type: INDEX; Schema: public; Owner: user
 --
 
 CREATE INDEX idx_institutions_range ON public.institutions USING btree (range_min, range_max);
 
 
 --
--- Name: idx_institutions_type; Type: INDEX; Schema: public; Owner: -
+-- Name: idx_institutions_type; Type: INDEX; Schema: public; Owner: user
 --
 
 CREATE INDEX idx_institutions_type ON public.institutions USING btree (type_code);
 
 
 --
--- Name: uq_aoop_institution_name; Type: INDEX; Schema: public; Owner: -
+-- Name: uq_aoop_institution_name; Type: INDEX; Schema: public; Owner: user
 --
 
 CREATE UNIQUE INDEX uq_aoop_institution_name ON public.aoop_programs USING btree (institution_id, name);
 
 
 --
--- Name: directors update_directors_updated_at; Type: TRIGGER; Schema: public; Owner: -
+-- Name: directors update_directors_updated_at; Type: TRIGGER; Schema: public; Owner: user
 --
 
 CREATE TRIGGER update_directors_updated_at BEFORE UPDATE ON public.directors FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
 
 
 --
--- Name: institutions update_institutions_updated_at; Type: TRIGGER; Schema: public; Owner: -
+-- Name: institutions update_institutions_updated_at; Type: TRIGGER; Schema: public; Owner: user
 --
 
 CREATE TRIGGER update_institutions_updated_at BEFORE UPDATE ON public.institutions FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
 
 
 --
--- Name: action_log action_log_administrator_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: action_log action_log_administrator_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: user
 --
 
 ALTER TABLE ONLY public.action_log
@@ -2753,7 +2969,7 @@ ALTER TABLE ONLY public.action_log
 
 
 --
--- Name: aoop_programs aoop_programs_institution_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: aoop_programs aoop_programs_institution_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: user
 --
 
 ALTER TABLE ONLY public.aoop_programs
@@ -2761,7 +2977,7 @@ ALTER TABLE ONLY public.aoop_programs
 
 
 --
--- Name: institution_admission institution_admission_admission_code_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: institution_admission institution_admission_admission_code_fkey; Type: FK CONSTRAINT; Schema: public; Owner: user
 --
 
 ALTER TABLE ONLY public.institution_admission
@@ -2769,7 +2985,7 @@ ALTER TABLE ONLY public.institution_admission
 
 
 --
--- Name: institution_admission institution_admission_institution_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: institution_admission institution_admission_institution_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: user
 --
 
 ALTER TABLE ONLY public.institution_admission
@@ -2777,7 +2993,7 @@ ALTER TABLE ONLY public.institution_admission
 
 
 --
--- Name: institution_conditions institution_conditions_condition_code_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: institution_conditions institution_conditions_condition_code_fkey; Type: FK CONSTRAINT; Schema: public; Owner: user
 --
 
 ALTER TABLE ONLY public.institution_conditions
@@ -2785,7 +3001,7 @@ ALTER TABLE ONLY public.institution_conditions
 
 
 --
--- Name: institution_conditions institution_conditions_institution_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: institution_conditions institution_conditions_institution_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: user
 --
 
 ALTER TABLE ONLY public.institution_conditions
@@ -2793,7 +3009,7 @@ ALTER TABLE ONLY public.institution_conditions
 
 
 --
--- Name: institutions institutions_director_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: institutions institutions_director_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: user
 --
 
 ALTER TABLE ONLY public.institutions
@@ -2801,7 +3017,7 @@ ALTER TABLE ONLY public.institutions
 
 
 --
--- Name: institutions institutions_district_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: institutions institutions_district_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: user
 --
 
 ALTER TABLE ONLY public.institutions
@@ -2809,7 +3025,7 @@ ALTER TABLE ONLY public.institutions
 
 
 --
--- Name: institutions institutions_type_code_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: institutions institutions_type_code_fkey; Type: FK CONSTRAINT; Schema: public; Owner: user
 --
 
 ALTER TABLE ONLY public.institutions
@@ -2817,8 +3033,15 @@ ALTER TABLE ONLY public.institutions
 
 
 --
+-- Name: SCHEMA public; Type: ACL; Schema: -; Owner: user
+--
+
+REVOKE USAGE ON SCHEMA public FROM PUBLIC;
+
+
+--
 -- PostgreSQL database dump complete
 --
 
-\unrestrict i6Y6bDZODqE5lkXs5e5hkOfGgRflAZlHUGFEZ4mU30cVR0fiYZv4KZEEcL1JEuf
+\unrestrict vydQ7wgyv9liKZhcw1YhQViIJqbud7lotAcvs4agNUg0czXSIyNvc7F3nO2akyu
 

@@ -39,53 +39,16 @@ function sendCorsHeaders(array $methods = ['GET'], bool $allowCredentials = fals
     }
 
     header('Access-Control-Allow-Methods: ' . implode(', ', $methods));
-    header('Access-Control-Allow-Headers: Content-Type, X-CSRF-Token, X-Admin-Setup-Key');
+    header('Access-Control-Allow-Headers: Content-Type');
 }
 
 function getClientIp(): string {
     return $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
 }
 
-function isLocalRequest(?string $ip = null): bool {
-    $ip = $ip ?? getClientIp();
-    return in_array($ip, ['127.0.0.1', '::1'], true);
-}
-
-function ensureCsrfToken(): string {
-    if (empty($_SESSION['csrf_token'])) {
-        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
-    }
-    return $_SESSION['csrf_token'];
-}
-
 function requireAdmin(): void {
     if (empty($_SESSION['admin_id'])) {
         jsonResponse(['error' => 'Unauthorized'], 401);
-    }
-}
-
-function requireCsrfToken(): void {
-    $expected = $_SESSION['csrf_token'] ?? '';
-    $provided = $_SERVER['HTTP_X_CSRF_TOKEN'] ?? '';
-
-    if ($expected === '' || $provided === '' || !hash_equals($expected, $provided)) {
-        jsonResponse(['error' => 'Invalid CSRF token'], 403);
-    }
-}
-
-function requireAdminSetupAccess(?string $providedKey = null): void {
-    $secret = $_ENV['ADMIN_SETUP_SECRET'] ?? '';
-
-    if ($secret === '') {
-        jsonResponse([
-            'error' => 'Регистрация администратора отключена. Задайте ADMIN_SETUP_SECRET в .env на сервере.',
-        ], 503);
-    }
-
-    $providedKey = $providedKey ?? ($_SERVER['HTTP_X_ADMIN_SETUP_KEY'] ?? '');
-
-    if ($providedKey === '' || !hash_equals($secret, $providedKey)) {
-        jsonResponse(['error' => 'Неверный ключ настройки ADMIN_SETUP_SECRET.'], 403);
     }
 }
 
@@ -151,10 +114,6 @@ function initApi(array $options = []): void {
 
     if (!empty($options['admin'])) {
         requireAdmin();
-    }
-
-    if (!empty($options['csrf'])) {
-        requireCsrfToken();
     }
 }
 

@@ -1,0 +1,24 @@
+# Secrets and local env
+.env
+.env.*
+!.env.example
+
+# Git / IDE
+.git
+.gitignore
+.cursor
+.vscode
+*.md
+!README.md
+
+# Local DB / imports / dumps
+docker/postgres_data/
+docker/import_data/
+docker/__pycache__/
+*.pyc
+*.backup
+*.sql.bak
+lipetsk_institutions_db.backup
+
+# Agent / plans
+agent-transcripts/

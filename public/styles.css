@@ -49,18 +49,25 @@ body {
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
+  gap: 12px 16px;
 }
 
 .header h1 {
   color: #2c3e50;
   font-size: calc(1.8rem * var(--accessibility-font-scale)) !important;
-  margin-bottom: 10px;
+  margin-bottom: 0;
+  flex: 1 1 240px;
+  min-width: 0;
 }
 
 .header-controls {
   display: flex;
   align-items: center;
-  gap: 15px;
+  flex-wrap: wrap;
+  gap: 10px;
+  flex: 0 1 auto;
+  max-width: 100%;
+  min-width: 0;
 }
 
 html:not(.admin-route) .header-controls {
@@ -69,7 +76,18 @@ html:not(.admin-route) .header-controls {
 
 .admin-panel {
   display: flex;
-  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.admin-panel .btn,
+.header-controls > .btn {
+  white-space: normal;
+  text-align: center;
+  line-height: 1.3;
 }
 
 .btn {
@@ -227,6 +245,11 @@ g[id="region_eletskiy"] polygon.region {
   padding: 20px;
 }
 
+#loginModal.modal,
+#actionLogModal.modal {
+  z-index: 100030;
+}
+
 .modal-content {
   background: white;
   border-radius: 8px;
@@ -380,16 +403,6 @@ g[id="region_eletskiy"] polygon.region {
 
 .region-image g {
   transform-origin: center;
-}
-
-.region-details {
-  text-align: center;
-}
-
-.region-details h3 {
-  color: #2c3e50;
-  margin-bottom: 10px;
-  font-size: 1.2rem;
 }
 
 .region-description {
@@ -937,7 +950,7 @@ g[id="region_eletskiy"] polygon.region {
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 2000;
+  z-index: 100030;
   padding: 20px;
 }
 
@@ -1451,7 +1464,7 @@ body.accessibility-white-on-black.large-cursor {
   display: none;
 }
 
-.read-aloud-mode~.accessibility-module .read-aloud-hint {
+body.read-aloud-mode .accessibility-module .read-aloud-hint {
   display: block;
 }
 
@@ -1906,22 +1919,6 @@ input[readonly] {
     border-color: #2980b9;
 }
 
-.region-link {
-  display: block;
-  color: #2c3e50;
-  text-decoration: none;
-  font-weight: 500;
-  padding: 6px 0;
-  border-bottom: 1px solid #ecf0f1;
-  transition: all 0.2s ease;
-}
-
-.region-link:hover {
-  color: #3498db;
-  border-bottom-color: #3498db;
-  padding-left: 8px;
-}
-
 @media (max-width: 1024px) {
   .modal-body {
     grid-template-columns: 2fr 40rem;
@@ -2013,12 +2010,84 @@ input[readonly] {
 
   .header {
     flex-direction: column;
-    align-items: flex-start;
+    align-items: stretch;
+    padding: 12px 14px;
+    gap: 8px;
+    margin-bottom: 12px;
   }
 
   .header h1 {
-    font-size: 1.5rem;
-    margin-bottom: 15px;
+    font-size: calc(1.15rem * var(--accessibility-font-scale)) !important;
+    line-height: 1.25;
+    flex: 1 1 auto;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .header-controls {
+    width: 100%;
+    justify-content: stretch;
+    gap: 6px;
+  }
+
+  .admin-panel {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 6px;
+  }
+
+  .admin-panel .btn,
+  .header-controls > .btn {
+    flex: none;
+    min-width: 0;
+    width: 100%;
+    padding: 8px 6px;
+    font-size: calc(12px * var(--accessibility-font-scale)) !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .header-controls > .btn {
+    width: 100%;
+  }
+
+  .site-footer {
+    margin-top: 16px;
+    padding: 12px 14px;
+  }
+
+  .site-footer-inner {
+    gap: 8px;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .site-footer-title {
+    font-size: calc(0.9rem * var(--accessibility-font-scale));
+    margin-bottom: 2px;
+    line-height: 1.3;
+  }
+
+  .site-footer-meta {
+    font-size: calc(0.8rem * var(--accessibility-font-scale));
+    line-height: 1.3;
+    margin-bottom: 0;
+  }
+
+  .site-footer-meta + .site-footer-meta {
+    display: none;
+  }
+
+  .site-footer-links {
+    gap: 4px;
+  }
+
+  .site-footer-links a {
+    font-size: calc(0.8rem * var(--accessibility-font-scale));
   }
 
   .map-legend-wrapper {
@@ -2066,11 +2135,6 @@ input[readonly] {
     margin-right: 15px;
     margin-bottom: 0;
     font-size: 10px;
-  }
-
-  .region-links{
-    display: flex;
-    gap: 1rem;
   }
 
   .filters-section {
@@ -2167,8 +2231,18 @@ input[readonly] {
   }
 
   .accessibility-toggle {
-    top: 80px;
-    padding: 10px;
+    top: 72px;
+    padding: 6px;
+    border-radius: 4px 0 0 4px;
+  }
+
+  .accessibility-toggle svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .accessibility-toggle:hover {
+    transform: translateX(-2px);
   }
 
   .pagination {
@@ -2272,7 +2346,56 @@ input[readonly] {
   }
 
   .header h1 {
-    font-size: calc(1.2rem * var(--accessibility-font-scale)) !important;
+    font-size: calc(1.05rem * var(--accessibility-font-scale)) !important;
+    -webkit-line-clamp: 2;
+  }
+
+  .header {
+    padding: 10px;
+    gap: 6px;
+    margin-bottom: 10px;
+  }
+
+  .header-controls,
+  .admin-panel {
+    gap: 5px;
+  }
+
+  .admin-panel {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .admin-panel .btn:last-child {
+    grid-column: 1 / -1;
+  }
+
+  .admin-panel .btn,
+  .header-controls > .btn {
+    padding: 7px 5px;
+    font-size: calc(11px * var(--accessibility-font-scale)) !important;
+  }
+
+  .accessibility-toggle {
+    top: 64px;
+    padding: 5px;
+  }
+
+  .accessibility-toggle svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .site-footer {
+    margin-top: 10px;
+    padding: 8px 10px;
+  }
+
+  .site-footer-title {
+    font-size: calc(0.82rem * var(--accessibility-font-scale));
+  }
+
+  .site-footer-meta {
+    display: none;
   }
 
   .modal-body {
@@ -2292,12 +2415,6 @@ input[readonly] {
   .region-info-section{
     display: flex;
     flex-direction: column;
-  }
-
-  .region-links{
-    display: flex;
-    gap: 1rem;
-    margin-top: 5px;
   }
 
   .accessibility-panel {
@@ -2375,6 +2492,33 @@ input[readonly] {
 .site-footer-meta {
   font-size: calc(0.9rem * var(--accessibility-font-scale));
   margin-bottom: 2px;
+}
+
+.action-log-list {
+  max-height: 60vh;
+  overflow: auto;
+  font-size: 0.95rem;
+  line-height: 1.45;
+  width: 100%;
+}
+
+.action-log-row {
+  padding: 0.45rem 0;
+  border-bottom: 1px solid #ecf0f1;
+}
+
+#actionLogModal .modal-content {
+  max-width: 720px;
+  width: min(720px, 100%);
+}
+
+#actionLogModal .modal-body {
+  display: block;
+  padding: 20px;
+  overflow: auto;
+  grid-template-columns: none;
+  height: auto;
+  min-height: 120px;
 }
 
 .site-footer-links {

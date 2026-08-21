@@ -5,6 +5,8 @@ class AccessibilityModule {
         this.speechSynthesis = window.speechSynthesis;
         this.speechUtterance = null;
         this.currentHighlightedElement = null;
+        this.isReadAloudEnabled = false;
+        this.readAloudHandler = (e) => this.handleTextClick(e);
         this.init();
     }
 
@@ -67,16 +69,17 @@ class AccessibilityModule {
     
                 <div class="option-group">
                     <h3 class="option-group-title">Чтение вслух</h3>
-                    <button id="read-aloud" class="filter-btn">
+                    <button id="read-aloud" class="filter-btn" aria-pressed="false" type="button">
                         <div class="filter-icon"></div>Чтение вслух
                     </button>
-                    <button id="stop-reading" class="filter-btn">
-                        <div class="filter-icon"></div>Остановить чтение
+                    <button id="stop-reading" class="filter-btn" type="button">
+                        <div class="filter-icon"></div>Выключить чтение
                     </button>
+                    <p class="read-aloud-hint">Кликайте по тексту на странице для озвучки</p>
                 </div>
     
                 <div class="option-group">
-                    <button id="reset-accessibility">Сбросить настройки</button>
+                    <button id="reset-accessibility" type="button">Сбросить настройки</button>
                 </div>
             </div>
         `;
@@ -109,8 +112,8 @@ class AccessibilityModule {
         document.getElementById('decrease-font').addEventListener('click', () => this.changeFontSize(-10));
         document.getElementById('normal-font').addEventListener('click', () => this.resetFontSize());
         document.getElementById('increase-font').addEventListener('click', () => this.changeFontSize(10));
-        document.getElementById('grayscale').addEventListener('click', (e) => this.toggleGrayscale(e.target));
-        document.getElementById('large-cursor').addEventListener('click', (e) => this.toggleLargeCursor(e.target));
+        document.getElementById('grayscale').addEventListener('click', (e) => this.toggleGrayscale(e.currentTarget));
+        document.getElementById('large-cursor').addEventListener('click', (e) => this.toggleLargeCursor(e.currentTarget));
         document.getElementById('reset-accessibility').addEventListener('click', () => this.resetAll());
         document.getElementById('read-aloud').addEventListener('click', () => this.enableTextReading());
         document.getElementById('stop-reading').addEventListener('click', () => this.disableTextReading());
@@ -234,6 +237,7 @@ class AccessibilityModule {
     resetOtherFilter(currentFilter, currentButton) {
         const otherFilter = currentFilter === 'invert' ? 'grayscale' : 'invert';
         const otherButton = document.getElementById(otherFilter === 'invert' ? 'invert-colors' : 'grayscale');
+        if (!otherButton) return;
         const otherFilterClass = 'accessibility-' + otherFilter;
         if (otherButton.getAttribute('aria-pressed') === 'true') {
             document.body.classList.remove(otherFilterClass);
@@ -245,7 +249,7 @@ class AccessibilityModule {
 
     resetFilters() {
         const grayscaleButton = document.getElementById('grayscale');
-        if (grayscaleButton.getAttribute('aria-pressed') === 'true') {
+        if (grayscaleButton && grayscaleButton.getAttribute('aria-pressed') === 'true') {
             document.body.classList.remove('accessibility-grayscale');
             grayscaleButton.setAttribute('aria-pressed', 'false');
             grayscaleButton.classList.remove('active');
@@ -267,41 +271,64 @@ class AccessibilityModule {
         localStorage.setItem('accessibilityHideImages', 'false');
     }
 
+    stopSpeech() {
+        if (this.speechSynthesis) {
+            this.speechSynthesis.cancel();
+        }
+        this.speechUtterance = null;
+        this.removeHighlight(this.currentHighlightedElement);
+    }
+
     enableTextReading() {
+        // Idempotent: never stack duplicate document listeners
+        document.removeEventListener('click', this.readAloudHandler, true);
+        document.removeEventListener('click', this.readAloudHandler, false);
+
+        this.isReadAloudEnabled = true;
         document.body.classList.add('read-aloud-mode');
-        document.getElementById('read-aloud').classList.add('active');
-        document.getElementById('stop-reading').classList.remove('active');
-        this.readAloudHandler = (e) => this.handleTextClick(e);
-        document.addEventListener('click', this.readAloudHandler);
+        const readBtn = document.getElementById('read-aloud');
+        const stopBtn = document.getElementById('stop-reading');
+        if (readBtn) {
+            readBtn.classList.add('active');
+            readBtn.setAttribute('aria-pressed', 'true');
+        }
+        if (stopBtn) stopBtn.classList.remove('active');
+
+        document.addEventListener('click', this.readAloudHandler, true);
         document.body.style.cursor = 'text';
         localStorage.setItem('accessibilityReadAloudMode', 'true');
     }
 
     disableTextReading() {
+        this.isReadAloudEnabled = false;
+        document.removeEventListener('click', this.readAloudHandler, true);
+        document.removeEventListener('click', this.readAloudHandler, false);
+
         document.body.classList.remove('read-aloud-mode');
-        document.getElementById('read-aloud').classList.remove('active');
-        document.getElementById('stop-reading').classList.add('active');
-        if (this.readAloudHandler) {
-            document.removeEventListener('click', this.readAloudHandler);
+        const readBtn = document.getElementById('read-aloud');
+        const stopBtn = document.getElementById('stop-reading');
+        if (readBtn) {
+            readBtn.classList.remove('active');
+            readBtn.setAttribute('aria-pressed', 'false');
         }
+        if (stopBtn) stopBtn.classList.remove('active');
+
         document.body.style.cursor = '';
-        if (this.speechSynthesis.speaking) {
-            this.speechSynthesis.cancel();
-        }
+        this.stopSpeech();
         localStorage.setItem('accessibilityReadAloudMode', 'false');
     }
 
     handleTextClick(event) {
+        if (!this.isReadAloudEnabled) return;
+        if (event.target.closest('.accessibility-module')) return;
+
         event.preventDefault();
         event.stopPropagation();
-        if (this.speechSynthesis.speaking) {
-            this.speechSynthesis.cancel();
-        }
+
+        this.stopSpeech();
+
         const target = event.target;
-        if (target.closest('.accessibility-module')) {
-            return;
-        }
-        let textToRead = this.extractTextFromElement(target);
+        const textToRead = this.extractTextFromElement(target);
         if (textToRead && textToRead.trim()) {
             this.speakText(textToRead, target);
         }
@@ -335,6 +362,7 @@ class AccessibilityModule {
     }
 
     speakText(text, element) {
+        if (!this.isReadAloudEnabled) return;
         if (!text || !text.trim()) return;
         this.highlightElement(element);
         this.speechUtterance = new SpeechSynthesisUtterance(text);
@@ -389,6 +417,7 @@ class AccessibilityModule {
     }
 
     resetAll() {
+        this.disableTextReading();
         document.documentElement.style.setProperty('--accessibility-font-scale', '1');
         document.body.classList.remove(
             'accessibility-black-on-white',
@@ -396,7 +425,8 @@ class AccessibilityModule {
             'accessibility-brown-on-beige',
             'accessibility-dark-blue-on-blue',
             'accessibility-grayscale',
-            'large-cursor'
+            'large-cursor',
+            'read-aloud-mode'
         );
         document.body.style.fontSize = '';
         document.body.style.cursor = '';
@@ -407,7 +437,6 @@ class AccessibilityModule {
                 btn.setAttribute('aria-pressed', 'false');
             }
         });
-        this.disableTextReading();
         const keys = [
             'accessibilityColorScheme',
             'accessibilityFontSizePercent',

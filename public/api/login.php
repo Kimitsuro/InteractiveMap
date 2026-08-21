@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/../../config/database.php';
 require_once __DIR__ . '/../../config/security.php';
+require_once __DIR__ . '/../../src/Database.php';
 
 initApi(['methods' => ['POST'], 'method' => 'POST', 'credentials' => true]);
 
@@ -24,17 +25,13 @@ try {
     if ($admin && password_verify($password, $admin['password_hash'])) {
         session_regenerate_id(true);
         $_SESSION['admin_id'] = $admin['id'];
-        ensureCsrfToken();
 
         $updateStmt = $pdo->prepare("UPDATE administrators SET last_login = CURRENT_TIMESTAMP, updated_at = CURRENT_TIMESTAMP WHERE id = ?");
         $updateStmt->execute([$admin['id']]);
 
         clearLoginAttempts($ip);
 
-        jsonResponse([
-            'success' => true,
-            'csrfToken' => $_SESSION['csrf_token'],
-        ]);
+        jsonResponse(['success' => true]);
     }
 
     recordFailedLogin($ip);

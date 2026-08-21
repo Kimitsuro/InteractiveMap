@@ -1,18 +1,15 @@
 // ============================================================
-// main.js — Класс LipetskMap: только конструктор и init().
+// main.js — Класс LipetskMap: конструктор и init().
 // ============================================================
 
 class LipetskMap {
     constructor() {
-      this.isAdminMode = false;
       this.currentDistrictName = null;
       this.editingInstitution = null;
-      this.institutions = [];
       this.districts = {};
       this.mapDistricts = {};
       this.districtIdMap = {};
       this.districtColors = {};
-      this.aoopCounter = 0;
       this.isAdmin = false;
       this.animationPlayed = false;
       this.currentPage = 1;
@@ -20,13 +17,12 @@ class LipetskMap {
       this.pendingListPage = null;
       this.itemsPerPage = 10;
       this.totalPages = 0;
-      this.allInstitutions = [];
+      this.institutionsTotal = 0;
       this.displayedInstitutions = [];
       this.loaderTimeout = null;
-      this.pageLoaderTimeout = null;
       this.activeDistrict = null;
-      this.csrfToken = null;
       this.hoverTimeout = null;
+      this._adminActionsBound = false;
     }
   
     async init() {
@@ -35,9 +31,14 @@ class LipetskMap {
       try {
         await this.loadMap();
         this.bindEvents();
+        this.bindAdminActionsOnce();
         await this.loadDistricts();
       } catch (error) {
         console.error('Error during initialization:', error);
+        const loader = document.getElementById('pageLoader');
+        if (loader) {
+          loader.innerHTML = '<p>Ошибка загрузки карты. Обновите страницу.</p>';
+        }
       } finally {
         this.hidePageLoader();
       }

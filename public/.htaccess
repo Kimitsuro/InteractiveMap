@@ -6,8 +6,8 @@ RewriteEngine On
     Header always set Referrer-Policy "strict-origin-when-cross-origin"
 </IfModule>
 
-# Перенаправляем /admin (и подпути) на index.html
-RewriteRule ^admin(/.*)?$ /index.html [L]
+# Только /admin и /admin/ — не трогаем /admin/js/... и прочие пути
+RewriteRule ^admin/?$ /index.html [L]
 
 # Опционально: для всех других путей (если нужно SPA-подобное поведение)
 RewriteCond %{REQUEST_FILENAME} !-f

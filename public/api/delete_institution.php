@@ -3,15 +3,17 @@ require_once __DIR__ . '/../../config/database.php';
 require_once __DIR__ . '/../../config/security.php';
 require_once __DIR__ . '/../../src/Database.php';
 
-initApi(['methods' => ['POST'], 'method' => 'POST', 'admin' => true, 'csrf' => true, 'credentials' => true]);
+initApi(['methods' => ['POST'], 'method' => 'POST', 'admin' => true, 'credentials' => true]);
 
 $input = json_decode(file_get_contents('php://input'), true) ?: $_POST;
 $id = $input['id'] ?? null;
 if (!$id || !is_numeric($id)) {
     jsonResponse(['error' => 'Invalid id'], 400);
 }
+
+$pdo = Database::getInstance();
 try {
-    $pdo = Database::getInstance();
+    $pdo->beginTransaction();
 
     $oldSql = "
         SELECT
@@ -31,10 +33,10 @@ try {
     ";
     $oldData = Database::query($oldSql, [(int) $id]);
     if (empty($oldData)) {
+        $pdo->rollBack();
         jsonResponse(['error' => 'Institution not found'], 404);
     }
     $oldInst = $oldData[0];
-
     $directorId = $oldInst['director_id_val'] ?? null;
 
     $oldJson = [
@@ -46,22 +48,25 @@ try {
         'director' => [
             'name' => $oldInst['director_name'] ?? '',
             'phone' => $oldInst['director_phone'] ?? '',
-            'email' => $oldInst['director_email'] ?? ''
+            'email' => $oldInst['director_email'] ?? '',
         ],
         'description' => $oldInst['description'],
         'range' => [
             'min' => $oldInst['range_min'],
-            'max' => $oldInst['range_max']
+            'max' => $oldInst['range_max'],
         ],
         'website' => $oldInst['website'],
         'aoop_url' => $oldInst['aoop_url'],
         'conditions' => $oldInst['condition_codes'] ? explode(',', trim($oldInst['condition_codes'], '{}')) : [],
         'conditionsAdmission' => $oldInst['admission_codes'] ? explode(',', trim($oldInst['admission_codes'], '{}')) : [],
-        'aoop_programs' => $oldInst['aoop_programs'] ? json_decode($oldInst['aoop_programs'], true) : []
+        'aoop_programs' => $oldInst['aoop_programs'] ? json_decode($oldInst['aoop_programs'], true) : [],
     ];
 
+    // Сначала отвязать директора, потом удалить учреждение (каскад), потом директора
+    Database::execute("UPDATE institutions SET director_id = NULL WHERE id = ?", [(int) $id]);
     $result = Database::execute("DELETE FROM institutions WHERE id = ?", [(int) $id]);
     if ($result === 0) {
+        $pdo->rollBack();
         jsonResponse(['error' => 'Institution not found'], 404);
     }
 
@@ -69,12 +74,17 @@ try {
         Database::execute("DELETE FROM directors WHERE id = ?", [(int) $directorId]);
     }
 
-    $logSql = "INSERT INTO action_log (administrator_id, action, entity, record_id, old_data) VALUES (?, 'DELETE', 'institutions', ?, ?::jsonb)";
-    Database::execute($logSql, [$_SESSION['admin_id'], (int) $id, json_encode($oldJson)]);
+    Database::execute(
+        "INSERT INTO action_log (administrator_id, action, entity, record_id, old_data) VALUES (?, 'DELETE', 'institutions', ?, ?::jsonb)",
+        [$_SESSION['admin_id'], (int) $id, json_encode($oldJson)]
+    );
 
+    $pdo->commit();
     jsonResponse(['success' => true]);
 } catch (Exception $e) {
+    if ($pdo->inTransaction()) {
+        $pdo->rollBack();
+    }
     error_log("Error in delete_institution: " . $e->getMessage());
     jsonResponse(['error' => 'Internal server error'], 500);
 }
-?>

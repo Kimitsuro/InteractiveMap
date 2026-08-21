@@ -16,99 +16,14 @@ Object.assign(LipetskMap.prototype, {
     },
 
     applyCombinedFilters(options = {}) {
-      const searchInput = document.getElementById("institutionSearch");
-      const searchTerm = searchInput ? searchInput.value.trim() : "";
-      const q = this.normalizeString(searchTerm);
-  
-      const selectedTypes = Array.from(
-        document.querySelectorAll('.filter-group-accordion input[value^="preschool"], .filter-group-accordion input[value^="school"], .filter-group-accordion input[value^="spo"], .filter-group-accordion input[value^="vo"]')
-      )
-        .filter(cb => cb.checked)
-        .map(cb => cb.value);
-  
-      const selectedAges = Array.from(
-        document.querySelectorAll('.filter-group-accordion input[value^="1.5-"], .filter-group-accordion input[value^="3-"], .filter-group-accordion input[value^="5-"], .filter-group-accordion input[value^="7+"]')
-      )
-        .filter(cb => cb.checked)
-        .map(cb => cb.value);
-  
-      const selectedConditions = Array.from(
-        document.querySelectorAll('.filter-group-accordion input[value="hearing_impairment"], .filter-group-accordion input[value="vision_impairment"], .filter-group-accordion input[value="musculoskeletal_impairment"], .filter-group-accordion input[value="speech_impairment"], .filter-group-accordion input[value="mental_retardation"], .filter-group-accordion input[value="autism"], .filter-group-accordion input[value="multiple_disorders"]')
-      )
-        .filter(cb => cb.checked)
-        .map(cb => cb.value);
-  
-      const aoopSelected = document.querySelector('.filter-group-accordion input[value="aoop"]:checked');
-  
-      const synonyms = {
-        preschool: ['детсад', 'детскийсад', 'садик', 'дс', 'сад'],
-        school: ['школа', 'шк', 'сош', 'лицей', 'гимназия'],
-        school_internat: ['интернат', 'школаинтернат'],
-        spo: ['спо', 'техникум', 'колледж', 'училище'],
-        vo: ['во', 'вуз', 'университет', 'институт', 'академия']
-      };
-  
-      const numberMatch = (searchTerm || '').match(/\d+/);
-      const queryNumber = numberMatch ? numberMatch[0] : null;
-  
-      const source = Array.isArray(this.allInstitutions) ? this.allInstitutions : [];
-  
-      const filtered = source.filter(inst => {
-        if (selectedTypes.length && !selectedTypes.includes(inst.type)) return false;
-  
-        if (selectedAges.length && inst.range_min && inst.range_max) {
-          const matchAge = selectedAges.some(age => {
-            if (age.includes('-')) {
-              const [minStr, maxStr] = age.split('-');
-              const min = parseFloat(minStr);
-              const max = parseFloat(maxStr);
-  
-              if (age === "1.5-3") {
-                return inst.range_min <= max && inst.range_max >= min;
-              } else {
-                return inst.range_min <= max && inst.range_max >= min;
-              }
-            } else if (age.includes('+')) {
-              const min = parseInt(age);
-              return inst.range_max >= min;
-            }
-            return false;
-          });
-          if (!matchAge) return false;
-        }
-  
-        if (selectedConditions.length) {
-          const hasCond = inst.conditions?.some(c => selectedConditions.includes(c));
-          if (!hasCond) return false;
-        }
-  
-        if (aoopSelected && (!inst.aoop_programs || inst.aoop_programs.length === 0)) return false;
-  
-        if (!q) return true;
-  
-        const name = this.normalizeString(inst.name || '');
-        const desc = this.normalizeString(inst.description || '');
-        const director = this.normalizeString((inst.director && (inst.director.name || inst.director.full_name)) || '');
-        const website = this.normalizeString(inst.website || '');
-        const instNumber = (inst.name || '').match(/\d+/)?.[0] || null;
-  
-        if (name.includes(q) || desc.includes(q) || director.includes(q) || website.includes(q)) return true;
-        if (queryNumber && instNumber && instNumber === queryNumber) return true;
-  
-        for (const [type, words] of Object.entries(synonyms)) {
-          for (const w of words) {
-            if (this.normalizeString(searchTerm).includes(w) && inst.type === type) {
-              if (!queryNumber) return true;
-              if (instNumber && queryNumber === instNumber) return true;
-            }
-          }
-        }
-        return false;
-      });
-  
-      this.displayInstitutions(filtered, options);
+      const page = options.page != null ? options.page : 1;
+      const districtName = this.currentDistrictName
+        || document.getElementById("regionName")?.textContent
+        || null;
+      if (!districtName) return;
+      this.loadInstitutionsForDistrict(districtName, { page, scroll: options.scroll });
     },
-  
+
     closeAllAccordions() {
       const accordionToggles = document.querySelectorAll(".accordion-toggle");
       const accordionContents = document.querySelectorAll(".accordion-content");
@@ -129,16 +44,29 @@ Object.assign(LipetskMap.prototype, {
       this.closeAllAccordions();
     },
   
+    closeFiltersPanel() {
+      const filtersPanel = document.getElementById("filtersSection");
+      const filtersOverlay = document.getElementById("filtersOverlay");
+      if (filtersPanel) filtersPanel.classList.remove("active");
+      if (filtersOverlay) filtersOverlay.classList.remove("active");
+      document.body.style.overflow = "";
+    },
+
     resetFilters() {
-      document.querySelectorAll('.filter-group-accordion input[type="checkbox"]').forEach((cb) => {
-        cb.checked = false;
-      });
-      this.currentPage = 1;
-      const districtName = document.getElementById("regionName").textContent;
-      this.loadInstitutionsForDistrict(districtName);
-      if (window.innerWidth <= 768) {
-        document.getElementById("filtersSection").classList.add("hidden");
+      this.resetFiltersUI();
+      const searchInput = document.getElementById("institutionSearch");
+      if (searchInput) searchInput.value = "";
+      document.querySelectorAll(".type-filter-btn").forEach((b) => b.classList.remove("active"));
+      const allBtn = document.querySelector('.type-filter-btn[data-type="all"]');
+      if (allBtn) allBtn.classList.add("active");
+      this.setListPage(1);
+      const districtName = this.currentDistrictName
+        || document.getElementById("regionName")?.textContent
+        || null;
+      if (districtName) {
+        this.loadInstitutionsForDistrict(districtName, { page: 1 });
       }
+      this.closeFiltersPanel();
     },
   
     bindEvents() {
@@ -154,16 +82,19 @@ Object.assign(LipetskMap.prototype, {
       document.getElementById("districtModal").addEventListener("click", (e) => {
         if (e.target.id === "districtModal") {
           this.resetFiltersUI();
+          this.closeFiltersPanel();
         }
       });
-      document.getElementById("institutionSearch").addEventListener("input", (e) => {
-        const searchInput = document.getElementById("institutionSearch");
-        if (searchInput) {
-          searchInput.addEventListener("input", this.debounce((e) => {
+
+      const searchInput = document.getElementById("institutionSearch");
+      if (searchInput) {
+        searchInput.addEventListener(
+          "input",
+          this.debounce(() => {
             this.applyCombinedFilters();
-          }, 250));
-        }
-      });
+          }, 250)
+        );
+      }
   
       document
         .getElementById("closeInstitutionModal")
@@ -179,22 +110,15 @@ Object.assign(LipetskMap.prototype, {
           this.clearInstitutionForm();
         });
   
-      document.getElementById("applyFilters").addEventListener("click", () => {
+      document.getElementById("applyFilters")?.addEventListener("click", () => {
         this.applyCombinedFilters();
+        this.closeFiltersPanel();
       });
   
-      document.getElementById("resetFilters").addEventListener("click", () => {
-        document
-          .querySelectorAll('.filter-group-accordion input[type="checkbox"]')
-          .forEach(cb => (cb.checked = false));
-  
-        const searchInput = document.getElementById("institutionSearch");
-        if (searchInput) searchInput.value = '';
-  
-        this.displayInstitutions(this.allInstitutions);
+      document.getElementById("resetFilters")?.addEventListener("click", () => {
+        this.resetFilters();
       });
   
-      // Обработчики для верхней пагинации
       document.getElementById("prevPageTop")?.addEventListener("click", () => {
         this.handlePrevPage();
       });
@@ -202,7 +126,6 @@ Object.assign(LipetskMap.prototype, {
         this.handleNextPage();
       });
   
-      // Обработчики для нижней пагинации
       document.getElementById("prevPageBottom")?.addEventListener("click", () => {
         this.handlePrevPage();
       });
@@ -269,8 +192,6 @@ Object.assign(LipetskMap.prototype, {
       const toggleFiltersBtn = document.getElementById("toggleFilters");
       const filtersPanel = document.getElementById("filtersSection");
       const filtersOverlay = document.getElementById("filtersOverlay");
-      const applyFiltersBtn = document.getElementById("applyFilters");
-      const resetFiltersBtn = document.getElementById("resetFilters");
   
       if (toggleFiltersBtn && filtersPanel && filtersOverlay) {
         toggleFiltersBtn.addEventListener("click", () => {
@@ -280,24 +201,7 @@ Object.assign(LipetskMap.prototype, {
         });
   
         filtersOverlay.addEventListener("click", () => {
-          filtersPanel.classList.remove("active");
-          filtersOverlay.classList.remove("active");
-          document.body.style.overflow = "";
-        });
-      }
-      if (applyFiltersBtn) {
-        applyFiltersBtn.addEventListener("click", () => {
-          filtersPanel.classList.remove("active");
-          filtersOverlay.classList.remove("active");
-          document.body.style.overflow = "";
-        });
-      }
-  
-      if (resetFiltersBtn) {
-        resetFiltersBtn.addEventListener("click", () => {
-          filtersPanel.classList.remove("active");
-          filtersOverlay.classList.remove("active");
-          document.body.style.overflow = "";
+          this.closeFiltersPanel();
         });
       }
     },

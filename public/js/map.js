@@ -7,7 +7,7 @@ Object.assign(LipetskMap.prototype, {
 
     async loadMap() {
       try {
-        const response = await fetch("map.svg");
+        const response = await fetch("/map.svg");
         const svgText = await response.text();
         const mapWrapper = document.getElementById("mapWrapper");
         mapWrapper.innerHTML = svgText;
@@ -211,10 +211,12 @@ Object.assign(LipetskMap.prototype, {
       legendList.innerHTML = sortedDistricts
         .map((name) => {
           const color = this.getDistrictColor(name);
+          const safeName = this.escapeHtml(name);
+          const safeAttr = this.escapeHtml(name).replace(/"/g, "&quot;");
           return `
-            <li class="legend-item" data-district-name="${name}">
+            <li class="legend-item" data-district-name="${safeAttr}">
               <div class="color-swatch" style="background-color: ${color};"></div>
-              <span>${name}</span>
+              <span>${safeName}</span>
             </li>
           `;
         })
@@ -238,10 +240,10 @@ Object.assign(LipetskMap.prototype, {
       districtSelect.innerHTML = `
           <option value="">Выберите округ</option>
           ${sortedDistricts
-          .map(
-            (name) =>
-              `<option value="${this.districtIdMap[name]}">${name}</option>`
-          )
+          .map((name) => {
+            const id = this.districtIdMap[name];
+            return `<option value="${this.escapeHtml(String(id))}">${this.escapeHtml(name)}</option>`;
+          })
           .join("")}
         `;
     },
@@ -263,19 +265,22 @@ Object.assign(LipetskMap.prototype, {
       document.getElementById("districtModal").dataset.listPage = "1";
       this.setListPage(1);
       document.getElementById('regionName').textContent = districtName;
-      const districtId = this.resolveDistrictId(districtName);
-      if (districtId) {
-        this.loadRegionLinks(districtId);
-        this.loadInstitutionsForDistrict(districtName);
-      } else {
-        document.getElementById('regionLinks').innerHTML = '';
-        document.getElementById("institutionsList").innerHTML =
-          '<p class="text-muted">Район не найден в базе данных</p>';
-      }
 
       const searchInput = document.getElementById("institutionSearch");
       this.resetFiltersUI();
       if (searchInput) searchInput.value = '';
+      document.querySelectorAll(".type-filter-btn").forEach((b) => b.classList.remove("active"));
+      const allBtn = document.querySelector('.type-filter-btn[data-type="all"]');
+      if (allBtn) allBtn.classList.add("active");
+
+      const districtId = this.resolveDistrictId(districtName);
+      if (districtId) {
+        this.loadInstitutionsForDistrict(districtName, { page: 1 });
+      } else {
+        document.getElementById("institutionsList").innerHTML =
+          '<p class="text-muted">Район не найден в базе данных</p>';
+      }
+
       this.loadDistrictSVG(districtName);
     },
   

@@ -5,7 +5,6 @@
 class AdminManager {
     constructor(map) {
       this.map = map;
-      this.aoopCounter = 0;
       this.init();
     }
   
@@ -27,6 +26,18 @@ class AdminManager {
       this.map.openInstitutionForm = (inst = null) => this.openInstitutionForm(inst);
       this.map.editInstitution = (id) => this.editInstitution(id);
       this.map.deleteInstitution = (id) => this.deleteInstitution(id);
+
+      document.getElementById('addInstitution')?.addEventListener('click', () => {
+        this.map.editingInstitution = null;
+        document.getElementById('institutionModalTitle').textContent = 'Добавить учреждение';
+        this.openInstitutionForm(null);
+      });
+
+      document.getElementById('viewActionLog')?.addEventListener('click', () => this.openActionLog());
+      document.getElementById('closeActionLog')?.addEventListener('click', () => this.hideActionLog());
+      document.getElementById('actionLogModal')?.addEventListener('click', (e) => {
+        if (e.target.id === 'actionLogModal') this.hideActionLog();
+      });
   
       document.getElementById('institutionForm').addEventListener('submit', (e) => {
         e.preventDefault();

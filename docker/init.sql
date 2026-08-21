@@ -127,6 +127,7 @@ CREATE TABLE IF NOT EXISTS aoop_programs (
 );
 
 CREATE INDEX idx_aoop_institution ON aoop_programs(institution_id);
+CREATE UNIQUE INDEX IF NOT EXISTS uq_aoop_institution_name ON aoop_programs (institution_id, name);
 
 COMMENT ON TABLE aoop_programs IS 'АООП программы учреждений';
 
@@ -153,14 +154,6 @@ CREATE TABLE IF NOT EXISTS action_log (
     new_data JSONB,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
-
-CREATE TABLE IF NOT EXISTS links (
-    id SERIAL PRIMARY KEY,
-    district_id INTEGER NOT NULL REFERENCES districts(id) ON DELETE CASCADE,
-    linksTo VARCHAR(20),
-    linkToInstitution TEXT
-);
-CREATE INDEX idx_links_linksTo ON links(linksTo);
 
 -- ============================================================
 -- ТРИГГЕРЫ для автоматического обновления updated_at

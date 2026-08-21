@@ -41,14 +41,6 @@ try {
 
     $inst = $institutions[0];
 
-    $typeMap = [
-        'Дошкольное образовательное учреждение' => 'preschool',
-        'Общеобразовательная школа' => 'school',
-        'Школа-интернат' => 'school_internat',
-        'Среднее профессиональное образование' => 'spo',
-        'Высшее образование' => 'vo'
-    ];
-
     $conditionCodes = $inst['condition_codes'] ? trim($inst['condition_codes'], '{}') : '';
     $inst['conditions'] = $conditionCodes ? explode(',', $conditionCodes) : [];
 
@@ -73,12 +65,11 @@ try {
         'phone' => formatPhoneForDisplay($inst['director_phone'] ?? '') ?? '',
         'email' => normalizeEmailForDisplay($inst['director_email'] ?? '') ?? ''
     ];
-    $inst['type'] = $typeMap[$inst['type_name']] ?? $inst['type_code'];
-    unset($inst['condition_codes'], $inst['admission_codes'], $inst['type_name'], $inst['director_name'], $inst['director_phone'], $inst['director_email'], $inst['director_id']);
+    $inst['type'] = $inst['type_code'];
+    unset($inst['condition_codes'], $inst['admission_codes'], $inst['type_name'], $inst['type_code'], $inst['director_name'], $inst['director_phone'], $inst['director_email'], $inst['director_id']);
     $inst['address'] = isset($inst['address']) ? trim($inst['address']) : null;
     jsonResponse(['institution' => $inst]);
 } catch (Exception $e) {
     error_log("Error in get_institution: " . $e->getMessage());
     jsonResponse(['error' => 'Internal server error'], 500);
 }
-?>

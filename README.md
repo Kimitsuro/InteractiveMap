@@ -18,7 +18,13 @@ docker compose up -d --build
 3. Откройте http://localhost:8080  
 4. Админка: http://localhost:8080/admin
 
-Dev-конфиг (`docker-compose.yml`) включает pgAdmin (порт 5050), проброс PostgreSQL (5432) и монтирование кода для hot-reload.
+Dev-конфиг (`docker-compose.yml`) включает pgAdmin (порт `127.0.0.1:5050`), PostgreSQL на `127.0.0.1:5432` и монтирование кода для hot-reload. Пароли БД и pgAdmin берутся из `.env` (`DB_*`, `PGADMIN_*`).
+
+После изменений схемы на уже существующем volume:
+
+```bash
+docker exec lipetsk_web_apache php /var/www/docker/apply_migrations.php
+```
 
 ---
 
@@ -47,13 +53,10 @@ ALLOWED_ORIGIN=https://ваш-домен.рф
 
 ## Первый администратор
 
-Регистрация через браузер **отключена**. Создайте админа с сервера:
+Регистрация через браузер и HTTP **отключена**. Создайте админа из консоли:
 
 ```bash
-curl -X POST http://localhost:8080/api/register.php \
-  -H "Content-Type: application/json" \
-  -H "X-Admin-Setup-Key: ваш-секрет-из-ADMIN_SETUP_SECRET" \
-  -d "{\"login\":\"admin\",\"email\":\"admin@example.ru\",\"password\":\"StrongPass123\",\"full_name\":\"Иванов И.И.\"}"
+docker exec lipetsk_web_apache php /var/www/docker/create_admin.php admin admin@example.ru StrongPass123 "Иванов И.И."
 ```
 
 Затем войдите через `/admin`.
@@ -84,7 +87,8 @@ docker exec lipetsk_postgres psql -U user -d lipetsk_institutions_db -f /tmp/imp
 |------|------------|
 | `public/` | Фронтенд и API (`public/api/`) |
 | `config/` | БД, безопасность, валидация |
-| `docker/init.sql` | Схема БД и справочники |
+| `docker/init.sql` | Схема БД и справочники (только на пустой volume) |
+| `docker/migrations/` | Миграции схемы + `apply_migrations.php` |
 | `docker/import_data/` | Исходные данные и сгенерированный import.sql |
 | `docker-compose.yml` | Dev |
 | `docker-compose.prod.yml` | Production |
@@ -94,8 +98,8 @@ docker exec lipetsk_postgres psql -U user -d lipetsk_institutions_db -f /tmp/imp
 ## Безопасность
 
 - Пароли администраторов хранятся как `password_hash` (bcrypt).
-- Mutating API защищены сессией и CSRF-токеном.
-- `register.php` требует секрет `ADMIN_SETUP_SECRET`.
+- Mutating API защищены сессией после входа в `/admin`.
+- Создание админа — только консольный скрипт `docker/create_admin.php`.
 - Лимит попыток входа: 5 за 15 минут с одного IP.
 - XSS: экранирование данных в карточках учреждений.
 
@@ -114,8 +118,23 @@ docker exec lipetsk_postgres psql -U user -d lipetsk_institutions_db -f /tmp/imp
 
 ---
 
-## Админка
+## Тесты
 
-- URL: `/admin`
-- CRUD учреждений, журнал изменений в таблице `action_log`
-- После сохранения карточки остаётся текущая страница списка
+Требуется `docker compose up -d`.
+
+```bash
+# создать тестового админа (один раз)
+docker exec lipetsk_web_apache php /var/www/docker/create_admin.php test_admin test_admin@example.local "TestAdminPass123!" "Test Admin"
+
+# PHPUnit (из контейнера web)
+docker exec lipetsk_web_apache bash -lc "cd /var/www && php composer.phar install --no-interaction && ./vendor/bin/phpunit"
+
+# JS (на хосте, Node 18+)
+node --test tests/js/*.test.mjs
+```
+
+Или скрипты: `docker/run_tests.sh` / `docker/run_tests.ps1`.
+
+- **Unit** — телефоны/email/валидация  
+- **Integration** — публичные API, логин/логаут, CRUD учреждения  
+- **JS** — `escapeHtml` / `sanitizeUrl` / `normalizeString`

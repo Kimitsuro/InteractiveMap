@@ -35,6 +35,9 @@ Object.assign(LipetskMap.prototype, {
     },
   
     normalizeString(str) {
+      if (typeof StringUtils !== 'undefined') {
+        return StringUtils.normalizeString(str);
+      }
       if (!str) return '';
       return String(str)
         .toLowerCase()
@@ -298,6 +301,9 @@ Object.assign(LipetskMap.prototype, {
     },
 
     escapeHtml(text) {
+      if (typeof StringUtils !== 'undefined') {
+        return StringUtils.escapeHtml(text);
+      }
       if (text == null) return '';
       return String(text)
         .replace(/&/g, '&amp;')
@@ -308,6 +314,9 @@ Object.assign(LipetskMap.prototype, {
     },
 
     sanitizeUrl(url) {
+      if (typeof StringUtils !== 'undefined') {
+        return StringUtils.sanitizeUrl(url);
+      }
       if (!url) return '';
       try {
         const parsed = new URL(String(url).trim());
@@ -320,19 +329,11 @@ Object.assign(LipetskMap.prototype, {
       return '';
     },
 
-    getAdminHeaders(extra = {}) {
-      const headers = { ...extra };
-      if (this.csrfToken) {
-        headers['X-CSRF-Token'] = this.csrfToken;
-      }
-      return headers;
-    },
-
     renderTruncatedLink(url, className = 'external-link') {
       const safeUrl = this.sanitizeUrl(url);
       if (!safeUrl) return '';
       const safe = this.escapeHtml(safeUrl);
-      return `<a href="${safeUrl}" target="_blank" rel="noopener noreferrer" class="${className}" title="${safe}">${safe}</a>`;
+      return `<a href="${safe}" target="_blank" rel="noopener noreferrer" class="${className}" title="${safe}">${safe}</a>`;
     },
 
     expandMedicalAbbreviations(text) {
@@ -374,6 +375,27 @@ Object.assign(LipetskMap.prototype, {
         vo: 'Высшее образование',
       };
       return labels[type] || type;
+    },
+
+    getConditionLabel(code) {
+      const labels = {
+        hearing_impairment: 'Нарушения слуха',
+        vision_impairment: 'Нарушения зрения',
+        musculoskeletal_impairment: 'Нарушения опорно-двигательного аппарата',
+        speech_impairment: 'Нарушения речи',
+        mental_retardation: 'Задержка психического развития',
+        autism: 'Расстройство аутистического спектра',
+        multiple_disorders: 'Множественные нарушения развития',
+      };
+      return labels[code] || code;
+    },
+
+    getAdmissionLabel(code) {
+      const labels = {
+        certificate: 'Свидетельство об обучении',
+        attestat: 'Аттестат',
+      };
+      return labels[code] || code;
     },
   
   });

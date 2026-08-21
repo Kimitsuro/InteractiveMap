@@ -11,9 +11,6 @@ Object.assign(AdminManager.prototype, {
         const data = await response.json();
         if (data.loggedIn && window.IS_ADMIN_ROUTE) {
           this.map.isAdmin = true;
-          if (data.csrfToken) {
-            this.map.csrfToken = data.csrfToken;
-          }
           this.showAdminPanel();
           if (!document.getElementById("districtModal").classList.contains("hidden")) {
             const districtName = document.getElementById("regionName").textContent;
@@ -49,9 +46,6 @@ Object.assign(AdminManager.prototype, {
         const data = await response.json();
         if (data.success) {
           this.map.isAdmin = true;
-          if (data.csrfToken) {
-            this.map.csrfToken = data.csrfToken;
-          }
           this.showAdminPanel();
           this.hideLoginModal();
         } else {
@@ -67,7 +61,6 @@ Object.assign(AdminManager.prototype, {
       try {
         await fetch('/api/logout.php', { method: 'POST', credentials: 'same-origin' });
         this.map.isAdmin = false;
-        this.map.csrfToken = null;
         document.getElementById('adminPanel').classList.add('hidden');
         document.getElementById('adminLogin').classList.remove('hidden');
         if (!document.getElementById("districtModal").classList.contains("hidden")) {
@@ -82,12 +75,39 @@ Object.assign(AdminManager.prototype, {
     showAdminPanel() {
       document.getElementById('adminLogin').classList.add('hidden');
       document.getElementById('adminPanel').classList.remove('hidden');
-      document.getElementById('addInstitution').addEventListener('click', () => {
-        this.map.editingInstitution = null;
-        document.getElementById('institutionModalTitle').textContent = 'Добавить учреждение';
-        document.getElementById('institutionModal').classList.remove('hidden');
-        this.map.clearInstitutionForm();
-      });
+    },
+
+    hideActionLog() {
+      document.getElementById('actionLogModal')?.classList.add('hidden');
+    },
+
+    async openActionLog() {
+      const modal = document.getElementById('actionLogModal');
+      const list = document.getElementById('actionLogList');
+      if (!modal || !list) return;
+      modal.classList.remove('hidden');
+      list.textContent = 'Загрузка…';
+      try {
+        const response = await fetch('/api/get_action_log.php?limit=50', { credentials: 'same-origin' });
+        if (!response.ok) throw new Error('HTTP ' + response.status);
+        const data = await response.json();
+        if (!data.logs || data.logs.length === 0) {
+          list.textContent = 'Записей пока нет';
+          return;
+        }
+        const esc = (v) => this.map.escapeHtml(v);
+        list.innerHTML = data.logs.map((row) => {
+          const when = esc(row.created_at || '');
+          const who = esc(row.admin_login || row.admin_name || '—');
+          const action = esc(row.action || '');
+          const entity = esc(row.entity || '');
+          const rid = esc(row.record_id ?? '');
+          return `<div class="action-log-row"><strong>${when}</strong> — ${who}: ${action} ${entity} #${rid}</div>`;
+        }).join('');
+      } catch (error) {
+        console.error('Action log error:', error);
+        list.textContent = 'Не удалось загрузить журнал';
+      }
     },
   
   });

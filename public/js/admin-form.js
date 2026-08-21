@@ -6,7 +6,6 @@
 Object.assign(AdminManager.prototype, {
 
     addAoOpField() {
-      this.aoopCounter++;
       const aoopList = document.getElementById("aoopList");
       const field = document.createElement("div");
       field.className = "aoop-field form-group";
@@ -58,7 +57,6 @@ Object.assign(AdminManager.prototype, {
 
         const aoopList = document.getElementById('aoopList');
         aoopList.innerHTML = '';
-        this.map.aoopCounter = 0;
         if (inst.aoop_programs && Array.isArray(inst.aoop_programs)) {
           inst.aoop_programs.forEach(prog => {
             this.addAoOpField();
@@ -87,37 +85,64 @@ Object.assign(AdminManager.prototype, {
       const group = document.getElementById("rangeGroup");
       const label = document.getElementById("rangeLabel");
       const unit = document.getElementById("rangeUnit");
-  
+      const attestatCheckbox = document.getElementById("doc_attestat");
+      const certificateCheckbox = document.getElementById("doc_certificate");
+      const rangeMin = document.getElementById("rangeMin");
+      const rangeMax = document.getElementById("rangeMax");
+
+      if (attestatCheckbox) {
+        attestatCheckbox.disabled = false;
+        attestatCheckbox.parentElement.style.opacity = "1";
+        if (certificateCheckbox) {
+          certificateCheckbox.disabled = false;
+          certificateCheckbox.parentElement.style.opacity = "1";
+        }
+        const restrictedTypes = ["preschool", "school", "school_internat"];
+        if (restrictedTypes.includes(type)) {
+          attestatCheckbox.checked = false;
+          attestatCheckbox.disabled = true;
+          attestatCheckbox.parentElement.style.opacity = "0.5";
+        }
+      }
+
       if (!group) return;
-  
+
       group.classList.remove("hidden");
-  
+
       if (type === "preschool") {
-        label.textContent = "Возрастной диапазон";
-        document.getElementById("rangeMin").placeholder = "От (лет)";
-        document.getElementById("rangeMax").placeholder = "До (лет)";
-        unit.textContent = "(лет)";
-        document.getElementById("rangeMin").min = "1.5";
-        document.getElementById("rangeMin").max = "8";
-        document.getElementById("rangeMin").step = "0.5";
-        document.getElementById("rangeMax").min = "1";
-        document.getElementById("rangeMax").max = "8";
-        document.getElementById("rangeMax").step = "0.5";
+        if (label) label.textContent = "Возрастной диапазон";
+        if (rangeMin) {
+          rangeMin.placeholder = "От (лет)";
+          rangeMin.min = "1.5";
+          rangeMin.max = "8";
+          rangeMin.step = "0.5";
+        }
+        if (rangeMax) {
+          rangeMax.placeholder = "До (лет)";
+          rangeMax.min = "1";
+          rangeMax.max = "8";
+          rangeMax.step = "0.5";
+        }
+        if (unit) unit.textContent = "(лет)";
       } else if (type === "school" || type === "school_internat") {
-        label.textContent = "Диапазон классов";
-        document.getElementById("rangeMin").placeholder = "От (класс)";
-        document.getElementById("rangeMax").placeholder = "До (класс)";
-        unit.textContent = "(классов)";
-        document.getElementById("rangeMin").min = "1";
-        document.getElementById("rangeMin").max = "11";
-        document.getElementById("rangeMin").step = "1";
-        document.getElementById("rangeMax").min = "1";
-        document.getElementById("rangeMax").max = "11";
-        document.getElementById("rangeMax").step = "1";
+        if (label) label.textContent = "Диапазон классов";
+        if (rangeMin) {
+          rangeMin.placeholder = "От (класс)";
+          rangeMin.min = "1";
+          rangeMin.max = "11";
+          rangeMin.step = "1";
+        }
+        if (rangeMax) {
+          rangeMax.placeholder = "До (класс)";
+          rangeMax.min = "1";
+          rangeMax.max = "11";
+          rangeMax.step = "1";
+        }
+        if (unit) unit.textContent = "(классов)";
       } else {
         group.classList.add("hidden");
-        document.getElementById("rangeMin").value = "";
-        document.getElementById("rangeMax").value = "";
+        if (rangeMin) rangeMin.value = "";
+        if (rangeMax) rangeMax.value = "";
       }
     },
   

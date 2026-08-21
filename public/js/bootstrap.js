@@ -4,12 +4,13 @@
 
 let lipetskMap;
 
-const ASSET_VERSION = '20260705b';
+const ASSET_VERSION = '20260821j';
 
 function loadScript(src) {
   return new Promise((resolve, reject) => {
     const script = document.createElement('script');
-    script.src = src.includes('?') ? src : `${src}?v=${ASSET_VERSION}`;
+    const path = src.startsWith('/') || src.startsWith('http') ? src : `/${src}`;
+    script.src = path.includes('?') ? path : `${path}?v=${ASSET_VERSION}`;
     script.onload = resolve;
     script.onerror = reject;
     document.body.appendChild(script);

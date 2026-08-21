@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Интерактивная карта образовательных учреждений Липецкой области: школы, детские сады, колледжи и вузы. Поиск по округам, фильтры по условиям обучения и адаптированным программам.">
     <title>Интерактивная карта образовательных учреждений Липецкой области</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="/styles.css?v=20260821j">
     <script>
         window.IS_ADMIN_ROUTE = /\/admin(?:\/|$)/.test(window.location.pathname);
         if (window.IS_ADMIN_ROUTE) {
@@ -23,6 +23,7 @@
                 <button id="adminLogin" class="btn btn-secondary hidden">Вход администратора</button>
                 <div id="adminPanel" class="admin-panel hidden">
                     <button id="addInstitution" class="btn btn-primary">Добавить учреждение</button>
+                    <button id="viewActionLog" class="btn btn-secondary">Журнал</button>
                     <button id="logout" class="btn btn-secondary">Выход</button>
                 </div>
             </div>
@@ -75,9 +76,6 @@
                     <div class="region-info-section">
                         <h3 id="regionName">Название региона</h3>
                         <svg class="region-image" xmlns="http://www.w3.org/2000/svg"></svg>
-                        <div class="region-details">
-                            <div id="regionLinks" class="region-links"></div>
-                        </div>
                     </div>
 
                     <div class="institutions-section">
@@ -156,6 +154,8 @@
                                             value="hearing_impairment"> Нарушения слуха</label>
                                     <label class="filter-option lab-check"><input type="checkbox"
                                             value="vision_impairment"> Нарушения зрения</label>
+                                    <label class="filter-option lab-check"><input type="checkbox"
+                                            value="musculoskeletal_impairment"> Нарушения опорно-двигательного аппарата</label>
                                     <label class="filter-option lab-check"><input type="checkbox"
                                             value="speech_impairment"> Нарушения речи</label>
                                     <label class="filter-option lab-check"><input type="checkbox" value="autism">
@@ -340,6 +340,18 @@
             </div>
         </div>
 
+        <div id="actionLogModal" class="modal hidden">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Журнал действий</h2>
+                    <button type="button" id="closeActionLog" class="close-btn" aria-label="Закрыть">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div id="actionLogList" class="action-log-list">Загрузка…</div>
+                </div>
+            </div>
+        </div>
+
         <footer class="site-footer">
             <div class="site-footer-inner">
                 <div class="site-footer-info">
@@ -363,14 +375,15 @@
         <button type="button" id="cookieNoticeAccept" class="btn btn-primary">Понятно</button>
     </div>
 
-    <script src="js/main.js?v=20260705b"></script>
-    <script src="js/utils.js?v=20260705b"></script>
-    <script src="js/map.js?v=20260705b"></script>
-    <script src="js/institutions.js?v=20260705b"></script>
-    <script src="js/filters.js?v=20260705b"></script>
-    <script src="js/bootstrap.js?v=20260705b"></script>
-    <script src="js/accessibility.js?v=20260705b"></script>
-    <script src="js/legal.js?v=20260705b"></script>
+    <script src="/js/main.js?v=20260821j"></script>
+    <script src="/js/string-utils.js?v=20260821j"></script>
+    <script src="/js/utils.js?v=20260821j"></script>
+    <script src="/js/map.js?v=20260821j"></script>
+    <script src="/js/institutions.js?v=20260821j"></script>
+    <script src="/js/filters.js?v=20260821j"></script>
+    <script src="/js/bootstrap.js?v=20260821j"></script>
+    <script src="/js/accessibility.js?v=20260821j"></script>
+    <script src="/js/legal.js?v=20260821j"></script>
 </body>
 
 </html>

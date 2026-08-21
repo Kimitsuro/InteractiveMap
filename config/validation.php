@@ -1,5 +1,8 @@
 <?php
 
+require_once __DIR__ . '/bootstrap.php';
+require_once __DIR__ . '/formatters.php';
+
 const INSTITUTION_TYPES = ['preschool', 'school', 'school_internat', 'spo', 'vo'];
 
 const CONDITION_CODES = [
@@ -157,7 +160,7 @@ function validateCodeList(array $codes, array $allowed, string $fieldLabel): arr
             continue;
         }
         if (!in_array($code, $allowed, true)) {
-            throw new InvalidArgumentException("Неверное значение в поле «$fieldLabel».");
+            throw new InvalidArgumentException("Неверное значение в поле «{$fieldLabel}».");
         }
         $normalized[] = $code;
     }

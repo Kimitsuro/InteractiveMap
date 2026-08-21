@@ -5,6 +5,7 @@
 
 # PHP / Composer
 /vendor/
+composer.phar
 .phpunit.cache
 .phpunit.result.cache
 

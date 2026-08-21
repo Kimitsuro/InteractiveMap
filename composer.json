@@ -1,0 +1,18 @@
+{
+  "name": "lipetsk/interactive-map",
+  "description": "Interactive map of educational institutions in Lipetsk region",
+  "require": {
+    "php": ">=8.2"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^11.0"
+  },
+  "scripts": {
+    "test": "phpunit",
+    "test:unit": "phpunit --testsuite Unit",
+    "test:integration": "phpunit --testsuite Integration"
+  },
+  "config": {
+    "sort-packages": true
+  }
+}

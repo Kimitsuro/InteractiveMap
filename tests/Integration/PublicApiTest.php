@@ -95,6 +95,19 @@ final class PublicApiTest extends TestCase
         }
     }
 
+    public function testGetInstitutionsAgeFilterOnlyPreschool(): void
+    {
+        $districts = $this->http->get('/api/get_districts.php');
+        $id = (int) array_key_first($districts['json']['districts']);
+
+        $res = $this->http->get('/api/get_institutions.php?district_id=' . $id . '&page=1&age[]=7%2B');
+        $this->assertSame(200, $res['status']);
+
+        foreach ($res['json']['institutions'] ?? [] as $inst) {
+            $this->assertSame('preschool', $inst['type'] ?? null);
+        }
+    }
+
     public function testCheckSessionAnonymous(): void
     {
         $res = $this->http->get('/api/check_session.php');

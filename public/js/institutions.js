@@ -57,7 +57,7 @@ Object.assign(LipetskMap.prototype, {
       selectedAges.forEach(age => params.append('age[]', age));
 
       const selectedConditions = Array.from(
-        document.querySelectorAll('.filter-group-accordion input[value="hearing_impairment"], .filter-group-accordion input[value="vision_impairment"], .filter-group-accordion input[value="musculoskeletal_impairment"], .filter-group-accordion input[value="speech_impairment"], .filter-group-accordion input[value="mental_retardation"], .filter-group-accordion input[value="autism"], .filter-group-accordion input[value="multiple_disorders"]')
+        document.querySelectorAll('.filter-group-accordion input[value="hearing_impairment"], .filter-group-accordion input[value="vision_impairment"], .filter-group-accordion input[value="musculoskeletal_impairment"], .filter-group-accordion input[value="speech_impairment"], .filter-group-accordion input[value="autism"], .filter-group-accordion input[value="mental_retardation"], .filter-group-accordion input[value="intellectual_impairment"], .filter-group-accordion input[value="psychic_development_delay"], .filter-group-accordion input[value="multiple_disorders"]')
       )
         .filter(cb => cb.checked)
         .map(cb => cb.value);

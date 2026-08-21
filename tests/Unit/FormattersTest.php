@@ -45,15 +45,22 @@ final class FormattersTest extends TestCase
 
     public function testFormatPhoneForDisplayMobile(): void
     {
-        $this->assertSame('+79001234567', formatPhoneForDisplay('+79001234567'));
+        $this->assertSame('+7 (900) 123-45-67', formatPhoneForDisplay('+79001234567'));
     }
 
     public function testFormatPhoneForDisplayCity4742(): void
     {
-        $formatted = formatPhoneForDisplay('+74742250137');
-        $this->assertNotNull($formatted);
-        $this->assertStringContainsString('4742', $formatted);
-        $this->assertStringContainsString('+7', $formatted);
+        $this->assertSame('+7 (4742) 25-01-37', formatPhoneForDisplay('+74742250137'));
+    }
+
+    public function testFormatPhoneForDisplayYelets5DigitCode(): void
+    {
+        $this->assertSame('+7 (47467) 2-22-22', formatPhoneForDisplay('+74746722222'));
+    }
+
+    public function testFormatPhoneForDisplayDobrinka5DigitCode(): void
+    {
+        $this->assertSame('+7 (47462) 1-23-45', formatPhoneForDisplay('+74746212345'));
     }
 
     public function testNormalizeEmailForDisplaySimple(): void

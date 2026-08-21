@@ -10,8 +10,10 @@ const CONDITION_CODES = [
     'vision_impairment',
     'musculoskeletal_impairment',
     'speech_impairment',
-    'mental_retardation',
     'autism',
+    'mental_retardation',
+    'intellectual_impairment',
+    'psychic_development_delay',
     'multiple_disorders',
 ];
 

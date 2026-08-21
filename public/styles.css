@@ -478,18 +478,19 @@ g[id="region_eletskiy"] polygon.region {
 }
 
 .filter-actions {
-  align-items: flex-end;
-  background: linear-gradient(to top, rgb(255, 255, 255) 75%, rgba(255, 255, 255, 0) 100%);
-  bottom: 0px;
+  align-items: center;
+  background: #fff;
+  border-top: 1px solid #eee;
+  bottom: auto;
   display: flex;
-  height: 150px;
-  -webkit-box-pack: justify;
+  flex-shrink: 0;
+  height: auto;
   justify-content: space-between;
-  overflow-y: hidden;
-  padding: 16px 32px 32px;
-  position: absolute;
-  right: 0px;
-  width: inherit;
+  overflow: visible;
+  padding: 16px 20px 20px;
+  position: static;
+  right: auto;
+  width: 100%;
   gap: 10px;
 }
 
@@ -653,6 +654,7 @@ g[id="region_eletskiy"] polygon.region {
 
 .detail-item-address {
   align-items: flex-start;
+  margin-bottom: 5px;
 }
 
 .detail-item-address .detail-value {
@@ -1722,13 +1724,16 @@ input[readonly] {
   font-weight: 500;
   text-align: left;
   font-size: calc(1rem * var(--accessibility-font-scale)) !important;
-  padding: 20px 12px;
+  padding: 16px 12px;
   cursor: pointer;
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
+  gap: 8px;
   color: #333;
   transition: color 0.2s;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
 }
 
 .accordion-toggle:hover {
@@ -1740,6 +1745,8 @@ input[readonly] {
   transform: rotate(180deg);
   transition: transform 0.3s;
   font-size: calc(14px * var(--accessibility-font-scale)) !important;
+  flex-shrink: 0;
+  margin-top: 0.15em;
 }
 
 .accordion-toggle.active::after {
@@ -1749,34 +1756,39 @@ input[readonly] {
 .accordion-content {
   max-height: 0;
   overflow: hidden;
-  transition: max-height 0.3s ease;
+  transition: max-height 0.35s ease;
   padding-left: 5px;
 }
 
 .accordion-content.open {
-  max-height: 500px;
+  max-height: 1200px;
   margin-bottom: 10px;
 }
 
 .filter-option {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 8px;
   cursor: pointer;
-  padding: 12px;
+  padding: 10px 8px;
   font-size: calc(0.95rem * var(--accessibility-font-scale)) !important;
   color: #444;
   user-select: none;
   transition: background 0.2s;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.filter-option input {
+  accent-color: var(--primary-color, #0066cc);
+  flex-shrink: 0;
+  margin-top: 0.2em;
 }
 
 .filter-option:hover {
   background: rgba(0, 102, 204, 0.05);
   border-radius: 4px;
-}
-
-.filter-option input {
-  accent-color: var(--primary-color, #0066cc);
 }
 
 .filter-btn1 {
@@ -1824,13 +1836,16 @@ input[readonly] {
 #filtersSection {
   background: #fff;
   border-left: 1px solid #e0e0e0;
-  padding: 20px;
   border-radius: 0 8px 8px 0;
   position: relative;
   z-index: 1;
   height: 100%;
   width: 290px;
-  padding-bottom: 125px;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 0;
   font-size: calc(16px * var(--accessibility-font-scale)) !important;
 }
 
@@ -1851,8 +1866,13 @@ input[readonly] {
   justify-content: space-between;
 }
 .filters{
-  height: 100%;
+  flex: 1;
+  min-height: 0;
+  height: auto;
+  overflow-x: hidden;
   overflow-y: auto;
+  padding: 20px 16px 12px;
+  box-sizing: border-box;
 }
 
 .institution-card::before {
@@ -1969,8 +1989,8 @@ input[readonly] {
   }
 
   .filter-actions {
-    bottom: 0;
-    padding: 20px 20px 40px 20px;
+    flex-shrink: 0;
+    padding: 16px 20px 24px;
     display: flex;
     justify-content: space-between;
     gap: 10px;
@@ -2158,11 +2178,6 @@ input[readonly] {
     flex-wrap: wrap;
   }
 
-  .institution-details {
-    flex-direction: column;
-    gap: 8px;
-  }
-
   .form-actions {
     flex-direction: column;
   }
@@ -2295,26 +2310,96 @@ input[readonly] {
   .institution-card {
     padding: 16px;
     border-radius: 8px;
+    overflow-wrap: anywhere;
+  }
+
+  .institution-card h4 {
+    font-size: calc(1.05em * var(--accessibility-font-scale)) !important;
+    line-height: 1.3;
+    overflow-wrap: anywhere;
+  }
+
+  .institution-card .institution-type {
+    max-width: 100%;
+    white-space: normal;
+    text-align: left;
+    padding: 6px 10px;
+    line-height: 1.35;
   }
 
   .institution-details {
     grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .detail-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  .detail-item strong {
+    min-width: 0;
+  }
+
+  .detail-item-address,
+  .contact-item-link,
+  .aoop-global-link {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    min-width: 0;
+  }
+
+  .conditions-section h5,
+  .admission-section h5,
+  .aoop-section h5 {
+    font-size: calc(0.9rem * var(--accessibility-font-scale)) !important;
+    line-height: 1.35;
+    overflow-wrap: anywhere;
   }
 
   .contact-item {
     flex-direction: column;
     align-items: flex-start;
     gap: 4px;
+    min-width: 0;
   }
 
   .tag {
-    font-size: 11px;
-    padding: 3px 6px;
+    font-size: calc(12px * var(--accessibility-font-scale)) !important;
+    padding: 4px 8px;
   }
 
   .institution-tags {
     justify-content: flex-start;
     flex-direction: row;
+  }
+
+  .aoop-list-card {
+    max-height: min(40vh, 240px);
+    padding-left: 18px;
+  }
+
+  .aoop-list-card li {
+    overflow-wrap: anywhere;
+    line-height: 1.4;
+    font-size: calc(12px * var(--accessibility-font-scale)) !important;
+  }
+
+  .external-link {
+    white-space: normal;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
+  .institution-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .institution-actions .btn {
+    width: 100%;
   }
 
   .type-filter-buttons {
@@ -2327,6 +2412,12 @@ input[readonly] {
         flex: 1;
         min-width: 0;
     }
+}
+
+@media (hover: none) and (max-width: 768px) {
+  .institution-card:hover {
+    transform: none;
+  }
 }
 
 @media (max-width: 620px) {
@@ -2398,6 +2489,22 @@ input[readonly] {
     display: none;
   }
 
+  .institution-card {
+    padding: 12px;
+  }
+
+  .institution-card h4 {
+    font-size: calc(1rem * var(--accessibility-font-scale)) !important;
+  }
+
+  .institution-description {
+    margin-bottom: 12px;
+  }
+
+  .contact-item {
+    padding: 4px 0;
+  }
+
   .modal-body {
     padding: 0;
   }
@@ -2441,14 +2548,18 @@ input[readonly] {
   }
 
   .filter-actions{
-    padding: 0px 32px 40px;
+    padding: 16px 20px 20px;
   }
 
   .filters{
-    height: 100%;
-    overflow: hidden auto;
-    padding: 0px 32px 40px;
+    flex: 1;
+    min-height: 0;
+    height: auto;
+    overflow-x: hidden;
+    overflow-y: auto;
+    padding: 16px 16px 12px;
     width: 100%;
+    box-sizing: border-box;
   }
 
   .institution-type-filter {
@@ -2534,6 +2645,75 @@ input[readonly] {
 
 .site-footer-links a:hover {
   text-decoration: underline;
+}
+
+.form-feedback {
+  margin: 0 0 12px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-size: calc(0.9rem * var(--accessibility-font-scale));
+  line-height: 1.4;
+}
+
+.form-feedback--error {
+  background: #fdecea;
+  color: #c0392b;
+  border: 1px solid #f5c6cb;
+}
+
+.app-toast {
+  position: fixed;
+  left: 50%;
+  bottom: 24px;
+  transform: translateX(-50%);
+  max-width: min(480px, calc(100vw - 32px));
+  padding: 12px 18px;
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.16);
+  z-index: 100001;
+  font-size: calc(0.95rem * var(--accessibility-font-scale));
+  line-height: 1.4;
+  text-align: center;
+  animation: toast-in 0.22s ease-out;
+}
+
+.app-toast--success {
+  background: #e8f7ef;
+  color: #1e7e46;
+  border: 1px solid #b7e0c5;
+}
+
+.app-toast--error {
+  background: #fdecea;
+  color: #c0392b;
+  border: 1px solid #f5c6cb;
+}
+
+.app-toast--info {
+  background: #eef3f8;
+  color: #2c3e50;
+  border: 1px solid #d0d7de;
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+.confirm-modal-content {
+  max-width: 420px;
+}
+
+#confirmModalMessage {
+  margin: 0 0 18px;
+  line-height: 1.5;
+  color: #2c3e50;
 }
 
 .cookie-notice {

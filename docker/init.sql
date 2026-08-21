@@ -135,7 +135,6 @@ COMMENT ON TABLE aoop_programs IS 'АООП программы учрежден�
 CREATE TABLE IF NOT EXISTS administrators (
     id SERIAL PRIMARY KEY,
     login VARCHAR(50) NOT NULL UNIQUE,
-    email VARCHAR(100) NOT NULL UNIQUE,
     password_hash VARCHAR(255) NOT NULL,
     full_name VARCHAR(150) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -196,9 +195,11 @@ INSERT INTO condition_types (code, name_ru, description) VALUES
     ('vision_impairment', 'Нарушения зрения', 'Для детей с нарушениями зрения'),
     ('musculoskeletal_impairment', 'Нарушения опорно-двигательного аппарата', 'Для детей с НОДА'),
     ('speech_impairment', 'Нарушения речи', 'Для детей с тяжелыми нарушениями речи'),
-    ('mental_retardation', 'Задержка психического развития', 'Для детей с задержкой психического развития'),
     ('autism', 'Расстройство аутистического спектра', 'Для детей с расстройством аутистического спектра'),
-    ('multiple_disorders', 'Множественные нарушения развития', 'Для детей со сложными дефектами')
+    ('mental_retardation', 'Умственная отсталость', 'Для детей с умственной отсталостью'),
+    ('intellectual_impairment', 'Нарушение интеллекта', 'Для детей с интеллектуальными нарушениями'),
+    ('psychic_development_delay', 'Задержка психического развития', 'Для детей с задержкой психического развития'),
+    ('multiple_disorders', 'Множественные нарушения', 'Для детей с тяжёлыми и множественными нарушениями развития')
 ON CONFLICT (code) DO NOTHING;
 
 -- Типы условий приема

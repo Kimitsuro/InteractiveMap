@@ -12,8 +12,11 @@ final class AuthTest extends TestCase
     protected function setUp(): void
     {
         $this->http = new TestHttpClient();
-        $this->login = getenv('TEST_ADMIN_LOGIN') ?: 'test_admin';
-        $this->password = getenv('TEST_ADMIN_PASS') ?: 'TestAdminPass123!';
+        $this->login = getenv('TEST_ADMIN_LOGIN') ?: (getenv('ADMIN_LOGIN') ?: 'map_admin');
+        $this->password = getenv('TEST_ADMIN_PASS') ?: (getenv('ADMIN_PASSWORD') ?: '');
+        if ($this->password === '') {
+            $this->markTestSkipped('Set ADMIN_PASSWORD or TEST_ADMIN_PASS for auth tests.');
+        }
     }
 
     public function testLoginFailsWithWrongPassword(): void

@@ -35,9 +35,11 @@ logs/
 *.swp
 *~
 
-# Сгенерированные артефакты импорта (можно пересоздать скриптами)
+# Сгенерированные артефакты импорта
 docker/import_data/parsed_preview.json
 docker/import_data/aoop_scrape.sql
+docker/import_data/aoop_municipality_*
+scripts/node_modules/
 
 # macOS / Windows
 .DS_Store

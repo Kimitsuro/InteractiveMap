@@ -3,10 +3,9 @@
  * Создание администратора из консоли сервера (без секретных ключей).
  *
  * Пример:
- *   docker exec lipetsk_web_apache php /var/www/docker/create_admin.php admin admin@example.ru StrongPass123 "Иванов И.И."
+ *   docker exec lipetsk_web_apache php /var/www/docker/create_admin.php admin StrongPass123 "Иванов И.И."
  */
 require_once __DIR__ . '/../config/database.php';
-require_once __DIR__ . '/../config/validation.php';
 require_once __DIR__ . '/../src/Database.php';
 
 if (PHP_SAPI !== 'cli') {
@@ -14,15 +13,14 @@ if (PHP_SAPI !== 'cli') {
     exit(1);
 }
 
-if ($argc < 5) {
-    fwrite(STDERR, "Использование: php create_admin.php <login> <email> <password> <full_name>\n");
+if ($argc < 4) {
+    fwrite(STDERR, "Использование: php create_admin.php <login> <password> <full_name>\n");
     exit(1);
 }
 
 $login = trim($argv[1]);
-$emailRaw = trim($argv[2]);
-$password = $argv[3];
-$fullName = trim($argv[4]);
+$password = $argv[2];
+$fullName = trim($argv[3]);
 
 if (strlen($login) < 3 || strlen($password) < 8) {
     fwrite(STDERR, "Логин минимум 3 символа, пароль минимум 8.\n");
@@ -30,26 +28,19 @@ if (strlen($login) < 3 || strlen($password) < 8) {
 }
 
 try {
-    $email = validateAndNormalizeEmail($emailRaw);
-} catch (InvalidArgumentException $e) {
-    fwrite(STDERR, $e->getMessage() . "\n");
-    exit(1);
-}
-
-try {
     $existing = Database::query(
-        "SELECT id FROM administrators WHERE login = ? OR email = ?",
-        [$login, $email]
+        "SELECT id FROM administrators WHERE login = ?",
+        [$login]
     );
     if (!empty($existing)) {
-        fwrite(STDERR, "Логин или email уже существуют.\n");
+        fwrite(STDERR, "Логин уже существует.\n");
         exit(1);
     }
 
     $passwordHash = password_hash($password, PASSWORD_DEFAULT);
     $adminId = Database::fetchOne(
-        "INSERT INTO administrators (login, email, password_hash, full_name) VALUES (?, ?, ?, ?) RETURNING id",
-        [$login, $email, $passwordHash, $fullName]
+        "INSERT INTO administrators (login, password_hash, full_name) VALUES (?, ?, ?) RETURNING id",
+        [$login, $passwordHash, $fullName]
     );
 
     if (!$adminId) {

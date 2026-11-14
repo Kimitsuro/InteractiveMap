@@ -2,7 +2,7 @@
 
 Интерактивная карта округов Липецкой области: просмотр учреждений, фильтры по типу, возрасту, условиям обучения (ОВЗ) и АООП, админка для добавления и правки данных.
 
-**Стек:** PHP 8.2, Apache, PostgreSQL 17, vanilla JavaScript, Docker.
+**Стек:** PHP 8.2, Apache, PostgreSQL 17, JavaScript, Docker.
 
 ---
 
@@ -20,7 +20,7 @@
 
 ![Фильтры](docs/screenshots/filters.png)
 
-Админка (`/admin`): вход по логину и паролю, CRUD учреждений, журнал действий. Ошибки и успешные операции показываются в интерфейсе (toast / сообщение в форме), без браузерных `alert`.
+Админка (`/admin`): вход по логину и паролю, CRUD учреждений, журнал действий. Ошибки и успешные операции показываются в интерфейсе.
 
 ![Вход администратора](docs/screenshots/admin-login.png)
 
@@ -154,7 +154,6 @@ docker exec lipetsk_web_apache php /var/www/docker/create_admin.php "$ADMIN_LOGI
 | `docker/migrations/` | Миграции + `apply_migrations.php` |
 | `docker/create_admin.php` | Создание администратора из CLI |
 | `backups/` | Полные дампы БД |
-| `docs/screenshots/` | Скриншоты для README |
 | `docker-compose.yml` | Dev |
 | `docker-compose.prod.yml` | Production |
 
